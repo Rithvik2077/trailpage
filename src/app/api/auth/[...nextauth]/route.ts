@@ -44,12 +44,12 @@ Google({
     console.log('is pwd crt: ', passwordCorrect);
 
     if(passwordCorrect){
-      return ({
-        id: user.id,
-        email:user.email
-      })
-    }
+      return user
+    } else{
+
       return null;
+    }
+
     }
   })
 ]
@@ -57,6 +57,7 @@ Google({
 
 
 const handler = NextAuth({
+  // secret: process.env.NEXTAUTH_SECRET,
   session:{
     strategy: 'jwt'
   },

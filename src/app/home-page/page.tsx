@@ -1,14 +1,21 @@
-"use client";
-
+import { getServerSession } from "next-auth";
 import Logout from "./logout";
+import { useSession } from "next-auth/react";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession();
+  console.log(session);
   return (
     <div>
       <div>
         <div>HOME</div>
       </div>
-      <Logout />
+      {!!session && <Logout />}
+      {!session && (
+        <div>
+          <div>not signed in</div>
+        </div>
+      )}
     </div>
   );
 }

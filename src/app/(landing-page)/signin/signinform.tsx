@@ -6,6 +6,7 @@ import { redirect, useRouter } from "next/navigation";
 import { FormEvent } from "react";
 
 export default function SignInForm() {
+  const router = useRouter();
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -16,6 +17,10 @@ export default function SignInForm() {
     });
 
     console.log(response);
+
+    if (!response.error) {
+      router.push("/home-page");
+    }
   };
 
   return (

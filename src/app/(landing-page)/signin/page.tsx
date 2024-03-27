@@ -1,9 +1,6 @@
-import Link from "next/link";
-import { signIn } from "next-auth/react";
-import { Metadata } from "next";
 import SignInForm from "./signinform";
 
-const SigninPage = () => {
+const SigninPage = async () => {
   return (
     <>
       <section className="relative z-10 overflow-hidden pb-16 pt-36 md:pb-20 lg:pb-28 lg:pt-[180px]">
