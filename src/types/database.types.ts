@@ -11,20 +11,31 @@ export type Database = {
     Tables: {
       Category: {
         Row: {
+          group_id: number
           id: number
-          name: string | null
+          name: string
         }
         Insert: {
-          id: number
-          name?: string | null
+          group_id: number
+          id?: number
+          name: string
         }
         Update: {
+          group_id?: number
           id?: number
-          name?: string | null
+          name?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "public_Category_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "Group"
+            referencedColumns: ["id"]
+          },
+        ]
       }
-      feedback: {
+      Feedback: {
         Row: {
           created_at: string | null
           created_by: number | null
@@ -36,7 +47,7 @@ export type Database = {
           created_at?: string | null
           created_by?: number | null
           description?: string | null
-          id: number
+          id?: number
           title?: string | null
         }
         Update: {
@@ -56,13 +67,28 @@ export type Database = {
           },
         ]
       }
+      Group: {
+        Row: {
+          id: number
+          name: string
+        }
+        Insert: {
+          id?: number
+          name: string
+        }
+        Update: {
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
       Role: {
         Row: {
           id: number
           name: string | null
         }
         Insert: {
-          id: number
+          id?: number
           name?: string | null
         }
         Update: {
@@ -70,32 +96,6 @@ export type Database = {
           name?: string | null
         }
         Relationships: []
-      }
-      SubCategory: {
-        Row: {
-          category_id: number | null
-          id: number
-          name: string | null
-        }
-        Insert: {
-          category_id?: number | null
-          id: number
-          name?: string | null
-        }
-        Update: {
-          category_id?: number | null
-          id?: number
-          name?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "SubCategory_category_id_fkey"
-            columns: ["category_id"]
-            isOneToOne: false
-            referencedRelation: "Category"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       Survey: {
         Row: {
@@ -110,7 +110,7 @@ export type Database = {
           closes_at?: string | null
           created_at?: string | null
           created_by?: number | null
-          id: number
+          id?: number
           survey_fields?: Json | null
           title?: string | null
         }
@@ -134,7 +134,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
-          id: number
+          id?: number
           response_data?: Json | null
           survey_id?: number | null
           user_id?: number | null
@@ -172,7 +172,7 @@ export type Database = {
           created_by: number | null
           description: string | null
           id: number
-          priority: string | null
+          priority: number | null
           status: string | null
           sub_category_id: number | null
           title: string | null
@@ -184,8 +184,8 @@ export type Database = {
           created_at?: string | null
           created_by?: number | null
           description?: string | null
-          id: number
-          priority?: string | null
+          id?: number
+          priority?: number | null
           status?: string | null
           sub_category_id?: number | null
           title?: string | null
@@ -198,7 +198,7 @@ export type Database = {
           created_by?: number | null
           description?: string | null
           id?: number
-          priority?: string | null
+          priority?: number | null
           status?: string | null
           sub_category_id?: number | null
           title?: string | null
@@ -218,14 +218,22 @@ export type Database = {
             referencedRelation: "User"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "Ticket_sub_category_id_fkey"
-            columns: ["sub_category_id"]
-            isOneToOne: false
-            referencedRelation: "SubCategory"
-            referencedColumns: ["id"]
-          },
         ]
+      }
+      TicketPriority: {
+        Row: {
+          id: number
+          name: string
+        }
+        Insert: {
+          id?: number
+          name: string
+        }
+        Update: {
+          id?: number
+          name?: string
+        }
+        Relationships: []
       }
       User: {
         Row: {
@@ -233,24 +241,24 @@ export type Database = {
           id: number
           is_active: boolean
           password: string | null
-          updated_at: string | null
-          user_name: string | null
+          updated_at: string
+          user_name: string
         }
         Insert: {
           email: string
           id?: number
           is_active?: boolean
           password?: string | null
-          updated_at?: string | null
-          user_name?: string | null
+          updated_at?: string
+          user_name: string
         }
         Update: {
           email?: string
           id?: number
           is_active?: boolean
           password?: string | null
-          updated_at?: string | null
-          user_name?: string | null
+          updated_at?: string
+          user_name?: string
         }
         Relationships: []
       }
@@ -266,7 +274,7 @@ export type Database = {
         Insert: {
           can_create_survey?: boolean | null
           group_id?: number | null
-          id: number
+          id?: number
           role_id?: number | null
           sub_category_id?: number | null
           user_id?: number | null
@@ -281,24 +289,10 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "UserRoleMapping_group_id_fkey"
-            columns: ["group_id"]
-            isOneToOne: false
-            referencedRelation: "Category"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "UserRoleMapping_role_id_fkey"
             columns: ["role_id"]
             isOneToOne: false
             referencedRelation: "Role"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "UserRoleMapping_sub_category_id_fkey"
-            columns: ["sub_category_id"]
-            isOneToOne: false
-            referencedRelation: "SubCategory"
             referencedColumns: ["id"]
           },
           {
