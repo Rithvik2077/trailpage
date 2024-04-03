@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import { hash } from "bcrypt";
-
-import { Database } from '../../../../types/database.types'
 import { error } from "console";
 
 

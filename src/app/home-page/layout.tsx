@@ -1,8 +1,5 @@
-"use client";
-
 import { useRouter } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { SessionProvider, useSession } from "next-auth/react";
+import { cookies } from "next/headers";
 
 export default function RootLayout({
   children,
@@ -11,9 +8,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <SessionProvider>
-        <body>{children}</body>
-      </SessionProvider>
+      <body>{children}</body>
     </html>
   );
 }

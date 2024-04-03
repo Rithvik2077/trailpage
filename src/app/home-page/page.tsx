@@ -1,16 +1,21 @@
-import { getServerSession } from "next-auth";
 import Logout from "./logout";
-import { useSession } from "next-auth/react";
+import { cookies } from "next/headers";
+import { verifyJwt } from "lib/jwt";
 
 export default async function Home() {
-  const session = await getServerSession();
-  console.log(session);
+  const token = cookies().get("Authorize");
+  const decoded = verifyJwt(token.value);
+  let session: boolean;
+  // localStorage.setItem("token", token.value);
+  if (decoded) {
+    session = true;
+  }
   return (
     <div>
       <div>
         <div>HOME</div>
       </div>
-      {!!session && <Logout />}
+      {session && <Logout />}
       {!session && (
         <div>
           <div>not signed in</div>

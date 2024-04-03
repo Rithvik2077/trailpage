@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FormEvent } from "react";
 import { Metadata } from "next";
-import SignUpForm from "./signupform";
+import SignUpForm from "../_components/signupform";
 
 const SignupPage = () => {
   return (

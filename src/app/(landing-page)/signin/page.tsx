@@ -1,13 +1,28 @@
-import SignInForm from "./signinform";
+"use client";
+import { useState } from "react";
+import SignInForm from "../_components/signinform";
+import ForgotPassowrdForm from "../_components/forgotpasswordfrom";
 
-const SigninPage = async () => {
+const SigninPage = () => {
+  const [setPassword, useSetPassword] = useState(false);
+  const ShowSetPassword = () => {
+    useSetPassword(!setPassword);
+  };
   return (
     <>
       <section className="relative z-10 overflow-hidden pb-16 pt-36 md:pb-20 lg:pb-28 lg:pt-[180px]">
         <div className="container">
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4">
-              <SignInForm />
+              {setPassword ? (
+                <>
+                  <ForgotPassowrdForm setpassword={ShowSetPassword} />
+                </>
+              ) : (
+                <>
+                  <SignInForm setpassword={ShowSetPassword} />
+                </>
+              )}
             </div>
           </div>
         </div>
