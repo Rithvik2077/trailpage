@@ -6,16 +6,27 @@ type RoleInsert = Database["public"]["Tables"]["Role"]["Insert"];
 const table = 'Role'
 
 export async function AddRole(role: RoleInsert) {
-    const result = await supabase.from(table).insert(role);
-    if(result.error){
+    try{
+        const result = await supabase.from(table).insert(role);
+        return result;
+    }catch(error) {
         return {
-            error: result.error.message
+            status: 500,
+            statusText: "Internal server error",
+            data: null,
         }
     }
-    return result;
 }
 
 export async function GetAllRoles(){
-    const result = await supabase.from(table).select();
-    return result;
+    try{
+        const result = await supabase.from(table).select();
+        return result;
+    }catch(error) {
+        return {
+            status: 500,
+            statusText: "Internal server error",
+            data: null,
+        }
+    }
 }

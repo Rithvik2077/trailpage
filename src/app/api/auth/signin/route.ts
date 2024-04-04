@@ -20,11 +20,7 @@ export async function POST(req:Request) {
 
   
   
-  const user = {
-    id: data[0].id,
-    name: data[0].user_name,
-    email: data[0].email,
-  };
+
   
   
   
@@ -33,6 +29,13 @@ export async function POST(req:Request) {
   let res:NextResponse;
 
   if(passwordCorrect){
+    const role = await supabase.from('UserRoleMapping').select('*, Role!inner(*)').eq('user_id', data[0].id);
+    const user = {
+      id: data[0].id,
+      name: data[0].user_name,
+      email: data[0].email,
+      role: role.data[0].Role.name,
+    };
     const accessToken = signJwtAccessToken(user);
     let result  = {
       user,
@@ -42,9 +45,7 @@ export async function POST(req:Request) {
     res = NextResponse.json(JSON.stringify({result}));
     res.cookies.set("Authorize" , accessToken)
     }
-    
-  console.log('is pwd crt: ', passwordCorrect);
-  console.log('from sigin route:', user)
+
   
 
 

@@ -173,7 +173,7 @@ export type Database = {
           description: string | null
           id: number
           priority: number | null
-          status: string | null
+          status_id: number | null
           sub_category_id: number | null
           title: string | null
         }
@@ -186,7 +186,7 @@ export type Database = {
           description?: string | null
           id?: number
           priority?: number | null
-          status?: string | null
+          status_id?: number | null
           sub_category_id?: number | null
           title?: string | null
         }
@@ -199,7 +199,7 @@ export type Database = {
           description?: string | null
           id?: number
           priority?: number | null
-          status?: string | null
+          status_id?: number | null
           sub_category_id?: number | null
           title?: string | null
         }
@@ -209,6 +209,13 @@ export type Database = {
             columns: ["assigned_to"]
             isOneToOne: false
             referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_Ticket_sub_category_id_fkey"
+            columns: ["sub_category_id"]
+            isOneToOne: false
+            referencedRelation: "Category"
             referencedColumns: ["id"]
           },
           {
@@ -232,6 +239,21 @@ export type Database = {
         Update: {
           id?: number
           name?: string
+        }
+        Relationships: []
+      }
+      TicketStatus: {
+        Row: {
+          id: number
+          Name: string
+        }
+        Insert: {
+          id?: number
+          Name: string
+        }
+        Update: {
+          id?: number
+          Name?: string
         }
         Relationships: []
       }

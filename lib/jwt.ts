@@ -7,7 +7,7 @@ interface signOption{
   expiresIn?: string|number;
 }
 
-const DEFAULT_SIGN_OPTION: signOption={
+const DEFAULT_SIGN_OPTION: signOption = {
   expiresIn:'7d'
 }
 
@@ -33,5 +33,3 @@ return decoded as JwtPayload;
     return null
   }
 }
-
-
