@@ -67,10 +67,10 @@ const DashBoard: React.FC<DashBoardProps> = () => {
 
   return (
     <>
-      <main className="mt-2 flex h-full w-screen gap-4 ">
+      <main className="mt-4 flex h-full w-screen gap-4 pl-2 pr-2">
         <aside
-          className="fixed grid h-full w-40 grid-rows-4  rounded-lg bg-sky-800"
-          // style={{ maxHeight: "80vh" }}
+          className="grid w-40 grid-rows-4  rounded-md border bg-sky-800"
+          style={{ maxHeight: "88vh", minHeight: "88vh" }}
         >
           <div className="row-start-1 row-end-2 flex flex-col items-start justify-center ">
             <div className="w-full pl-0.5">
@@ -158,7 +158,7 @@ const DashBoard: React.FC<DashBoardProps> = () => {
             />
           </div>
         </aside>
-        <div className="ml-44 h-full w-full">
+        <div className="w-full overflow-y-auto" style={{ maxHeight: "88vh" }}>
           <div className="mb-4 flex flex-row items-center justify-around">
             {cardadata.map((item) => (
               <Cards
@@ -225,6 +225,7 @@ const DashBoard: React.FC<DashBoardProps> = () => {
                 </div>
               </div>
             )}
+
             {isFeedback && isHome && (
               <div className="mt-2 grid h-full grid-cols-5 gap-6 pt-4">
                 <div className="col-start-1 col-end-4 rounded-lg border-2 border-gray-200 pt-2">
