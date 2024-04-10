@@ -1,0 +1,230 @@
+{
+  "user": [
+    {
+      "id": 1,
+      "username": "john_doe",
+      "password": "hashed_password",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "is_active": true,
+      "lastLogin": "2024-03-31T08:00:00Z"
+    },
+    {
+      "id": 2,
+      "username": "jane_smith",
+      "password": "hashed_password",
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "is_active": false,
+      "lastLogin": null
+    }
+  ],
+  "role_group": [
+    {
+      "id": 1,
+      "role": "Admin",
+      "created_at": "2024-03-31T08:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "updated_at": "2024-03-31T08:00:00Z"
+    },
+    {
+      "id": 2,
+      "role": "User",
+      "created_at": "2024-03-31T08:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "updated_at": "2024-03-31T08:00:00Z"
+    }
+  ],
+  "user_role_mapping": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "role_id": 1
+    },
+    {
+      "id": 2,
+      "user_id": 2,
+      "role_id": 2
+    }
+  ],
+  "RolePermissionMapping": [
+    {
+      "RoleId": 1,
+      "PermissionId": 1
+    },
+    {
+      "RoleId": 2,
+      "PermissionId": 2
+    }
+  ],
+  "Permission": [
+    {
+      "Id": 1,
+      "roleId": 1,
+      "Title": "Admin Permission",
+      "SubCategoryId": 1,
+      "CategoryId": 1,
+      "Type": "Admin",
+      "CreatedDate": "2024-03-31T08:00:00Z",
+      "UpdatedDate": "2024-03-31T08:00:00Z"
+    },
+    {
+      "Id": 2,
+      "roleId": 2,
+      "Title": "User Permission",
+      "SubCategoryId": 2,
+      "CategoryId": 2,
+      "Type": "User",
+      "CreatedDate": "2024-03-31T08:00:00Z",
+      "UpdatedDate": "2024-03-31T08:00:00Z"
+    }
+  ],
+  "ticket": [
+    {
+      "id": 1,
+      "UserID": 1,
+      "subcategoryId": 1,
+      "title": "Issue 1",
+      "body": "Description of issue 1",
+      "priority": "High",
+      "status": "assigned",
+      "created_by": 1,
+      "created_at": "2024-03-31T08:00:00Z",
+      "closed_by": null,
+      "closed_at": null,
+      "assigned_to": 2
+    },
+    {
+      "id": 2,
+      "UserID": 2,
+      "subcategoryId": 2,
+      "title": "Issue 2",
+      "body": "Description of issue 2",
+      "priority": "Medium",
+      "status": "created",
+      "created_by": 2,
+      "created_at": "2024-03-31T08:00:00Z",
+      "closed_by": null,
+      "closed_at": null,
+      "assigned_to": null
+    }
+  ],
+  "subcategory": [
+    {
+      "id": 1,
+      "subcategoryTitle": "Subcategory 1",
+      "categoryId": 1,
+      "created_at": "2024-03-31T08:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "updated_at": "2024-03-31T08:00:00Z"
+    },
+    {
+      "id": 2,
+      "subcategoryTitle": "Subcategory 2",
+      "categoryId": 2,
+      "created_at": "2024-03-31T08:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "updated_at": "2024-03-31T08:00:00Z"
+    }
+  ],
+  "category": [
+    {
+      "id": 1,
+      "category": "Category 1",
+      "created_at": "2024-03-31T08:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "updated_at": "2024-03-31T08:00:00Z"
+    },
+    {
+      "id": 2,
+      "category": "Category 2",
+      "created_at": "2024-03-31T08:00:00Z",
+      "created_by": 1,
+      "updated_by": 1,
+      "updated_at": "2024-03-31T08:00:00Z"
+    }
+  ],
+  "Survey": [
+    {
+      "id": 1,
+      "title": "Customer Satisfaction Survey",
+      "created_by": 1,
+      "created_at": "2024-03-31T08:00:00Z",
+      "SurveyFields": {
+        "question1": "How satisfied are you with our product?",
+        "question2": "Would you recommend our product to others?",
+        "question3": "How likely are you to purchase from us again?"
+      },
+      "close_at": "2024-04-30T08:00:00Z"
+    },
+    {
+      "id": 2,
+      "title": "Employee Feedback Survey",
+      "created_by": 2,
+      "created_at": "2024-03-31T08:00:00Z",
+      "SurveyFields": {
+        "question1": "How satisfied are you with your work environment?",
+        "question2": "Do you feel valued by your supervisors?",
+        "question3": "Do you have the resources you need to perform your job effectively?"
+      },
+      "close_at": "2024-04-30T08:00:00Z"
+    }
+  ],
+  "SurveyResponse": [
+    {
+      "id": 1,
+      "created_by": 1,
+      "created_at": "2024-04-01T08:00:00Z",
+      "responseData": {
+        "question1": "Very satisfied",
+        "question2": "Yes",
+        "question3": "Very likely"
+      }
+    },
+    {
+      "id": 2,
+      "created_by": 2,
+      "created_at": "2024-04-01T08:00:00Z",
+      "responseData": {
+        "question1": "Satisfied",
+        "question2": "Yes",
+        "question3": "Likely"
+      }
+    }
+  ],
+  "SurveyResponseMapping": [
+    {
+      "id": 1,
+      "survey_id": 1,
+      "reponse_id": 1
+    },
+    {
+      "id": 2,
+      "survey_id": 2,
+      "reponse_id": 2
+    }
+  ],
+  "Feedback": [
+    {
+      "id": 1,
+      "isAnon": false,
+      "FeedbackTitle": "Great Service!",
+      "FeedbackBody": "I am very satisfied with the service provided.",
+      "created_by": 1,
+      "created_at": "2024-04-01T08:00:00Z"
+    },
+    {
+      "id": 2,
+      "isAnon": true,
+      "FeedbackTitle": "Improvement Suggestions",
+      "FeedbackBody": "I have some suggestions for improving the user experience.",
+      "created_by": 2,
+      "created_at": "2024-04-01T08:00:00Z"
+    }
+  ]
+}

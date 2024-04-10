@@ -1,5 +1,3 @@
-"use client";
-
 import ScrollToTop from "@/components/ScrollToTop";
 import { Inter } from "next/font/google";
 import "../../styles/index.css";
@@ -16,8 +14,8 @@ export default function DefaultLayout({
       <head />
       <body className={`bg-[#FCFCFC] dark:bg-black ${inter.className}`}>
         <Providers>
+          <Navbar />
           {children}
-          <ScrollToTop />
         </Providers>
       </body>
     </html>
@@ -25,3 +23,4 @@ export default function DefaultLayout({
 }
 
 import { Providers } from "../providers";
+import Navbar from "@/components/repo2/Navbar";

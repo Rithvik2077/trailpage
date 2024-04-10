@@ -17,6 +17,7 @@ export async function POST(req:Request) {
   .from('User')
   .select('id, user_name, email, password')
   .eq('email', body.email);
+   
 
   
   
