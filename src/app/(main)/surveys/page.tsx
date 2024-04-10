@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { SurveyInput } from "@/components/repo2/survey-input-popover";
 import { FieldTypes } from "@/components/enums/survey-field-types";
+import { Button } from "@/components/repo2/ui/button";
+import { useRouter } from "next/navigation";
 
 export interface FormFields {
   type: FieldTypes;
@@ -14,6 +16,10 @@ export interface FormFields {
 
 function Surveys() {
   const [formFields, setFormFields] = useState<FormFields[]>([]);
+  const router = useRouter();
+  const routeToUserResponses = () => {
+    router.push("/user/surveys");
+  };
 
   return (
     <>
@@ -66,7 +72,9 @@ function Surveys() {
         >
           Add Matrix Input
         </SurveyInput>
-
+        <Button className="" onClick={routeToUserResponses}>
+          View user responses
+        </Button>
         <form action="">
           <div className="mt-6 flex flex-col items-center justify-center gap-4 bg-slate-300 p-10 ">
             <div className="w-[55%] rounded-lg border-t-4 border-blue-500 bg-white p-3">
