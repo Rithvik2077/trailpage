@@ -45,7 +45,20 @@ export async function AddUserResponse(response: SurveyResponseInsert) {
     }catch(error) {
         return {
             status: 500,
-            statusText: "Internal server error",
+            statusText: error,
+            data: null,
+        }
+    }
+}
+
+export async function GetSurveyById(id: number, filter: string) {
+    try{
+        const result = await supabase.from(SurveyTable).select(filter).eq("id", id);
+        return result;
+    }catch(error) {
+        return {
+            status: 500,
+            statusText:error,
             data: null,
         }
     }

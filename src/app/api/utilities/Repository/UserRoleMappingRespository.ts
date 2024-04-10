@@ -29,3 +29,16 @@ export async function GetRowByCategory(sub_category_id: number) {
         }
     }
 }
+
+export async function GetRowByuserId(id: number) {
+    try {
+        const result = await supabase.from(table).select().eq("user_id", id);
+        return result;
+    }catch(error) {
+        return {
+            status: 500,
+            statusText: error,
+            data: null,
+        }
+    }
+}
