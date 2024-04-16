@@ -63,3 +63,27 @@ export async function GetSurveyById(id: number, filter: string) {
         }
     }
 }
+
+export async function GetResponse(id: number) {
+    try {
+        const result = await supabase.from(ResponseTable).select('response_data, created_at, User!inner(user_name)').eq('survey_id', id);
+        if(result.error) {
+            return {
+                status: 500,
+                statusText: result.error.message,
+                data: null,
+            }
+        }
+        return {
+            status: result.status,
+            statusText: result.statusText,
+            data: result.data,
+        }
+    }catch (error){
+        return {
+            status: 500,
+            statusText:error,
+            data: null,
+        }
+    }
+}

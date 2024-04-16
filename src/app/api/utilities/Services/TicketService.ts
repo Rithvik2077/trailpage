@@ -42,6 +42,12 @@ export async function GetTickets_user(user_id: number, options: TicketOptions) {
 export async function GetTickets() {
     const result = await GetAllTickets();
     // console.log(result);
+    if(result.error) {
+        return {
+            status: result.status,
+            statusText: `${result.error.message}     Hint: ${result.error.hint}`
+        }
+    }
     return {
         status: result.status,
         statusText: result.statusText,

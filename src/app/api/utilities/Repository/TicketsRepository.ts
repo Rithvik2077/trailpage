@@ -24,8 +24,9 @@ export async function AddTicket(ticket: TicketInsert) {
 
 export async function GetAllTickets(){
     try{
-        const data = await supabase.from(table).select("*");
-    // console.log(data);
+        // const data = await supabase.from(table).select("*, Category!inner(*), TicketPriority!inner(*), TicketStatus!inner(*)");
+        const data = await supabase.rpc()
+        console.log(data);
         return data;
     }catch(error) {
         return {

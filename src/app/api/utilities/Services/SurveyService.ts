@@ -1,7 +1,7 @@
 import {Tables} from "@/types/Dto";
 import { Database } from "@/types/database.types";
 
-import {AddSurvey, GetSurveys, AddUserResponse, GetSurveyById} from "../Repository/SurveyRepository";
+import {AddSurvey, GetSurveys, AddUserResponse, GetSurveyById, GetResponse} from "../Repository/SurveyRepository";
 import {GetRowByuserId} from "../Repository/UserRoleMappingRespository";
 import { Stats } from "fs";
 
@@ -87,4 +87,22 @@ export async function CreateResponse(response: ResponseDto) {
         error: surveyEnd.error,
         data: null,
     }  
+}
+
+export async function GetSurveyResponses(id: number) {
+    const surveys = await GetResponse(id);
+    
+    if(surveys.data) {
+        return {
+            status: surveys.status,
+            statusText: surveys.statusText,
+            data: surveys.data,
+        }
+    }
+    return {
+        status: surveys.status,
+        statusText: surveys.statusText,
+        error: surveys.error,
+        data: null,
+    } 
 }
