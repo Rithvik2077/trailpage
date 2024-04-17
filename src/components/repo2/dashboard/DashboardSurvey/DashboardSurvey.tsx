@@ -16,7 +16,7 @@ const DashboardSurvey: React.FC<DashboardSurveyProps> = ({ item }) => {
 
   return (
     <tr className={Styles}>
-      <td className="border py-2">{title}</td>
+      <td className="border px-2 py-2">{title}</td>
       <td className="border px-2 py-2">{created_by}</td>
       <td className="border px-2 py-2">{created_at}</td>
       <td className="border px-2 py-2">{response_count}</td>
