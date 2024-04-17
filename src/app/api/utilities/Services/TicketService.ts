@@ -22,6 +22,11 @@ export async function CreateTicket(ticket: TicketDTO) {
         assigned_to: assigned_to
     };
     const result = await AddTicket(Ticket);
+    if(result.error) {
+        return {
+            
+        }
+    }
     return {
         status: result.status,
         statusText: result.statusText,
@@ -45,12 +50,12 @@ export async function GetTickets() {
     if(result.error) {
         return {
             status: result.status,
-            statusText: `${result.error.message}     Hint: ${result.error.hint}`
+            statusText: `${result.message}`
         }
     }
     return {
         status: result.status,
         statusText: result.statusText,
-        data: result.data,
+        data: result.rows,
     }
 }

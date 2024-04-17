@@ -1,41 +1,52 @@
-import { createClient } from "@supabase/supabase-js";
 import { compare } from "bcrypt";
 import { signJwtAccessToken } from "lib/jwt";
 import { NextResponse } from "next/server";
-
-
-
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+import { db } from "../../utilities/Data/RenderConnect";
 
 
 export async function POST(req:Request) {
 
   const body  =  await req.json();
-
-
-  const {data , error} = await supabase
-  .from('User')
-  .select('id, user_name, email, password')
-  .eq('email', body.email);
+  const client = await db.connect();
+  // const {data , error} = await supabase
+  // .from('User')
+  // .select('id, user_name, email, password')
+  // .eq('email', body.email);
    
+  const query = {
+    text: `select
+    u.id,
+    u.username,
+    u.email,
+    u.password,
+    r.rolename
+  from
+    users u
+    join userrole_mapping ur on ur.user_id = u.id
+    join roles r on r.id = ur.role_id
+    where u.email = ($1);`,
+    values: [body.email]
+  }
 
+  const data = await client.query(query);
+  // console.log("from signin", data);
   
   
-
+const {id, username,email, password, rolename} = data.rows[0];
+// console.log("id, username, email, password", id, username,email, password, rolename);
   
   
   
-  const passwordCorrect = await compare( body?.password || '' , data[0].password);
+  const passwordCorrect = await compare( body?.password || '' , password);
 
   let res:NextResponse;
 
   if(passwordCorrect){
-    const role = await supabase.from('UserRoleMapping').select('*, Role!inner(*)').eq('user_id', data[0].id);
     const user = {
-      id: data[0].id,
-      name: data[0].user_name,
-      email: data[0].email,
-      role: role.data[0].Role.name,
+      id: id,
+      name: username,
+      email: email,
+      role: rolename,
     };
     const accessToken = signJwtAccessToken(user);
     let result  = {
