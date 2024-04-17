@@ -5,10 +5,14 @@ import {Database} from "@/types/database.types"
 type GroupType = Omit<Database["public"]["Tables"]["Group"]["Row"], "id">;
 // type CategoryType = Database["public"]["Tables"]["Category"]["Row"]
 export async function AddGroupAsync(Group: GroupType){
-    const result = await supabase.from('Group').insert(Group);
-    console.log(result);
-    if(result.error){
-        console.log(result.error.message);
+    try{
+        const result = await supabase.from('Group').insert(Group);
+        return result;
+    }catch(error) {
+        return {
+            status: 500,
+            statusText: "Internal server error",
+            data: null,
+        }
     }
-    return result;
 }

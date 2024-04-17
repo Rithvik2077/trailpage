@@ -13,9 +13,14 @@ type UserRowType = Omit<Database["public"]["Tables"]["User"]["Row"], 'id'>;
 // }
 
 export const AddUserAsync = async (User: UserRowType) => {
-    const result = await supabase.from('User').insert(User);
-    if(result.error){
-        console.log(result.error.message);
+    try{
+        const result = await supabase.from('User').insert(User);
+        return result;
+    }catch(error) {
+        return {
+            status: 500,
+            statusText: "Internal server error",
+            data: null,
+        }
     }
-    return result;
 }

@@ -1,4 +1,3 @@
-import { supabase } from "../Data/DbConnect";
 import {AddTicket, GetAllTickets, GetUserActiveTickets, GetUserTickets} from "../Repository/TicketsRepository";
 import {GetRowByCategory} from "../Repository/UserRoleMappingRespository";
 import {Tables, Options} from "@/types/Dto";
@@ -6,39 +5,46 @@ import {Database} from "@/types/database.types";
 
 type TicketInsertDB = Database["public"]["Tables"]["Ticket"]["Insert"];
 type TicketDTO = Tables["Ticket"];
-type TikcetTypes = Options["TicketOptions"];
+type TicketOptions = Options["TicketOptions"];
     
-export async function CreateTicket(ticket: TicketDTO, user_id: number) {
+export async function CreateTicket(ticket: TicketDTO) {
+    console.log("ok");
     const UserRoleRow = await GetRowByCategory(ticket.sub_category_id);
-    const assigned_to = UserRoleRow.data?UserRoleRow.data[0].user_id:null;
+    const assigned_to = UserRoleRow.data?UserRoleRow.data[0]?.user_id:null;
+    console.log("doky");
     const Ticket: TicketInsertDB = {
         sub_category_id: ticket.sub_category_id,
         priority: ticket.priority,
+        title: ticket.title,
         description: ticket.description,
-        status: "Open",
-        created_by: user_id, // need to fetch.
-        assigned_to: assigned_to //need to fetch.
+        status_id: 1,
+        created_by: ticket.created_by,
+        assigned_to: assigned_to
     };
     const result = await AddTicket(Ticket);
-    if(result.error) {
-        return {
-            error: result.error.message,
-        }
-    }
     return {
-        data: result.data,
+        status: result.status,
+        statusText: result.statusText,
+        data: null
     }
 }
 
-export async function GetTickets_user(user_id: number, ticketType: TikcetTypes) {
-   try{
-    const data = await GetUserTickets(user_id, ticketType);
+export async function GetTickets_user(user_id: number, options: TicketOptions) {
+    const data = await GetUserTickets(user_id, options);
     return {
-        data: data.data,
+        status: data.status,
+        statusText: data.statusText,
+        data: data.data
     }
-   }catch(error){
+    
+}
+
+export async function GetTickets() {
+    const result = await GetAllTickets();
+    // console.log(result);
     return {
-        error: error,
+        status: result.status,
+        statusText: result.statusText,
+        data: result.data,
     }
-   }
 }
