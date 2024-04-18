@@ -14,12 +14,12 @@ export interface FormFields {
   matrixColumn?: string[];
 }
 
-function Surveys() {
+function SurveysCreation() {
   const [formFields, setFormFields] = useState<FormFields[]>([]);
-  const router = useRouter();
-  const routeToUserResponses = () => {
-    router.push("/user/surveys");
-  };
+  // const router = useRouter();
+  // const routeToUserResponses = () => {
+  //   router.push("/user/surveys");
+  // };
 
   return (
     <>
@@ -72,9 +72,9 @@ function Surveys() {
         >
           Add Matrix Input
         </SurveyInput>
-        <Button className="" onClick={routeToUserResponses}>
+        {/* <Button className="" onClick={routeToUserResponses}>
           View user responses
-        </Button>
+        </Button> */}
         <form action="">
           <div className="mt-6 flex flex-col items-center justify-center gap-4 bg-slate-300 p-10 ">
             <div className="w-[55%] rounded-lg border-t-4 border-blue-500 bg-white p-3">
@@ -238,4 +238,4 @@ function Surveys() {
   );
 }
 
-export default Surveys;
+export default SurveysCreation;
