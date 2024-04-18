@@ -24,12 +24,14 @@ export async function AddSurvey(survey: SurveyInsert){
             values: [survey.title, surveyFieldsJSON, survey.created_by, survey.created_at, survey.closes_at]
          }
          const result = await client.query(query);
+         client.end();
         return {
             status: 200,
             statusText: `${result.command} completed successfully`,
             result: result
         };
     }catch(error) {
+        client.end();
         return {
             error: error,
             status: 500,
@@ -37,8 +39,6 @@ export async function AddSurvey(survey: SurveyInsert){
             message: error.message,
             data: null,
         }
-    }finally{
-        client.end();
     }
 }
 
@@ -56,12 +56,14 @@ export async function GetSurveys(active: boolean) {
 
     try{
         const result = await client.query(query_text, params);
+        client.end();
         return {
             status: 200,
             statusText: `${result.command} completed successfully`,
             result: result.rows,
         };
     }catch(error) {
+        client.end()
         return {
             error: error,
             status: 500,
@@ -69,8 +71,6 @@ export async function GetSurveys(active: boolean) {
             message: error.message,
             data: null,
         }
-    }finally{
-        client.end();
     }
 }
 // response: {
@@ -89,6 +89,7 @@ export async function AddUserResponse(response: SurveyResponseInsert) {
     }
     try{
         const result = await client.query(query);
+        client.end();
         return {
             status: 200,
             statusText: `${result.command} completed successfully`,
@@ -96,6 +97,7 @@ export async function AddUserResponse(response: SurveyResponseInsert) {
         };
     } catch(error) {
         console.log(error);
+        client.end();
         return {
             error: error,
             status: 500,
@@ -103,8 +105,6 @@ export async function AddUserResponse(response: SurveyResponseInsert) {
             message: error.message,
             data: null,
         }
-    }finally{
-        client.end();
     }
 }
 
@@ -119,6 +119,7 @@ export async function GetSurveyById(id: number, filter?: string) {
         }
         const result = await client.query(query_text, params);
         console.log(result);
+        client.end();
         return {
             status: 200,
             statusText: `${result.command} completed successfully`,
@@ -126,6 +127,7 @@ export async function GetSurveyById(id: number, filter?: string) {
         };
     }catch(error) {
         console.log("getsurveybyid repo", error);
+        client.end();
         return {
             error: error,
             status: 500,
@@ -133,12 +135,10 @@ export async function GetSurveyById(id: number, filter?: string) {
             message: error.message,
             data: null,
         }
-    }finally {
-        client.end();
     }
 }
 
-export async function GetResponse(id: number) {
+export async function GetSurveyResponse(id: number) {
     const client = await db.connect();
     try {
         const query = {
@@ -147,6 +147,7 @@ export async function GetResponse(id: number) {
         }
         const result = await client.query(query);
         // console.log(result);
+        client.end();
         return {
             status: 200,
             statusText: `${result.command} completed successfully`,
@@ -154,6 +155,7 @@ export async function GetResponse(id: number) {
         };
     }catch (error){
         console.log(error);
+        client.end()
         return {
             status: 500,
             statusText: "Internal server error",
@@ -161,7 +163,32 @@ export async function GetResponse(id: number) {
             error: error,
             data: null,
         }
-    } finally {
+    }
+}
+
+export async function GetResponseById(id: number) {
+    const client = await db.connect();
+    try {
+        const query = {
+            text: "select * from surveyresponses where id = $1",
+            values: [id],
+        }
+        const result = await client.query(query);
+        client.end()
+        return {
+            status: 200,
+            statusText: `${result.command} completed successfully`,
+            result: result.rows,
+        };
+    }catch (error){
+        console.log(error);
         client.end();
+        return {
+            status: 500,
+            statusText: "Internal server error",
+            message: error.message,
+            error: error,
+            data: null,
+        }
     }
 }

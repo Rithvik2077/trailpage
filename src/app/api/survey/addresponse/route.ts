@@ -26,6 +26,7 @@ export async function POST(req:Request) {
         const id = parseInt(GetPayloadDetails(token, "id"));
 
         if(!data.user_id || data.user_id === id) {
+            data.user_id = id;
             const result = await CreateResponse(data);
             return NextResponse.json({Response: result}, {status: result.status});
         }

@@ -1,6 +1,7 @@
 import ScrollToTop from "@/components/ScrollToTop";
 import { Inter } from "next/font/google";
 import "../../styles/index.css";
+import {url_add_response} from "@/app/lib/apiEndPoints"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -9,6 +10,7 @@ export default function DefaultLayout({
 }: {
   children: React.ReactNode;
 }) {
+
   return (
     <html lang="en">
       <head />
