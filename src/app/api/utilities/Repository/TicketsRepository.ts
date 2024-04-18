@@ -67,6 +67,7 @@ export async function AddTicket(ticket: TicketInsert) {
             values: [ticket.title, ticket.description, ticket.sub_category_id, ticket.priority, ticket.status_id, ticket.created_by, ticket.assigned_to]
         }
         const result = await client.query(query);
+        client.end();
         // const result = await supabase.from(table).insert(ticket);
         return {
             status: 200,
@@ -74,6 +75,7 @@ export async function AddTicket(ticket: TicketInsert) {
             result: result
         };
     }catch(error) {
+        client.end();
         return {
             error: error,
             status: 500,
@@ -81,9 +83,6 @@ export async function AddTicket(ticket: TicketInsert) {
             message: error.message,
             data: null,
         }
-    }
-    finally{
-        client.end();
     }
 }
 
@@ -94,12 +93,14 @@ export async function GetAllTickets(){
             text: ticket_select+";",
         }
         const result = await client.query(query);
+        client.end();
         return {
             status: 200,
             statusText: `${result.command} completed successfully`,
             result: result.rows
         };
     }catch(error) {
+        client.end();
         return {
             error: error,
             status: 500,
@@ -107,8 +108,6 @@ export async function GetAllTickets(){
             message: error.message,
             data: null,
         }
-    }finally{
-        client.end();
     }
 }
 
@@ -168,6 +167,7 @@ export async function GetUserTickets(user_id: number, options: TicketOptions) {
     // console.log(query_text);
     try{
         const result = await client.query(query_text, params);
+        client.end();
         return {
             status: 200,
             statusText: `${result.command} completed successfully`,
@@ -175,6 +175,7 @@ export async function GetUserTickets(user_id: number, options: TicketOptions) {
         }
     }catch(error) {
         console.log(error);
+        client.end();
         return {
             error: error,
             status: 500,
@@ -182,8 +183,6 @@ export async function GetUserTickets(user_id: number, options: TicketOptions) {
             message: error.message,
             data: null,
         }
-    }finally{
-        client.end();
     }
 }
 

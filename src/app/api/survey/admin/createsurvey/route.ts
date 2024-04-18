@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {CreateNewSurvey} from "../../../utilities/Services/SurveyService"
 import { Json } from "@/types/database.types";
 import { validateAndAuthorizeToken, GetPayloadDetails } from "@/app/api/utilities/helpers/tokenHelper";
+import { cookies } from "next/headers";
 
 interface Survey {
     title: string;
@@ -11,9 +12,8 @@ interface Survey {
 }
 
 export async function POST(req: Request) {
-    if(!req.headers.get("authorization"))
-        return NextResponse.json({status: 401, statusText: "Unathorized", data: null}, {status: 401});
-    const token = req.headers.get('authorization')!.split(' ')[1];
+    const auth = cookies().get('Authorize')
+    const token = auth.value;
     const res = validateAndAuthorizeToken(token, "any");
     if(res){
         const request: Survey = await req.json();

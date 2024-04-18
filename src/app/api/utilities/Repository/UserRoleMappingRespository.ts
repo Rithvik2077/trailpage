@@ -22,20 +22,20 @@ export async function AddUserRoleMapping(UserRole: UserRoleInsert){
             values: [UserRole.user_id, UserRole.role_id, UserRole.group_id, UserRole.sub_category_id, UserRole.can_create_survey]
         }
         const result = client.query(query);
+        client.end();
         return {
             status: 200,
             statusText: `${result.command} completed successfully`,
             data: {rowCount: result.rowCount}
         };
     }catch(error) {
+        client.end();
         return {
             status: 500,
             statusText: "Internal server error",
             message: error.message,
             data: null,
         }
-    }finally{
-        client.end();
     }
 }
 
@@ -47,6 +47,7 @@ export async function GetRowByCategory(sub_category_id: number) {
             values: [sub_category_id]
         }
         const result = await client.query(query);
+        client.end();
         // const result = await supabase.from(table).select().eq("sub_category_id", sub_category_id);
         return {
             status: 200,
@@ -54,14 +55,13 @@ export async function GetRowByCategory(sub_category_id: number) {
             data: result.rows
         };
     }catch(error) {
+        client.end();
         return {
             status: 500,
             statusText: "Internal server error",
             message: error.message,
             data: null,
         }
-    }finally{
-        client.end();
     }
 }
 
@@ -73,6 +73,7 @@ export async function GetRowByuserId(id: number) {
             values: [id]
         }
         const result = await client.query(query);
+        client.end();
         // const result = await supabase.from(table).select().eq("sub_category_id", sub_category_id);
         return {
             status: 200,
@@ -80,13 +81,12 @@ export async function GetRowByuserId(id: number) {
             data: result.rows
         };
     }catch(error) {
+        client.end();
         return {
             status: 500,
             statusText: "Internal server error",
             message: error.message,
             data: null,
         }
-    }finally{
-        client.end();
     }
 }
