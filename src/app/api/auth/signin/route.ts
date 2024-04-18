@@ -1,5 +1,5 @@
 import { compare } from "bcrypt";
-import { signJwtAccessToken } from "lib/jwt";
+import { signJwtAccessToken } from "@/app/lib/jwt";
 import { NextResponse } from "next/server";
 import { db } from "../../utilities/Data/RenderConnect";
 
