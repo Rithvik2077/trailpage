@@ -13,10 +13,10 @@ export default function DefaultLayout({
     <html lang="en">
       <head />
       <body className={`bg-[#FCFCFC] dark:bg-black ${inter.className}`}>
-        <Providers>
-          <Navbar />
-          {children}
-        </Providers>
+        {/* <Providers> */}
+        <Navbar />
+        {children}
+        {/* </Providers> */}
       </body>
     </html>
   );

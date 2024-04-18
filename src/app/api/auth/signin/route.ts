@@ -56,7 +56,7 @@ export async function POST(req:Request) {
           accessToken
         }
     
-        res = NextResponse.json(JSON.stringify({result}));
+        res = NextResponse.json(result);
         res.cookies.set("Authorize" , accessToken)
         }
     

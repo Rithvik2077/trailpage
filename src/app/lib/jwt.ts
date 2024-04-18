@@ -26,7 +26,7 @@ export function verifyJwt(token:string){
   try{
   const secrestkey = process.env.JWT_SECRET_KEY;
 
-  console.log(token, secrestkey)
+  // console.log(token, secrestkey)
  const decoded = jwt.verify(token, secrestkey);
 return decoded as JwtPayload;
 

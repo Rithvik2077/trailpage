@@ -29,10 +29,10 @@ function Tickets() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/api/ticket", {
+        const response = await fetch("/api/tickets/admin/getalltickets", {
+          method: "GET",
           headers: {
             Accept: "application/json",
-            method: "GET",
           },
         });
 

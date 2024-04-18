@@ -20,11 +20,17 @@ export default function SignInForm({ setpassword }) {
     });
 
     if (response.ok) {
-      const jwtdata = document.cookie.match("Authorize");
-      let data = jwtdata.input;
-      let datal = data.split("=");
-      localStorage.setItem("Authorize", datal[1]);
-      router.push("/dashboard");
+      // const jwtdata = document.cookie.match("Authorize");
+      // let data = jwtdata.input;
+      // let datal = data.split("=");
+      const data = await response.json();
+      localStorage.setItem("Authorize", data.accessToken);
+
+      if (data.user.role != "admin") {
+        router.push("/tickets");
+      } else {
+        router.push("/dashboard");
+      }
     }
   };
 
