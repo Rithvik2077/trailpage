@@ -1,0 +1,123 @@
+create table
+	users (
+		id bigint primary key generated always as identity,
+		username text not null,
+		email text not null,
+		password text not null,
+		createdat timestamp with time zone default current_timestamp,
+		updatedat timestamp with time zone default current_timestamp,
+		isactive bool default true
+	);
+
+///////////////////////////////////////////////////////////////////////
+
+create table
+	roles (
+		id bigint primary key generated always as identity,
+		rolename text not null
+	);
+
+insert into
+	roles (rolename)
+values
+	('admin')
+
+insert into
+	roles (rolename)
+values
+	('user')
+
+///////////////////////////////////////////////////////////////////////
+
+create table
+	userrole_mapping (
+		user_id bigint references users (id),
+		role_id bigint references roles (id)
+	);
+
+///////////////////////////////////////////////////////////////////////
+
+create table
+	groups (
+		id bigint primary key generated always as identity,
+		groupname text not null
+	);
+
+insert into
+	groups (groupname)
+values
+	('Information Technology')
+
+///////////////////////////////////////////////////////////////////////
+
+create table
+	ticketpriority (
+		id bigint primary key generated always as identity,
+		name text not null unique
+	);
+
+create table
+	ticketstatus (
+		id bigint primary key generated always as identity,
+		name text not null unique
+	);
+
+///////////////////////////////////////////////////////////////////////
+
+create table
+	tickets (
+		id bigint primary key generated always as identity,
+		title text not null,
+		description text not null,
+		subcategory_id bigint references category (id),
+		priority bigint references ticketpriority (id),
+		status bigint references ticketstatus (id),
+		createdby bigint references users (id),
+		createdat timestamp with time zone default current_timestamp,
+		assignedto bigint references users (id),
+		closedby bigint references users (id),
+		closedat timestamp with time zone default current_timestamp
+	);
+
+///////////////////////////////////////////////////////////////////////////////
+
+select
+	u.id,
+	u.username,
+	u.email,
+	u.password,
+	r.rolename
+from
+	users u
+	join userrole_mapping ur on ur.user_id = u.id
+	join roles r on r.id = ur.role_id
+	where u.email = 'admin@gmail.com';
+
+	//////////////////////////////////////////////////////////////////////////////
+
+	SELECT
+    tickets.id,
+    tickets.title,
+    tickets.description,
+    category.categoryname AS category,
+    ticketpriority.name AS priority,
+    ticketstatus.name AS status,
+    users_createdby.username AS createdby,
+    tickets.createdat,
+    users_assignedto.username AS assignedto,
+    users_closedby.username AS closedby,
+    tickets.closedat
+	FROM
+		tickets
+	LEFT JOIN
+		category ON tickets.subcategory_id = category.id
+	LEFT JOIN
+		ticketpriority ON tickets.priority = ticketpriority.id
+	LEFT JOIN
+		ticketstatus ON tickets.status = ticketstatus.id
+	LEFT JOIN
+		users AS users_createdby ON tickets.createdby = users_createdby.id
+	LEFT JOIN
+		users AS users_assignedto ON tickets.assignedto = users_assignedto.id
+	LEFT JOIN
+		users AS users_closedby ON tickets.closedby = users_closedby.id;

@@ -1,23 +1,24 @@
-import { createClient } from "@supabase/supabase-js";
 import { template } from "lib/emailtemplates/template";
 import { signJwtAccessToken } from "lib/jwt";
 import { sendEmail } from "lib/sendEmail";
-
-
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-
+import { db } from "../../utilities/Data/RenderConnect";
 
 export async function POST(req:Request) {
 
   try {
     const {email} = await req.json();
+    const client = db.connect();
 
-    const {data , error} = await supabase
-    .from('User')
-    .select('email')
-    .eq('email', email);
+    
+    const query = {
+      text: "SELECT email from users where email = ($1)",
+      values: [email]
+    }
+    const response = client.query(query);
+    const data = response.rows[0];
+
     if(data){
-      const token = signJwtAccessToken(data[0], {expiresIn:'2h'});
+      const token = signJwtAccessToken(data.email, {expiresIn:'2h'});
       let url = 'http://localhost:3000/resetpassword/'
       url = url+token
       const text = template(url)

@@ -4,9 +4,13 @@ import { verifyJwt } from "../../../../../lib/jwt";
 export function validateAndAuthorizeToken(token: string, role: string){
     const res = verifyJwt(token);
     if(res){
-        if(role.toLocaleLowerCase() === 'any' || res.role.toLocaleLowerCase() === role.toLocaleLowerCase()) return true;
+        if(role.toLocaleLowerCase() === 'any' || res.role.toLocaleLowerCase() === role.toLocaleLowerCase()) {
+            return true;
+        }
+        console.log("role mismatch")
         return false;
     }else {
+        console.log("not valid");
         return false;
     }
 }

@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     if(!req.headers.get("authorization"))
         return NextResponse.json({status: 401, statusText: "Unathorized", data: null}, {status: 401});
     const token = req.headers.get('authorization')!.split(' ')[1];
-    const isValid = validateAndAuthorizeToken(token, "user")
+    const isValid = validateAndAuthorizeToken(token, "any")
     if(isValid) {
         const dto: Dto = await req.json();
         if(!dto) {
@@ -16,8 +16,11 @@ export async function POST(req: Request) {
         }
         if(validateDto(dto)) {
             const id = GetPayloadDetails(token, "id");
-            if(id != dto.user_id) {
-                return NextResponse.json({Response: {status: 400, statusText: "User can add only his ticket", data: null}}, {status: 400});
+            const role = GetPayloadDetails(token, "role");
+            if(role.toLocaleLowerCase() != "admin") {
+                if(id != dto.user_id) {
+                    return NextResponse.json({Response: {status: 400, statusText: "User can only request his ticket", data: null}}, {status: 400});
+                }
             }
             const result = await GetTickets_user(dto.user_id, dto.options);
             return NextResponse.json({Response: result}, {status: result.status});
