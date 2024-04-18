@@ -1,12 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import {GetSurveyResponses} from "../../utilities/Services/SurveyService";
 import { validateAndAuthorizeToken } from "../../utilities/helpers/tokenHelper";
+import { cookies } from "next/headers";
 
 
-export async function GET(req: Request) {
-    if(!req.headers.get("authorization"))
-        return NextResponse.json({status: 401, statusText: "Unathorized", data: null}, {status: 401});
-    const token = req.headers.get('authorization')!.split(' ')[1];
+export async function GET(req: NextRequest) {
+    const auth = cookies().get('Authorize');
+    const token = auth.value;
+    
     const res = validateAndAuthorizeToken(token, "any");
     if(res) {
         const url = new URL(req.url)

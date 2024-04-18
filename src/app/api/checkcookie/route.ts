@@ -7,7 +7,7 @@ import { constrainedMemory } from "process";
 
 export function GET(req: NextRequest){
 
-const token =cookies().get('Authorize')
+const token = cookies().get('Authorize')
 
 const decoded = verifyJwt(token.value)
 
