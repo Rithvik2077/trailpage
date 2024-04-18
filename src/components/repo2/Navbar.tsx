@@ -30,7 +30,7 @@ const Navbar: React.FC = () => {
   async function handleSubmit() {
     setAsUser(!inuser);
   }
-  console.log("out admin", isAdmin, "in user", inuser);
+  // console.log("out admin", isAdmin, "in user", inuser);
 
   return (
     <nav className="bg-gray-800">
