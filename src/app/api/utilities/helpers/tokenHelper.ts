@@ -1,5 +1,5 @@
 import { verify } from "crypto";
-import { verifyJwt } from "../../../../../lib/jwt";
+import { verifyJwt } from "@/app/lib/jwt";
 
 export function validateAndAuthorizeToken(token: string, role: string){
     const res = verifyJwt(token);

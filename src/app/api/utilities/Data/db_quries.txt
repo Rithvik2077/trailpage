@@ -121,3 +121,8 @@ from
 		users AS users_assignedto ON tickets.assignedto = users_assignedto.id
 	LEFT JOIN
 		users AS users_closedby ON tickets.closedby = users_closedby.id;
+
+select sr.id, u.username, sr.response_data, sr.createdat
+from surveyresponses sr
+join users u on u.id = sr.user_id
+where sr.survey_id = 1;
