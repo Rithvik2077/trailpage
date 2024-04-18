@@ -16,8 +16,7 @@ import DashboardFeedback from "@/components/repo2/dashboard/DashboardFeedbacks/D
 import FeedbackBarGraph from "@/components/repo2/dashboard/Graphs/Feedbackgraph";
 import YourComponent from "@/components/repo2/dashboard/DataPage/page";
 
-const DashBoard = ({ component }) => {
-  console.log(component);
+const DashBoard = () => {
   const [id, setId] = useState<string>("Tickets");
   const [isTicket, setIsTicket] = useState<boolean>(true);
   const [isHome, setIsHome] = useState<boolean>(true);

@@ -1,4 +1,4 @@
-import { verifyJwt } from "lib/jwt";
+import { verifyJwt } from "@/app/lib/jwt";
 import { NextApiRequest } from "next";
 import { NextRequest } from "next/server";
 

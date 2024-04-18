@@ -30,42 +30,52 @@ export async function POST(req:Request) {
 
   const data = await client.query(query);
   client.end();
-  // console.log("from signin", data);
+  console.log("from signin", data.rowCount);
   
-  
-const {id, username,email, password, rolename} = data.rows[0];
-// console.log("id, username, email, password", id, username,email, password, rolename);
-  
-  
-  
-  const passwordCorrect = await compare( body?.password || '' , password);
+  if(data.rowCount===1){
 
-  let res:NextResponse;
-
-  if(passwordCorrect){
-    const user = {
-      id: id,
-      name: username,
-      email: email,
-      role: rolename,
-    };
-    const accessToken = signJwtAccessToken(user);
-    let result  = {
-      user,
-      accessToken
-    }
-
-    res = NextResponse.json(JSON.stringify({result}));
-    res.cookies.set("Authorize" , accessToken)
-    }
-
-  
-
-
-  if(passwordCorrect){
-    return  res
-  } else{ 
-
+    const {id, username,email, password, rolename} = data.rows[0];
+    // console.log("id, username, email, password", id, username,email, password, rolename);
+      
+      
+      
+      const passwordCorrect = await compare( body?.password || '' , password);
+    
+      let res:NextResponse;
+    
+      if(passwordCorrect){
+        const user = {
+          id: id,
+          name: username,
+          email: email,
+          role: rolename,
+        };
+        const accessToken = signJwtAccessToken(user);
+        let result  = {
+          user,
+          accessToken
+        }
+    
+        res = NextResponse.json(JSON.stringify({result}));
+        res.cookies.set("Authorize" , accessToken)
+        }
+    
+      
+    
+    
+      if(passwordCorrect){
+        return  res
+      } else{ 
+    
+        return new Response(JSON.stringify({
+          message: 'Unauthenticated'
+        }),{
+          status:401,
+        }
+        )
+      }
+    
+    }else{
     return new Response(JSON.stringify({
       message: 'Unauthenticated'
     }),{
@@ -73,6 +83,5 @@ const {id, username,email, password, rolename} = data.rows[0];
     }
     )
   }
-
+  
 }
-

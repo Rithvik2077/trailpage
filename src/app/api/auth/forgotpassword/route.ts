@@ -1,6 +1,6 @@
-import { template } from "lib/emailtemplates/template";
-import { signJwtAccessToken } from "lib/jwt";
-import { sendEmail } from "lib/sendEmail";
+import { template } from "@/app/lib/emailtemplates/template";
+import { signJwtAccessToken } from "@/app/lib/jwt";
+import { sendEmail } from "@/app/lib/sendEmail";
 import { db } from "../../utilities/Data/RenderConnect";
 
 export async function POST(req:Request) {
