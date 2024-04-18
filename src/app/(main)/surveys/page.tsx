@@ -15,6 +15,8 @@ export default function MAINSurvey() {
     let token = document.cookie.match("Authorize").input;
     const tokens = token.split("=");
 
+    console.log(token);
+
     // createSurvey(
     //   "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsIm5hbWUiOiJIb21lbmljayIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNzEzMTYxMTcwLCJleHAiOjE3MTM3NjU5NzB9.NwgONpWzqZi9r1eL_8JfcCa12m_93J25K3GHp_E8jD8",
     //   data as any,

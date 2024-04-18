@@ -1,3 +1,4 @@
+"use client";
 import ScrollToTop from "@/components/ScrollToTop";
 import { Inter } from "next/font/google";
 import "../../styles/index.css";
@@ -9,6 +10,7 @@ export default function DefaultLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const [isAdmin, setIsAdmin] = useState(false);
   return (
     <html lang="en">
       <head />
@@ -24,3 +26,4 @@ export default function DefaultLayout({
 
 import { Providers } from "../providers";
 import Navbar from "@/components/repo2/Navbar";
+import { useState } from "react";

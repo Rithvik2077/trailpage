@@ -11,6 +11,6 @@ const token =cookies().get('Authorize')
 
 const decoded = verifyJwt(token.value)
 
-return NextResponse.json(JSON.stringify({message:"success"}))
+return NextResponse.json(decoded)
 }
 

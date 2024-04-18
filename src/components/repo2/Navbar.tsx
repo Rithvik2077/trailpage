@@ -1,11 +1,36 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import TicketGeneratorButton from "./TicketGeneratorButton";
+import { Button } from "./ui/button";
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [inuser, setAsUser] = useState(true);
+  useEffect(() => {
+    async function checkadmin() {
+      const response = await fetch("http://localhost:3000/api/checkcookie", {
+        method: "GET",
+      });
+
+      let data = await response.json();
+      if (data.role === "Admin") {
+        setIsAdmin(true);
+        setAsUser(false);
+      }
+    }
+
+    checkadmin();
+  }, []);
+
+  async function handleSubmit() {
+    setAsUser(!inuser);
+  }
+  console.log("out admin", isAdmin, "in user", inuser);
 
   return (
     <nav className="bg-gray-800">
@@ -82,7 +107,17 @@ const Navbar: React.FC = () => {
             </div>
           </div>
 
-          <TicketGeneratorButton />
+          {isAdmin ? (
+            <button
+              className="rounded-md bg-gray-700 px-3 py-2 text-sm font-medium text-gray-200 hover:bg-gray-950 hover:text-white"
+              onClick={handleSubmit}
+            >
+              {inuser ? <>USER</> : <>ADMIN</>}
+            </button>
+          ) : (
+            <></>
+          )}
+
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             <div className="relative ml-3">
               <div>
@@ -147,35 +182,7 @@ const Navbar: React.FC = () => {
       <div
         className={`${isMenuOpen ? "block" : "hidden"} sm:hidden`}
         id="mobile-menu"
-      >
-        <div className="space-y-1 px-2 pb-3 pt-2">
-          <a
-            href="#"
-            className="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white"
-            aria-current="page"
-          >
-            Dashboard
-          </a>
-          <a
-            href="#"
-            className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-          >
-            Team
-          </a>
-          <a
-            href="#"
-            className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-          >
-            Projects
-          </a>
-          <a
-            href="#"
-            className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-          >
-            Calendar
-          </a>
-        </div>
-      </div>
+      ></div>
     </nav>
   );
 };
