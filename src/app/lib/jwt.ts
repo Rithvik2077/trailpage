@@ -7,7 +7,7 @@ interface signOption{
   expiresIn?: string|number;
 }
 
-const DEFAULT_SIGN_OPTION: signOption = {
+const DEFAULT_SIGN_OPTION: signOption={
   expiresIn:'7d'
 }
 
@@ -15,7 +15,7 @@ const DEFAULT_SIGN_OPTION: signOption = {
 export function signJwtAccessToken(payload:JwtPayload, options:signOption= DEFAULT_SIGN_OPTION){
 
 
-  const secrestkey = process.env.JWT_SECRET_KEY!;
+  const secrestkey = process.env.JWT_SECRET_KEY;
 
   const token =jwt.sign(payload, secrestkey, options);
   return token;
@@ -24,7 +24,9 @@ export function signJwtAccessToken(payload:JwtPayload, options:signOption= DEFAU
 
 export function verifyJwt(token:string){
   try{
-  const secrestkey = process.env.JWT_SECRET_KEY!;
+  const secrestkey = process.env.JWT_SECRET_KEY;
+
+  console.log(token, secrestkey)
  const decoded = jwt.verify(token, secrestkey);
 return decoded as JwtPayload;
 
@@ -33,3 +35,5 @@ return decoded as JwtPayload;
     return null
   }
 }
+
+

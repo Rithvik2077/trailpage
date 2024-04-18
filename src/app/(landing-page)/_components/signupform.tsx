@@ -1,9 +1,11 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FormEvent } from "react";
 
 export default function SignUpForm() {
+  const router = useRouter();
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -16,7 +18,15 @@ export default function SignUpForm() {
         password: formData.get("password"),
       }),
     });
-    console.log(response);
+    // console.log(response);
+
+    if (response.ok) {
+      const jwtdata = document.cookie.match("Authorize");
+      let data = jwtdata.input;
+      let datal = data.split("=");
+      localStorage.setItem("Authorize", datal[1]);
+      router.push("/dashboard");
+    }
   };
 
   return (

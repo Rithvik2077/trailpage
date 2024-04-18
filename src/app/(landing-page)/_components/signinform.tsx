@@ -19,13 +19,11 @@ export default function SignInForm({ setpassword }) {
       }),
     });
 
-    // const jwtdata = document.cookie.match("Authorize");
-
-    // let data = jwtdata.input;
-    // let datal = data.split("=");
-    // localStorage.setItem("Authorize", datal[1]);
-
     if (response.ok) {
+      const jwtdata = document.cookie.match("Authorize");
+      let data = jwtdata.input;
+      let datal = data.split("=");
+      localStorage.setItem("Authorize", datal[1]);
       router.push("/dashboard");
     }
   };
