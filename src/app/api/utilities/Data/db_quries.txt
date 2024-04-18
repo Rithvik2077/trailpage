@@ -92,3 +92,32 @@ from
 	join userrole_mapping ur on ur.user_id = u.id
 	join roles r on r.id = ur.role_id
 	where u.email = 'admin@gmail.com';
+
+	//////////////////////////////////////////////////////////////////////////////
+
+	SELECT
+    tickets.id,
+    tickets.title,
+    tickets.description,
+    category.categoryname AS category,
+    ticketpriority.name AS priority,
+    ticketstatus.name AS status,
+    users_createdby.username AS createdby,
+    tickets.createdat,
+    users_assignedto.username AS assignedto,
+    users_closedby.username AS closedby,
+    tickets.closedat
+	FROM
+		tickets
+	LEFT JOIN
+		category ON tickets.subcategory_id = category.id
+	LEFT JOIN
+		ticketpriority ON tickets.priority = ticketpriority.id
+	LEFT JOIN
+		ticketstatus ON tickets.status = ticketstatus.id
+	LEFT JOIN
+		users AS users_createdby ON tickets.createdby = users_createdby.id
+	LEFT JOIN
+		users AS users_assignedto ON tickets.assignedto = users_assignedto.id
+	LEFT JOIN
+		users AS users_closedby ON tickets.closedby = users_closedby.id;

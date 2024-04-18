@@ -30,10 +30,8 @@ export async function POST(req: Request) {
         const user_id = user_response.rows[0].id;
 
         // ******************************************************************************************
-        console.log("hehe");
-        const role_data = await client.query({text: 'select id from roles where rolename = ($1)', values: ["admin"]});
+        const role_data = await client.query({text: 'select id from roles where rolename = ($1)', values: ["user"]});
         const role_id = role_data.rows[0].id;
-        console.log("haha");
         // ******************************************************************************************
 
         const query_mapping = {
@@ -42,8 +40,10 @@ export async function POST(req: Request) {
         };
         await client.query(query_mapping)
         await client.query("COMMIT");
+        client.end();
       }catch(err) {
         await client.query("ROLLBACK");
+        client.release();
         console.log(err);
         return NextResponse.json({message: "Error with client", error_message: err.message}, {status: 500});
       }

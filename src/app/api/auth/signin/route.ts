@@ -29,6 +29,7 @@ export async function POST(req:Request) {
   }
 
   const data = await client.query(query);
+  client.end();
   // console.log("from signin", data);
   
   

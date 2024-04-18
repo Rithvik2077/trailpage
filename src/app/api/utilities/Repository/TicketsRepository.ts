@@ -10,6 +10,33 @@ type TicketOptions = Options["TicketOptions"];
 
 const table = 'tickets'
 
+const ticket_select = `SELECT
+tickets.id,
+tickets.title,
+tickets.description,
+category.categoryname AS category,
+ticketpriority.name AS priority,
+ticketstatus.name AS status,
+users_createdby.username AS createdby,
+tickets.createdat,
+users_assignedto.username AS assignedto,
+users_closedby.username AS closedby,
+tickets.closedat
+FROM
+    tickets
+LEFT JOIN
+    category ON tickets.subcategory_id = category.id
+LEFT JOIN
+    ticketpriority ON tickets.priority = ticketpriority.id
+LEFT JOIN
+    ticketstatus ON tickets.status = ticketstatus.id
+LEFT JOIN
+    users AS users_createdby ON tickets.createdby = users_createdby.id
+LEFT JOIN
+    users AS users_assignedto ON tickets.assignedto = users_assignedto.id
+LEFT JOIN
+    users AS users_closedby ON tickets.closedby = users_closedby.id`
+
 // type TicketInsert = {
 //     assigned_to?: number;
 //     closed_at?: string;
@@ -33,10 +60,10 @@ const table = 'tickets'
 //         assigned_to: assigned_to
 
 export async function AddTicket(ticket: TicketInsert) {
+    const client = await db.connect();
     try{
-        const client = await db.connect();
         const query = {
-            text: "insert into ($1) (title, description, subcategory_id, priority, status, createdby, assignedto) values ($2, $3, $4, $5, $6, $7, $8)",
+            text: "insert into tickets (title, description, subcategory_id, priority, status, createdby, assignedto) values ($1, $2, $3, $4, $5, $6, $7)",
             values: [ticket.title, ticket.description, ticket.sub_category_id, ticket.priority, ticket.status_id, ticket.created_by, ticket.assigned_to]
         }
         const result = await client.query(query);
@@ -55,20 +82,22 @@ export async function AddTicket(ticket: TicketInsert) {
             data: null,
         }
     }
+    finally{
+        client.end();
+    }
 }
 
 export async function GetAllTickets(){
+    const client = await db.connect();
     try{
-        const client = await db.connect();
         const query = {
-            text: "select * from ($1)",
-            values: [table],
+            text: ticket_select+";",
         }
         const result = await client.query(query);
         return {
             status: 200,
             statusText: `${result.command} completed successfully`,
-            result: result
+            result: result.rows
         };
     }catch(error) {
         return {
@@ -78,53 +107,74 @@ export async function GetAllTickets(){
             message: error.message,
             data: null,
         }
+    }finally{
+        client.end();
     }
 }
 
-export async function GetUserActiveTickets(id: number, status: string) {
-    try{
-        const client = await db.connect();
-        const query = {
-            text: "select * from ($1) where createdby = ($2) and status = ($3) order by ($4)",
-            values: [table, id, status, "createdat"],
-        }
-        const result = await client.query(query);
-        return {
-            status: 200,
-            statusText: `${result.command} completed successfully`,
-            result: result
-        };
-    }catch(error) {
-        return {
-            error: error,
-            status: 500,
-            statusText: "Internal server error",
-            message: error.message,
-            data: null,
-        }
-    }
-}
+// export async function GetUserActiveTickets(id: number, status: string) {
+//     const client = await db.connect();
+//     try{
+//         const query = {
+//             text: "select * from ($1) where createdby = ($2) and status = ($3) order by ($4)",
+//             values: [table, id, status, "createdat"],
+//         }
+//         const result = await client.query(query);
+//         return {
+//             status: 200,
+//             statusText: `${result.command} completed successfully`,
+//             result: result.rows
+//         };
+//     }catch(error) {
+//         return {
+//             error: error,
+//             status: 500,
+//             statusText: "Internal server error",
+//             message: error.message,
+//             data: null,
+//         }
+//     }finally{
+//         client.end();
+//     }
+// }
 
 export async function GetUserTickets(user_id: number, options: TicketOptions) {
-    const query = supabase.from("Ticket").select('*, Category!inner(*)').eq('created_by', user_id);
 
-    if(options.group!==0) {
-        query.eq('Category.group_id', options.group);
-    }
-    if(options.priorty!==0) {
-        query.eq('priority', options.priorty);
-    }
-    if(options.status!==0) {
-        query.eq('status_id', options.status);
-    }
-    if(options.sub_category!=0) {
-        query.eq('sub_category_id', options.sub_category);
-    }
+    let query_text = ticket_select + ` where tickets.createdby = ($1)`
+    const params = [user_id];
 
+    if(options.group && options.group != 0) {
+        query_text += ` and category.group_id = $${params.length+1}`;
+        params.push(options.group);
+    }
+    if(options.priorty && options.priorty !=0) {
+        query_text += ` and tickets.priority = $${params.length+1}`;
+        params.push(options.priorty);
+    }
+    if(options.status && options.status!=0) {
+        query_text += ` and tickets.status = $${params.length+1}`;
+        params.push(options.status);
+    }
+    if(options.closed_by && options.closed_by!=0) {
+        query_text += ` and tickets.closedby= $${params.length+1}`;
+        params.push(options.closed_by);
+    }
+    if(options.sub_category && options.sub_category!=0) {
+        query_text += ` and tickets.subcategory_id = $${params.length+1}`;
+        params.push(options.sub_category);
+    }
+    query_text += ";"
+    const client = await db.connect();
+    // console.log(query_text);
     try{
-        const result = await query;
-        return result;
+        const result = await client.query(query_text, params);
+        return {
+            status: 200,
+            statusText: `${result.command} completed successfully`,
+            result: result.rows
+        }
     }catch(error) {
+        console.log(error);
         return {
             error: error,
             status: 500,
@@ -132,6 +182,8 @@ export async function GetUserTickets(user_id: number, options: TicketOptions) {
             message: error.message,
             data: null,
         }
+    }finally{
+        client.end();
     }
 }
 

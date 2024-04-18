@@ -15,8 +15,8 @@ const table = "userrole_mapping";
 // }
 
 export async function AddUserRoleMapping(UserRole: UserRoleInsert){
+    const client = await db.connect();
     try{
-        const client = await db.connect();
         const query = {
             text: "insert into userrole_mapiing (user_id, role_id, group_id, category_id, can_create_survey) values ($1, $2, $3, $4, $5)",
             values: [UserRole.user_id, UserRole.role_id, UserRole.group_id, UserRole.sub_category_id, UserRole.can_create_survey]
@@ -34,22 +34,24 @@ export async function AddUserRoleMapping(UserRole: UserRoleInsert){
             message: error.message,
             data: null,
         }
+    }finally{
+        client.end();
     }
 }
 
 export async function GetRowByCategory(sub_category_id: number) {
+    const client = await db.connect();
     try {
-        const client = await db.connect();
         const query = {
-            text: 'select * from ($1) where category_id = ($2)',
-            values: [table, sub_category_id]
+            text: 'select * from userrole_mapping where category_id = ($1)',
+            values: [sub_category_id]
         }
         const result = await client.query(query);
         // const result = await supabase.from(table).select().eq("sub_category_id", sub_category_id);
         return {
             status: 200,
             statusText: `${result.command} completed successfully`,
-            data: {rowCount: result.rowCount}
+            data: result.rows
         };
     }catch(error) {
         return {
@@ -58,22 +60,24 @@ export async function GetRowByCategory(sub_category_id: number) {
             message: error.message,
             data: null,
         }
+    }finally{
+        client.end();
     }
 }
 
 export async function GetRowByuserId(id: number) {
+    const client = await db.connect();
     try {
-        const client = await db.connect();
         const query = {
-            text: 'select * from ($1) where user_id = ($2)',
-            values: [table, id]
+            text: 'select * from userrole_mapping where user_id = ($1)',
+            values: [id]
         }
         const result = await client.query(query);
         // const result = await supabase.from(table).select().eq("sub_category_id", sub_category_id);
         return {
             status: 200,
             statusText: `${result.command} completed successfully`,
-            data: {rowCount: result.rowCount}
+            data: result.rows
         };
     }catch(error) {
         return {
@@ -82,5 +86,7 @@ export async function GetRowByuserId(id: number) {
             message: error.message,
             data: null,
         }
+    }finally{
+        client.end();
     }
 }
