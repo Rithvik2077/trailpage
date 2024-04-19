@@ -186,3 +186,27 @@ export async function GetUserTickets(user_id: number, options: TicketOptions) {
     }
 }
 
+export async function GetTicket(id: number) {
+    const client = await db.connect();
+    try {
+        const query_text = `${ticket_select} where id = $1`;
+        const values = [id];
+        const result = await client.query(query_text, values);
+        client.end();
+        return {
+            status: 200,
+            statusText: `${result.command} completed successfully`,
+            result: result.rows
+        }
+    } catch(error) {
+        console.log(error);
+        client.end();
+        return {
+            error: error,
+            status: 500,
+            statusText: "Internal server error",
+            message: error.message,
+            data: null,
+        }
+    }
+}
