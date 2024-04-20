@@ -3,32 +3,24 @@ import feedbackdata2 from "@/../../public/data/feedbackdata2.json";
 
 interface DashboardFeedbackProps {
   data: {
-    from: number;
-    to: number;
-    created_at: string;
+    id: number;
+    username: string;
+    title: string;
+    description: string;
+    createdat: string;
   };
 }
 
 const DashboardFeedback: React.FC<DashboardFeedbackProps> = ({ data }) => {
-  const { from, to, created_at } = data;
-  const Styles = from % 2 === 1 ? "bg-gray-50" : "";
-
-  const userdetails = feedbackdata2["nodes"].find(
-    (item: any) => item.id === from,
-  );
-  const feedbackDetails = feedbackdata2["nodes"].find(
-    (item: any) => item.id === to,
-  );
-
-  const user = userdetails ? userdetails.label : "Anonymous";
-  const { title, label } = feedbackDetails || {};
+  const { id, title, description, username, createdat } = data;
+  const Styles = id % 2 === 1 ? "bg-gray-50" : "";
 
   return (
     <tr className={Styles}>
-      <td className="border px-4 py-2">{user}</td>
+      <td className="border px-4 py-2">{username}</td>
       <td className="border px-4 py-2">{title}</td>
-      <td className="border px-4 py-2">{label}</td>
-      <td className="border px-4 py-2">{created_at}</td>
+      <td className="border px-4 py-2">{description.slice(0, 10) + "...."}</td>
+      <td className="border px-4 py-2">{createdat.slice(0, 10)}</td>
     </tr>
   );
 };

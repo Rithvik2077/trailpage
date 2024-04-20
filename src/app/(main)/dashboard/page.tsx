@@ -1,9 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import LoaderComponent from "../../../../public/data/Loader/load";
 
 import cardadata from "../../../../public/data/carddata.json";
-import tickets from "../../../../public/data/tickets.json";
 import surveys from "../../../../public/data/surveys.json";
 import feedback2 from "../../../../public/data/feedback.json";
 import feedback from "../../../../public/data/feedbackdata2.json";
@@ -25,6 +25,39 @@ const DashBoard = () => {
   const [isSurvey, setIsSurvey] = useState<boolean>(false);
   const [isFeedback, setIsFeedback] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [ticketdata, setticketData] = useState([]);
+  const [feedbackdata, setfeedbackData] = useState([]);
+  // console.log(feedbackdata);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const ticketresponse = await fetch(
+          "http://localhost:3000/api/getrecenttickets",
+        );
+        const feedbackresponse = await fetch(
+          "http://localhost:3000/api/getrecentfeedbacks",
+        );
+
+        const jsonticketData = await ticketresponse.json();
+        const jsonfeedbackData = await feedbackresponse.json();
+        setticketData(jsonticketData["data"]);
+        setfeedbackData(jsonfeedbackData["data"]);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    // Fetch data initially
+    fetchData();
+
+    // Set up interval to fetch data every 5 seconds
+    const intervalId = setInterval(fetchData, 5000);
+
+    // Clean up function to clear interval when component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
 
   const onHover = () => {
     setIsHovered(true);
@@ -58,9 +91,9 @@ const DashBoard = () => {
     setIsFeedback(Id === "Feedback");
   };
 
-  const Ticketsdata = tickets["tickets"];
+  const Ticketsdata = ticketdata;
   const Surveysdata = surveys["Survey"];
-  const Feedbackdata = feedback["edges"];
+  const Feedbackdata = feedbackdata;
 
   const ClassValues = isHovered ? "visible" : "hidden";
 
@@ -68,7 +101,7 @@ const DashBoard = () => {
     <>
       <main className="mt-4 flex h-full w-screen gap-4 pl-2 pr-2">
         <aside
-          className="grid w-40 grid-rows-4  rounded-md border bg-sky-800"
+          className="grid w-40 grid-rows-4 rounded-md border bg-sky-800"
           style={{ maxHeight: "88vh", minHeight: "88vh" }}
         >
           <div className="row-start-1 row-end-2 flex flex-col items-start justify-center ">
@@ -168,11 +201,12 @@ const DashBoard = () => {
               />
             ))}
           </div>
+
           <div className=" flex-grow overflow-auto p-4">
             {isTicket && isHome && (
               <div className="mt-2 grid h-full grid-cols-5 gap-6 pt-4">
-                <div className="col-start-1 col-end-4 rounded-lg border-2 border-gray-200 pt-2">
-                  <table className="table-auto border-collapse">
+                <div className="col-start-1 col-end-4 overflow-x-scroll rounded-lg border-2 border-gray-200 pt-2">
+                  <table className="w-full table-auto border-collapse">
                     <caption className="caption-top p-2 font-bold text-sky-800">
                       Recent Tickets ad Status Report
                     </caption>
@@ -180,19 +214,40 @@ const DashBoard = () => {
                       <tr className=" bg-gray-200/50">
                         <th className="px-4 py-2">Title</th>
                         <th className="px-4 py-2">Description</th>
+                        <th className="px-4 py-2">Category</th>
                         <th className="px-4 py-2">Priority</th>
                         <th className="px-4 py-2">Status</th>
                         <th className="px-4 py-2">Created at</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white">
-                      {Ticketsdata.map((item) => (
-                        <DashboardTickets item={item} key={item.id} />
-                      ))}
+                    <tbody className="center bg-white">
+                      {Ticketsdata.length > 0 ? (
+                        Ticketsdata.map((item) => (
+                          <DashboardTickets item={item} key={item.id} />
+                        ))
+                      ) : (
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          {isLoading ? (
+                            <td className="pt-5">
+                              <LoaderComponent />
+                            </td>
+                          ) : (
+                            <td>
+                              <img
+                                src="https://icons.veryicon.com/png/o/business/financial-category/no-data-6.png"
+                                alt="no-data"
+                              />
+                            </td>
+                          )}
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
-                <div className="col-start-4 col-end-6 self-center rounded-lg border-2 border-gray-200 p-2 shadow-lg">
+                <div className="col-start-4 col-end-6 self-start rounded-lg border-2 border-gray-200 p-2 shadow-lg">
                   <LineChart ticketData={Ticketsdata} />
                 </div>
               </div>
@@ -200,7 +255,7 @@ const DashBoard = () => {
             {isSurvey && isHome && (
               <div className="mt-2 grid h-full grid-cols-5 gap-6 pt-4">
                 <div className="col-start-1 col-end-4 rounded-lg border-2 border-gray-200 pt-2">
-                  <table className="w-full table-auto border-collapse ">
+                  <table className="w-full table-auto border-collapse">
                     <caption className="caption-top p-2 font-bold text-sky-800">
                       Survey and Responses
                     </caption>
@@ -213,13 +268,31 @@ const DashBoard = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white">
-                      {Surveysdata.map((item) => (
-                        <DashboardSurvey item={item} key={item.id} />
-                      ))}
+                      {Surveysdata.length > 0 ? (
+                        Surveysdata.map((item) => (
+                          <DashboardSurvey item={item} key={item.id} />
+                        ))
+                      ) : (
+                        <tr>
+                          <td></td>
+                          {isLoading ? (
+                            <td className="pt-5">
+                              <LoaderComponent />
+                            </td>
+                          ) : (
+                            <td>
+                              <img
+                                src="https://icons.veryicon.com/png/o/business/financial-category/no-data-6.png"
+                                alt="no-data"
+                              />
+                            </td>
+                          )}
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
-                <div className="col-start-4 col-end-6 self-center rounded-lg border-2 border-gray-200 p-2 shadow-lg">
+                <div className="col-start-4 col-end-6 self-start rounded-lg border-2 border-gray-200 p-2 shadow-lg">
                   <LineChart2 surveys={Surveysdata} />
                 </div>
               </div>
@@ -241,13 +314,33 @@ const DashBoard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {Feedbackdata.map((item) => (
-                        <DashboardFeedback data={item} key={item.from} />
-                      ))}
+                      {Feedbackdata.length > 0 ? (
+                        Feedbackdata.map((item) => (
+                          <DashboardFeedback data={item} key={item.id} />
+                        ))
+                      ) : (
+                        <tr>
+                          <td></td>
+                          <td></td>
+
+                          {isLoading ? (
+                            <td className="pt-5">
+                              <LoaderComponent />
+                            </td>
+                          ) : (
+                            <td>
+                              <img
+                                src="https://icons.veryicon.com/png/o/business/financial-category/no-data-6.png"
+                                alt="no-data"
+                              />
+                            </td>
+                          )}
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
-                <div className="col-start-4 col-end-6 self-center rounded-lg border-2 border-gray-200 p-2 shadow-lg">
+                <div className="col-start-4 col-end-6 self-start rounded-lg border-2 border-gray-200 p-2 shadow-lg">
                   <FeedbackBarGraph feedback={feedback2["feedback_data"]} />
                 </div>
               </div>
