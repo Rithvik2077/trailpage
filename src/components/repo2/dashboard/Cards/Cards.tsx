@@ -74,11 +74,9 @@ const Cards: React.FC<CardProps> = ({ item, onclick, isActive }) => {
     >
       <div className="mb-2 flex items-center gap-2">
         {icon}
-        <a href="#">
-          <h4 className="text-l font-bold tracking-tight text-blue-900 dark:text-white">
-            {id}
-          </h4>
-        </a>
+        <h4 className="text-l font-bold tracking-tight text-blue-900 dark:text-white">
+          {id}
+        </h4>
       </div>
       <div className="grid-row-2 grid-col-2 grid">
         <p className="text-black-500 col-span-2 mb-2 font-bold dark:text-gray-400">

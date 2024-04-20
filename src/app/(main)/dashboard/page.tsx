@@ -254,7 +254,7 @@ const DashBoard: React.FC<DashBoardProps> = () => {
               </div>
             )}
             {isTicket && isData && <YourComponent />}
-            {/* {isFeedback && isData && <YourComponent />} */}
+            {isFeedback && isData && <YourComponent />}
             {isSurvey && isData && <YourComponent />}
           </div>
         </div>
