@@ -41,7 +41,7 @@ Google({
 
     const passwordCorrect = await compare(credentials?.password || '' , user.password);
 
-    console.log('is pwd crt: ', passwordCorrect);
+    // console.log('is pwd crt: ', passwordCorrect);
 
     if(passwordCorrect){
       return user

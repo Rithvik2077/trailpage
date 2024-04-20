@@ -1,20 +1,33 @@
 "use client";
-import { FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
 
 export default function Page({ params }: { params: { token: string } }) {
+  const [passwordnomacth, setpdmatch] = useState("hidden pb-2 text-red-500");
+
+  const router = useRouter();
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const k = window.location.pathname.split("/").pop();
-    console.log(k);
 
-    const response = await fetch(`/api/auth/resetpassword` + `${k}`, {
-      method: "POST",
-      body: JSON.stringify({
-        email: formData.get("email"),
-        password: formData.get("password"),
-      }),
-    });
+    const cnfpwd = formData.get("confirm-password");
+    const pwd = formData.get("password");
+
+    if (cnfpwd === pwd) {
+      const response = await fetch(`/api/auth/resetpassword/` + `${k}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          password: formData.get("password"),
+        }),
+      });
+
+      if (response.ok) {
+        router.push("/signin");
+      }
+    } else {
+      setpdmatch("pb-2 text-red-500");
+    }
   };
   return (
     <>
@@ -54,12 +67,16 @@ export default function Page({ params }: { params: { token: string } }) {
                     </label>
                     <input
                       type="password"
-                      name="password"
+                      name="confirm-password"
                       placeholder="Enter your Password"
                       className="border-stroke w-full rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
                       required
                       minLength={8}
                     />
+                  </div>
+
+                  <div>
+                    <p className={passwordnomacth}>Passwords dont match</p>
                   </div>
                   <div className="mb-6">
                     <button className="flex w-full items-center justify-center rounded-sm bg-primary px-9 py-4 text-base font-medium text-white shadow-submit duration-300 hover:bg-primary/90 dark:shadow-submit-dark">
