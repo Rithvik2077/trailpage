@@ -8,14 +8,15 @@ export async function GET(req: Request) {
   
   const query = {
     text:`
-    SELECT s.title AS survey_title,
-    s.createdat AS created_at,
-    u.username AS creator_name,
-    COUNT(sr.id) AS total_responses
-FROM surveys s
-LEFT JOIN surveyresponses sr ON s.id = sr.survey_id
-LEFT JOIN users u ON s.createdby = u.id
-GROUP BY s.id, s.title, s.createdat, u.username;
+    SELECT 
+    TO_CHAR(createdat, 'Month YYYY') AS month,
+    COUNT(*) AS total_feedbacks
+FROM 
+    feedbacks
+GROUP BY 
+    TO_CHAR(createdat, 'Month YYYY')
+ORDER BY 
+    MIN(createdat);
     `
   }
 

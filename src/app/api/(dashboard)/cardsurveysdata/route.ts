@@ -8,14 +8,8 @@ export async function GET(req: Request) {
   
   const query = {
     text:`
-    SELECT s.title AS survey_title,
-    s.createdat AS created_at,
-    u.username AS creator_name,
-    COUNT(sr.id) AS total_responses
-FROM surveys s
-LEFT JOIN surveyresponses sr ON s.id = sr.survey_id
-LEFT JOIN users u ON s.createdby = u.id
-GROUP BY s.id, s.title, s.createdat, u.username;
+    select count (*) as total_surveys, (select count(*) from surveyresponses) as total_responses  
+    from surveys
     `
   }
 
