@@ -326,8 +326,35 @@ export async function CloseTicket(user_id, ticket_id, status) {
     try {
         const closedAt = new Date().toISOString();
         const query = {
-            text: "update tickets set status=$1, closedby=$2, closedat=$3 where id=$4;",
+            text: "update tickets set status=$1, closedby=$2, closedat=$3 where id=$4",
             values: [status, user_id, closedAt, ticket_id]
+        };
+        const result = await client.query(query);
+        client.end();
+        return {
+            status: 200,
+            statusText: `${result.command} completed successfully`,
+            result: result.rows
+        }
+    } catch (error) {
+        console.log(error);
+        client.end();
+        return {
+            error: error,
+            status: 500,
+            statusText: "Internal server error",
+            message: error.message,
+            data: null,
+        }
+    }
+}
+
+export async function GetTicketPriorities() {
+    const client = await db.connect();
+    try {
+        const query = {
+            text: "select * from ticketstatus",
+            values: []
         };
         const result = await client.query(query);
         client.end();

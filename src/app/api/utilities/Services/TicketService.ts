@@ -1,4 +1,4 @@
-import {AddTicket, GetAllTickets, GetUserTickets, GetTicket, GetAssignedTickets, AssignTicket, UpdateTicketStatus, GetTicketData, GetTicketStatusNameById, CloseTicket} from "../Repository/TicketsRepository";
+import {AddTicket, GetAllTickets, GetUserTickets, GetTicket, GetAssignedTickets, AssignTicket, UpdateTicketStatus, GetTicketData, GetTicketStatusNameById, CloseTicket, GetTicketPriorities} from "../Repository/TicketsRepository";
 import {GetRoleNameByUserId} from "../Repository/UserRoleMappingRespository";
 import {GetRowByCategory} from "../Repository/UserRoleMappingRespository";
 import {GetAllCategories} from "../Repository/CategoryRepository";
@@ -168,12 +168,14 @@ export async function GetFormData() {
     try {
         const group_result = await GetGroups();
         const category_result  = await GetAllCategories();
-        if(group_result.error || category_result.error) {
-            return group_result.error?group_result:category_result;
+        const priority_result = await GetTicketPriorities();
+        if(group_result.error || category_result.error || priority_result.error) {
+            return group_result.error?group_result:category_result.error?category_result:priority_result;
         }
         const data = {
             groups: group_result.result,
             categories: category_result.result,
+            priorities: priority_result.result,
         }
         return {
             status: 200,
