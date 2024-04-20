@@ -1,7 +1,8 @@
 import {Tables} from "@/types/Dto";
 import {CreateTicket} from "../../utilities/Services/TicketService";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import {validateAndAuthorizeToken, GetPayloadDetails} from "../../utilities/helpers/tokenHelper";
+import { cookies } from "next/headers";
 
 type TicketInsert = Tables["Ticket"];
 
@@ -13,10 +14,9 @@ interface Ticket {
     created_by: number,
 }
 
-export async function POST(req: Request) {
-    if(!req.headers.get("authorization"))
-        return NextResponse.json({status: 401, statusText: "Unathorized", data: null}, {status: 401});
-    const token = req.headers.get('authorization')!.split(' ')[1];
+export async function POST(req: NextRequest) {
+    const auth = cookies().get('Authorize')
+    const token = auth.value;
     const res = validateAndAuthorizeToken(token, 'any');
     if(res) {
         const ticket: Ticket = await req.json();
@@ -25,7 +25,6 @@ export async function POST(req: Request) {
             return NextResponse.json({Error: "Body is empty"});
         }
         if (typeof ticket.sub_category_id !== 'number' || ticket.sub_category_id < 0 || typeof ticket.sub_category_id === 'undefined') {
-            console.log("jjhhh");
             return NextResponse.json({Response: { status: 400, statusText: "Invalid sub_category_id", data: null }}, {status: 400});
         }
     

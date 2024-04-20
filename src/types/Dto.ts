@@ -37,7 +37,7 @@ export type Options = {
         status: number,
         sub_category: number,
         group: number,
-        priorty: number,
+        priority: number,
         closed_by: number,
     }
 }

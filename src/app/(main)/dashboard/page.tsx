@@ -15,9 +15,8 @@ import LineChart2 from "@/components/repo2/dashboard/Graphs/Surveygraph";
 import DashboardFeedback from "@/components/repo2/dashboard/DashboardFeedbacks/DashboardFeedback";
 import FeedbackBarGraph from "@/components/repo2/dashboard/Graphs/Feedbackgraph";
 import YourComponent from "@/components/repo2/dashboard/DataPage/page";
-interface DashBoardProps {}
 
-const DashBoard: React.FC<DashBoardProps> = () => {
+const DashBoard = () => {
   const [id, setId] = useState<string>("Tickets");
   const [isTicket, setIsTicket] = useState<boolean>(true);
   const [isHome, setIsHome] = useState<boolean>(true);

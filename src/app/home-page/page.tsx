@@ -1,6 +1,6 @@
 import Logout from "./logout";
 import { cookies } from "next/headers";
-import { verifyJwt } from "lib/jwt";
+import { verifyJwt } from "@/app/lib/jwt";
 
 export default async function Home() {
   const token = cookies().get("Authorize");

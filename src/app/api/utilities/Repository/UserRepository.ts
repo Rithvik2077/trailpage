@@ -1,5 +1,6 @@
 import {supabase} from "../Data/DbConnect";
 import { Database } from "@/types/database.types";
+import {db} from "../Data/RenderConnect";
 
 type UserRowType = Omit<Database["public"]["Tables"]["User"]["Row"], 'id'>;
 
@@ -12,14 +13,37 @@ type UserRowType = Omit<Database["public"]["Tables"]["User"]["Row"], 'id'>;
 //     user_name: string;
 // }
 
-export const AddUserAsync = async (User: UserRowType) => {
-    try{
-        const result = await supabase.from('User').insert(User);
+// export const AddUserAsync = async (User: UserRowType) => {
+//     const client = await db.connect();
+//     try{
+//         const result = await supabase.from('User').insert(User);
+//         return result;
+//     }catch(error) {
+//         return {
+//             status: 500,
+//             statusText: "Internal server error",
+//             data: null,
+//         }
+//     }
+// }
+
+export async function GetUserById(id: number) {
+    const client = await db.client();
+    try {
+        const query = {
+            text: "select id, username, email from users where id=$1",
+            values: [id]
+        }
+        const result = await client.query(query);
+        client.end();
         return result;
-    }catch(error) {
+    } catch(error) {
+        client.end();
         return {
+            error: error,
             status: 500,
             statusText: "Internal server error",
+            message: error.message,
             data: null,
         }
     }
