@@ -5,12 +5,12 @@ import { Bar } from "react-chartjs-2";
 ChartJS.register(...registerables);
 
 interface LineChart2Props {
-  surveys: { title: string; response_count: number }[];
+  surveys: { survey_title: string; total_responses: number }[];
 }
 
 const LineChart2: React.FC<LineChart2Props> = ({ surveys }) => {
-  const surveyTitles = surveys.map((survey) => survey.title);
-  const responseCounts = surveys.map((survey) => survey.response_count);
+  const surveyTitles = surveys.map((survey) => survey.survey_title);
+  const responseCounts = surveys.map((survey) => survey.total_responses);
 
   const getTooltipLabel = (tooltipItem: any, data: any) => {
     const label = data.labels[tooltipItem.index];
@@ -40,7 +40,7 @@ const LineChart2: React.FC<LineChart2Props> = ({ surveys }) => {
           text: "Surveys",
         },
         ticks: {
-          callback: (value: any) => value,
+          callback: (value: any) => value + 1,
         },
       },
       y: {

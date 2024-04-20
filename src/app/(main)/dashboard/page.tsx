@@ -3,10 +3,7 @@
 import React, { useState, useEffect } from "react";
 import LoaderComponent from "../../../../public/data/Loader/load";
 
-import cardadata from "../../../../public/data/carddata.json";
-import surveys from "../../../../public/data/surveys.json";
-import feedback2 from "../../../../public/data/feedback.json";
-import feedback from "../../../../public/data/feedbackdata2.json";
+import cards from "../../../../public/data/cards.json";
 import Cards from "@/components/repo2/dashboard/Cards/Cards";
 import DashboardTickets from "@/components/repo2/dashboard/DashboardTickets/DashboardTickets";
 import LineChart from "@/components/repo2/dashboard/Graphs/Ticketgraph";
@@ -24,11 +21,39 @@ const DashBoard = () => {
   const [isGraph, setIsGraph] = useState<boolean>(false);
   const [isSurvey, setIsSurvey] = useState<boolean>(false);
   const [isFeedback, setIsFeedback] = useState<boolean>(false);
-  const [isHovered, setIsHovered] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [ticketdata, setticketData] = useState([]);
   const [feedbackdata, setfeedbackData] = useState([]);
-  // console.log(feedbackdata);
+  const [surveydata, setsurveyData] = useState([]);
+  const [carddata, setscardaData] = useState([]);
+
+  const fetchcardData = async () => {
+    try {
+      const carddataresponse1 = await fetch(
+        "http://localhost:3000/api/cardticketsdata",
+      );
+      const carddataresponse2 = await fetch(
+        "http://localhost:3000/api/cardsurveysdata",
+      );
+      const carddataresponse3 = await fetch(
+        "http://localhost:3000/api/cardfeedbackdata",
+      );
+
+      const jsoncarddata1 = await carddataresponse1.json();
+      const jsoncarddata2 = await carddataresponse2.json();
+      const jsoncarddata3 = await carddataresponse3.json();
+      const carddata = [
+        jsoncarddata1["data"][0],
+        jsoncarddata2["data"][0],
+        jsoncarddata3["data"][0],
+      ];
+
+      setscardaData(carddata);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -38,11 +63,17 @@ const DashBoard = () => {
         const feedbackresponse = await fetch(
           "http://localhost:3000/api/getrecentfeedbacks",
         );
+        const surveyresponse = await fetch(
+          "http://localhost:3000/api/getrecentsurveys",
+        );
 
         const jsonticketData = await ticketresponse.json();
         const jsonfeedbackData = await feedbackresponse.json();
+        const jsonsurvey = await surveyresponse.json();
+
         setticketData(jsonticketData["data"]);
         setfeedbackData(jsonfeedbackData["data"]);
+        setsurveyData(jsonsurvey["data"]);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -51,21 +82,16 @@ const DashBoard = () => {
 
     // Fetch data initially
     fetchData();
+    fetchcardData();
 
     // Set up interval to fetch data every 5 seconds
     const intervalId = setInterval(fetchData, 5000);
+    const cardintervalId = setInterval(fetchcardData, 5000);
 
-    // Clean up function to clear interval when component unmounts
-    return () => clearInterval(intervalId);
+    return () => {
+      clearInterval(intervalId), clearInterval(cardintervalId);
+    };
   }, []);
-
-  const onHover = () => {
-    setIsHovered(true);
-  };
-
-  const onHoveredleave = () => {
-    setIsHovered(false);
-  };
 
   const onDataSelected = () => {
     setIsHome(false);
@@ -92,10 +118,10 @@ const DashBoard = () => {
   };
 
   const Ticketsdata = ticketdata;
-  const Surveysdata = surveys["Survey"];
+  const Surveysdata = surveydata;
   const Feedbackdata = feedbackdata;
 
-  const ClassValues = isHovered ? "visible" : "hidden";
+  // const ClassValues = isHovered ? "visible" : "hidden";
 
   return (
     <>
@@ -192,20 +218,24 @@ const DashBoard = () => {
         </aside>
         <div className="w-full overflow-y-auto" style={{ maxHeight: "88vh" }}>
           <div className="mb-4 flex flex-row items-center justify-around">
-            {cardadata.map((item) => (
-              <Cards
-                item={item}
-                key={item.id}
-                onclick={onSelect}
-                isActive={item.id === id}
-              />
-            ))}
+            {carddata.length > 0
+              ? cards.map((item) => (
+                  <Cards
+                    item={carddata[item.value]}
+                    type={item.type}
+                    id={item.id}
+                    key={item.id}
+                    onclick={onSelect}
+                    isActive={item.id === id}
+                  />
+                ))
+              : ""}
           </div>
 
           <div className=" flex-grow overflow-auto p-4">
             {isTicket && isHome && (
               <div className="mt-2 grid h-full grid-cols-5 gap-6 pt-4">
-                <div className="col-start-1 col-end-4 overflow-x-scroll rounded-lg border-2 border-gray-200 pt-2">
+                <div className="col-start-1 col-end-4 overflow-x-auto rounded-lg border-2 border-gray-200 pt-2">
                   <table className="w-full table-auto border-collapse">
                     <caption className="caption-top p-2 font-bold text-sky-800">
                       Recent Tickets ad Status Report
@@ -247,7 +277,10 @@ const DashBoard = () => {
                     </tbody>
                   </table>
                 </div>
-                <div className="col-start-4 col-end-6 self-start rounded-lg border-2 border-gray-200 p-2 shadow-lg">
+                <div
+                  className="col-start-4 col-end-6 self-start rounded-lg border-2 border-gray-200 p-2 shadow-lg"
+                  style={{ maxHeight: "40vh", minHeight: "28vh" }}
+                >
                   <LineChart ticketData={Ticketsdata} />
                 </div>
               </div>
@@ -270,10 +303,11 @@ const DashBoard = () => {
                     <tbody className="bg-white">
                       {Surveysdata.length > 0 ? (
                         Surveysdata.map((item) => (
-                          <DashboardSurvey item={item} key={item.id} />
+                          <DashboardSurvey item={item} key={item.survey_id} />
                         ))
                       ) : (
                         <tr>
+                          <td></td>
                           <td></td>
                           {isLoading ? (
                             <td className="pt-5">
@@ -292,7 +326,10 @@ const DashBoard = () => {
                     </tbody>
                   </table>
                 </div>
-                <div className="col-start-4 col-end-6 self-start rounded-lg border-2 border-gray-200 p-2 shadow-lg">
+                <div
+                  className="col-start-4 col-end-6 self-start rounded-lg border-2 border-gray-200 p-2 shadow-lg"
+                  style={{ maxHeight: "40vh", minHeight: "28vh" }}
+                >
                   <LineChart2 surveys={Surveysdata} />
                 </div>
               </div>
@@ -322,7 +359,6 @@ const DashBoard = () => {
                         <tr>
                           <td></td>
                           <td></td>
-
                           {isLoading ? (
                             <td className="pt-5">
                               <LoaderComponent />
@@ -340,8 +376,11 @@ const DashBoard = () => {
                     </tbody>
                   </table>
                 </div>
-                <div className="col-start-4 col-end-6 self-start rounded-lg border-2 border-gray-200 p-2 shadow-lg">
-                  <FeedbackBarGraph feedback={feedback2["feedback_data"]} />
+                <div
+                  className="col-start-4 col-end-6 self-start rounded-lg border-2 border-gray-200 p-2 shadow-lg"
+                  style={{ maxHeight: "40vh", minHeight: "28vh" }}
+                >
+                  <FeedbackBarGraph feedback={feedbackdata} />
                 </div>
               </div>
             )}

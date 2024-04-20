@@ -21,7 +21,9 @@ const DashboardTickets: React.FC<DashboardTicketsProps> = ({ item }) => {
     <tr className={Styles}>
       <td className="border  px-2  py-2">{title}</td>
       <td className="border  px-2  py-2">
-        {description.slice(0, 10) + "...."}
+        {description.length > 10
+          ? description.slice(0, 10) + "...."
+          : description}
       </td>
       <td className="border  px-2  py-2">{categoryname}</td>
       <td className="border  px-2  py-2">{priority}</td>

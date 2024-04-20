@@ -5,9 +5,15 @@ export async function GET(req: Request) {
 
   const query = {
     text: `
-    SELECT s.id, s.title, s.createdat,u.username
-    FROM public.surveys AS s
-    JOIN users AS u on s.createdby =u.id
+    SELECT s.id AS survey_id, 
+    s.title AS survey_title,
+    s.createdat AS created_at,
+    u.username AS creator_name,
+    COUNT(sr.id) AS total_responses
+    FROM surveys s
+    LEFT JOIN surveyresponses sr ON s.id = sr.survey_id
+    LEFT JOIN users u ON s.createdby = u.id
+    GROUP BY s.id, s.title, s.createdat, u.username
     ORDER BY s.id DESC
     LIMIT 10;
     `,

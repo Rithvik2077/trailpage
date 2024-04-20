@@ -3,10 +3,26 @@ import { Bar } from "react-chartjs-2";
 
 interface FeedbackBarGraphProps {
   feedback: {
+    createdat: string;
     month: string;
-    total_feedbacks: number;
+    total_feedback: number;
   }[];
 }
+
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 const FeedbackBarGraph: React.FC<FeedbackBarGraphProps> = ({ feedback }) => {
   const getTooltipLabel = (tooltipItem: any, data: any) => {
@@ -15,7 +31,10 @@ const FeedbackBarGraph: React.FC<FeedbackBarGraphProps> = ({ feedback }) => {
   };
 
   const data = {
-    labels: feedback.map((item) => item.month),
+    labels: feedback.map(
+      (item) =>
+        `${monthNames[parseInt(item.month) - 1]} ${new Date(item.createdat).getFullYear()}`,
+    ),
     datasets: [
       {
         label: "Total Feedbacks",
@@ -24,7 +43,7 @@ const FeedbackBarGraph: React.FC<FeedbackBarGraphProps> = ({ feedback }) => {
         borderWidth: 1,
         hoverBackgroundColor: "rgba(75,192,192,0.6)",
         hoverBorderColor: "rgba(75,192,192,1)",
-        data: feedback.map((item) => item.total_feedbacks),
+        data: feedback.map((item) => item.total_feedback),
       },
     ],
   };
@@ -37,7 +56,7 @@ const FeedbackBarGraph: React.FC<FeedbackBarGraphProps> = ({ feedback }) => {
           text: "Months",
         },
         ticks: {
-          callback: (value: any) => value,
+          callback: (value: any) => value + 1,
         },
       },
       y: {

@@ -19,7 +19,11 @@ const DashboardFeedback: React.FC<DashboardFeedbackProps> = ({ data }) => {
     <tr className={Styles}>
       <td className="border px-4 py-2">{username}</td>
       <td className="border px-4 py-2">{title}</td>
-      <td className="border px-4 py-2">{description.slice(0, 10) + "...."}</td>
+      <td className="border px-4 py-2">
+        {description.length > 10
+          ? description.slice(0, 10) + "...."
+          : description}
+      </td>
       <td className="border px-4 py-2">{createdat.slice(0, 10)}</td>
     </tr>
   );
