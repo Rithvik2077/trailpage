@@ -8,11 +8,8 @@ export async function GET(req: Request) {
   
   const query = {
     text:`
-    SELECT s.id, s.title, s.createdat,u.username
-    FROM public.surveys AS s
-    JOIN users AS u on s.createdby =u.id
-    ORDER BY s.id DESC
-    LIMIT 10;
+    select count (*) as total_surveys, (select count(*) from surveyresponses) as total_responses  
+    from surveys
     `
   }
 
