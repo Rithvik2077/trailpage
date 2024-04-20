@@ -1,7 +1,7 @@
 import {Tables} from "@/types/Dto";
 import { Database } from "@/types/database.types";
 
-import {AddSurvey, GetSurveys, AddUserResponse, GetSurveyById, GetResponse} from "../Repository/SurveyRepository";
+import {AddSurvey, GetSurveys, AddUserResponse, GetSurveyById, GetSurveyResponse, GetResponseById} from "../Repository/SurveyRepository";
 import {GetRowByuserId} from "../Repository/UserRoleMappingRespository";
 
 type SurveyDTO = Tables["Survey"];
@@ -17,8 +17,9 @@ export async function CreateNewSurvey(surveyDto: SurveyDTO) {
                 closes_at: surveyDto.closes_at
             }
             const canCreateSurvey = await GetRowByuserId(survey.created_by!);
-            if(canCreateSurvey.data){
-                if(canCreateSurvey.data[0].can_create_survey) {
+            console.log(canCreateSurvey);
+            if(!canCreateSurvey.error){
+                if(canCreateSurvey.result[0].can_create_survey) {
                     const result = await AddSurvey(survey);
                     return result;
                 }
@@ -98,7 +99,22 @@ export async function CreateResponse(response: ResponseDto) {
 
 export async function GetSurveyResponses(id: number) {
     try {
-        const response = await GetResponse(id);
+        const response = await GetSurveyResponse(id);
+        return response;
+    }catch (error) {
+        return {
+            error: error,
+            status: 500,
+            statusText: "Internal server error",
+            message: error.message,
+            data: null,
+        }
+    }
+}
+
+export async function GetResponse(id: number) {
+    try {
+        const response = await GetResponseById(id);
         return response;
     }catch (error) {
         return {

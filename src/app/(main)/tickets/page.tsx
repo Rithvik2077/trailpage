@@ -27,17 +27,27 @@ function Tickets() {
   let data = paginate(myTickets, currentPage, pageSize);
   useEffect(() => {
     const fetchData = async () => {
+      const body_params = {
+        options: {
+          status: 0,
+          sub_category: 0,
+          group: 0,
+          priority: 0,
+          closed_by: 0
+        }
+      }
       try {
         setLoading(true);
-        const response = await fetch("/api/tickets/admin/getalltickets", {
-          method: "GET",
+        const response = await fetch("/api/tickets/getusertickets", {
+          method: "POST",
           headers: {
             Accept: "application/json",
           },
+          body: JSON.stringify(body_params),
         });
-
         if (response) {
           const ticketData = await response.json();
+          console.log(ticketData);
           setMyTickets(ticketData);
           data = paginate(ticketData, currentPage, pageSize);
           setCurrentData(data);

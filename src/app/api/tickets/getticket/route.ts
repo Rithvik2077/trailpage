@@ -1,9 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import {GetSurveyResponses} from "../../utilities/Services/SurveyService";
-import { validateAndAuthorizeToken } from "../../utilities/helpers/tokenHelper";
 import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
+import { validateAndAuthorizeToken } from "../../utilities/helpers/tokenHelper";
+import {GetTicketById} from "../../utilities/Services/TicketService";
 
-// responses of a survey given id
 export async function GET(req: NextRequest) {
     const auth = cookies().get('Authorize');
     const token = auth.value;
@@ -14,9 +13,9 @@ export async function GET(req: NextRequest) {
         if( url.searchParams.get('id') === null) {
             return NextResponse.json({status: 400, statusText: "Bad request: id should not be null"}, {status:400});
         }
-        try{
+        try {
             const id = parseInt(url.searchParams.get('id')!)
-            const surveys = await GetSurveyResponses(id);
+            const surveys = await GetTicketById(id);
             return NextResponse.json({Response: surveys}, {status: surveys.status});
         }catch(error){
             return NextResponse.json({status: 400, statusText: error}, {status:400});

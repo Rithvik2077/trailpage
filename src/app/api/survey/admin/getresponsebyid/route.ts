@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import {GetSurveyResponses} from "../../utilities/Services/SurveyService";
-import { validateAndAuthorizeToken } from "../../utilities/helpers/tokenHelper";
+import {GetResponse} from "../../../utilities/Services/SurveyService";
+import { validateAndAuthorizeToken } from "../../../utilities/helpers/tokenHelper";
 import { cookies } from "next/headers";
 
-// responses of a survey given id
+// response given id
 export async function GET(req: NextRequest) {
     const auth = cookies().get('Authorize');
     const token = auth.value;
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
         }
         try{
             const id = parseInt(url.searchParams.get('id')!)
-            const surveys = await GetSurveyResponses(id);
+            const surveys = await GetResponse(id);
             return NextResponse.json({Response: surveys}, {status: surveys.status});
         }catch(error){
             return NextResponse.json({status: 400, statusText: error}, {status:400});
