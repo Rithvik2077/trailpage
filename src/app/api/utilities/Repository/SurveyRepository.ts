@@ -20,8 +20,8 @@ export async function AddSurvey(survey: SurveyInsert){
     try{
         const surveyFieldsJSON = JSON.stringify(survey.survey_fields);
          const query = {
-            text: "insert into surveys (title, surveyfields, createdby, createdat, closes_at) values ($1, $2, $3, $4, $5)",
-            values: [survey.title, surveyFieldsJSON, survey.created_by, survey.created_at, survey.closes_at]
+            text: "insert into surveys (title, surveyfields, createdby, closes_at) values ($1, $2, $3, $4)",
+            values: [survey.title, surveyFieldsJSON, survey.created_by, survey.closes_at]
          }
          const result = await client.query(query);
         return {
