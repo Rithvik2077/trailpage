@@ -1,5 +1,4 @@
 import React from "react";
-import feedbackdata2 from "@/../../public/data/feedbackdata2.json";
 
 interface DashboardFeedbackProps {
   data: {
