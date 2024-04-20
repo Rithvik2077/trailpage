@@ -1,7 +1,21 @@
 "use client";
+import { FormEvent } from "react";
 
 export default function Page({ params }: { params: { token: string } }) {
-  const handleSubmit = () => {};
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const k = window.location.pathname.split("/").pop();
+    console.log(k);
+
+    const response = await fetch(`/api/auth/resetpassword` + `${k}`, {
+      method: "POST",
+      body: JSON.stringify({
+        email: formData.get("email"),
+        password: formData.get("password"),
+      }),
+    });
+  };
   return (
     <>
       <section className="relative z-10 overflow-hidden pb-16 pt-36 md:pb-20 lg:pb-28 lg:pt-[180px]">

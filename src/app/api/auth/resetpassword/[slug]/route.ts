@@ -1,9 +1,3 @@
-import { verifyJwt } from "@/app/lib/jwt";
-import { NextApiRequest } from "next";
-import { NextRequest } from "next/server";
-
-
-
 
 export async function POST(
   request: Request,
@@ -14,8 +8,9 @@ export async function POST(
   console.log(slug);
 
   const data  = await request.json();
-
   console.log(data);
+
+
   return new Response(JSON.stringify({message:slug})
   ,{
     status:200
