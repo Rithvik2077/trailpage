@@ -1,10 +1,8 @@
-import {supabase} from "../Data/DbConnect";
 import {Database} from "@/types/database.types";
 import {Options} from "@/types/Dto";
 import { db } from "../Data/RenderConnect";
 
 type TicketInsert = Database["public"]["Tables"]["Ticket"]["Insert"];
-type TicketType = Database["public"]["Tables"]["Ticket"]["Row"];
 
 type TicketOptions = Options["TicketOptions"];
 
@@ -37,27 +35,6 @@ LEFT JOIN
 LEFT JOIN
     users AS users_closedby ON tickets.closedby = users_closedby.id`
 
-// type TicketInsert = {
-//     assigned_to?: number;
-//     closed_at?: string;
-//     closed_by?: number;
-//     created_at?: string;
-//     created_by?: number;
-//     description?: string;
-//     id?: number;
-//     priority?: number;
-//     status_id?: number;
-//     sub_category_id?: number;
-//     title?: string;
-// }
-
-// sub_category_id: ticket.sub_category_id,
-//         priority: ticket.priority,
-//         title: ticket.title,
-//         description: ticket.description,
-//         status_id: 1,
-//         created_by: ticket.created_by,
-//         assigned_to: assigned_to
 
 export async function AddTicket(ticket: TicketInsert) {
     const client = await db.connect();
@@ -146,9 +123,9 @@ export async function GetUserTickets(user_id: number, options: TicketOptions) {
         query_text += ` and category.group_id = $${params.length+1}`;
         params.push(options.group);
     }
-    if(options.priorty && options.priorty !=0) {
+    if(options.priority && options.priority !=0) {
         query_text += ` and tickets.priority = $${params.length+1}`;
-        params.push(options.priorty);
+        params.push(options.priority);
     }
     if(options.status && options.status!=0) {
         query_text += ` and tickets.status = $${params.length+1}`;
@@ -189,7 +166,7 @@ export async function GetUserTickets(user_id: number, options: TicketOptions) {
 export async function GetTicket(id: number) {
     const client = await db.connect();
     try {
-        const query_text = `${ticket_select} where id = $1`;
+        const query_text = `${ticket_select} where tickets.id = $1`;
         const values = [id];
         const result = await client.query(query_text, values);
         client.end();
@@ -210,3 +187,186 @@ export async function GetTicket(id: number) {
         }
     }
 }
+
+export async function GetAssignedTickets(user_id: number) {
+    const client = await db.connect();
+    try {
+        const query_text = `${ticket_select} where tickets.assignedto = $1`;
+        const values = [user_id];
+        const result = await client.query(query_text, values);
+        client.end();
+        return {
+            status: 200,
+            statusText: `${result.command} completed successfully`,
+            result: result.rows
+        }
+    } catch (error) {
+        console.log(error);
+        client.end();
+        return {
+            error: error,
+            status: 500,
+            statusText: "Internal server error",
+            message: error.message,
+            data: null,
+        }
+    }
+}
+
+export async function AssignTicket(ticket_id: number, user_id: number) {
+    const client = await db.connect();
+    try {
+        const query = {
+            text: "update tickets set assignedto = $1 where id = $2",
+            values: [user_id, ticket_id],
+        }
+        const result = await client.query(query);
+        client.end();
+        return {
+            status: 200,
+            statusText: `${result.command} completed successfully`,
+            result: result.rows
+        }
+    } catch (error) {
+        console.log(error);
+        client.end();
+        return {
+            error: error,
+            status: 500,
+            statusText: "Internal server error",
+            message: error.message,
+            data: null,
+        }
+    }
+}
+
+export async function UpdateTicketStatus(ticket_id: number, status: number) {
+    const client = await db.connect();
+    try {
+        const query = {
+            text: "update tickets set status = $1 where id = $2",
+            values: [status, ticket_id],
+        }
+        const result = await client.query(query);
+        client.end();
+        return {
+            status: 200,
+            statusText: `${result.command} completed successfully`,
+            result: result.rows
+        }
+    } catch (error) {
+        console.log(error);
+        client.end();
+        return {
+            error: error,
+            status: 500,
+            statusText: "Internal server error",
+            message: error.message,
+            data: null,
+        }
+    }
+}
+
+export async function GetTicketData(ticket_id: number, options: {assignedto: boolean}) {
+    const client = await db.connect();
+    try {
+        const query = {
+            text: "select assignedto from tickets where id = $1",
+            values: [ticket_id]
+        }
+        const result = await client.query(query);
+        client.end();
+        return {
+            status: 200,
+            statusText: `${result.command} completed successfully`,
+            result: result.rows
+        }
+    } catch (error) {
+        console.log(error);
+        client.end();
+        return {
+            error: error,
+            status: 500,
+            statusText: "Internal server error",
+            message: error.message,
+            data: null,
+        }
+    }
+}
+
+export async function GetTicketStatusNameById(id: number) {
+    const client = await db.connect();
+    try {
+        const query = {
+            text: "select name from ticketstatus where id = $1",
+            values: [id]
+        }
+        const result = await client.query(query);
+        client.end();
+        return {
+            status: 200,
+            statusText: `${result.command} completed successfully`,
+            result: result.rows
+        }
+    } catch (error) {
+        console.log(error);
+        client.end();
+        return {
+            error: error,
+            status: 500,
+            statusText: "Internal server error",
+            message: error.message,
+            data: null,
+        }
+    }
+}
+
+export async function CloseTicket(user_id, ticket_id, status) {
+    const client = await db.connect();
+    try {
+        const closedAt = new Date().toISOString();
+        const query = {
+            text: "update tickets set status=$1, closedby=$2, closedat=$3 where id=$4;",
+            values: [status, user_id, closedAt, ticket_id]
+        };
+        const result = await client.query(query);
+        client.end();
+        return {
+            status: 200,
+            statusText: `${result.command} completed successfully`,
+            result: result.rows
+        }
+    } catch (error) {
+        console.log(error);
+        client.end();
+        return {
+            error: error,
+            status: 500,
+            statusText: "Internal server error",
+            message: error.message,
+            data: null,
+        }
+    }
+}
+
+// type TicketInsert = {
+//     assigned_to?: number;
+//     closed_at?: string;
+//     closed_by?: number;
+//     created_at?: string;
+//     created_by?: number;
+//     description?: string;
+//     id?: number;
+//     priority?: number;
+//     status_id?: number;
+//     sub_category_id?: number;
+//     title?: string;
+// }
+
+// sub_category_id: ticket.sub_category_id,
+//         priority: ticket.priority,
+//         title: ticket.title,
+//         description: ticket.description,
+//         status_id: 1,
+//         created_by: ticket.created_by,
+//         assigned_to: assigned_to
