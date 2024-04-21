@@ -16,7 +16,7 @@ const paginate = (items: any, pageNumber: any, pageSize: any) => {
   // return items;
 };
 
-function Tickets() {
+function UserTickets() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
   const [allFilteredData, setAllFilteredData] = useState([{}]);
@@ -39,7 +39,7 @@ function Tickets() {
       };
       try {
         setLoading(true);
-        const response = await fetch("/api/tickets/getassignedtickets", {
+        const response = await fetch("/api/tickets/getusertickets", {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -126,9 +126,9 @@ function Tickets() {
         </div>
 
         <div className="w-[78%]">
-          {/* <div className="px-2 py-6">
+          <div className="px-2 py-6">
             <TicketGeneratorButton />
-          </div> */}
+          </div>
 
           <div>
             {currentData.map((ticket: any) => (
@@ -170,4 +170,4 @@ function Tickets() {
   );
 }
 
-export default Tickets;
+export default UserTickets;
