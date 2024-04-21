@@ -1,7 +1,6 @@
 "use client";
-import { METHODS } from "http";
 import React, { useState } from "react";
-import Loading from "./loading";
+import { url_mark_feedback_viewed } from "@/app/lib/apiEndPoints";
 
 function Feedback({ feedback }) {
   const [viewed, setViewed] = useState(feedback.viewed);
@@ -12,7 +11,7 @@ function Feedback({ feedback }) {
     if (marking) return;
     try {
       setMarking(true);
-      const url = "/api/feedbacks/admin/markviewed?id=" + id;
+      const url = url_mark_feedback_viewed + id;
       await fetch(url, {
         method: "PUT",
       })

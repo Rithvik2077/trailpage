@@ -2,67 +2,26 @@
 
 import SurveysCreation from "@/app/(main)/surveys/SurveyMain";
 import React, { useState } from "react";
-import SurveyResponses from "./responses/page";
+// import { createSurvey } from "@/app/lib/surveyFunctions";
+// import SurveyResponses from "./responses/page";
+import SurveyList from "./SurveyList";
 import { verifyJwt } from "@/app/lib/jwt";
-import {
-  url_create_survey,
-  url_get_survey_responses,
-} from "@/app/lib/apiEndPoints";
+
+import { url_add_response,url_get_active_surveys, url_get_response_by_id } from "@/app/lib/apiEndPoints";
 
 export default function MAINSurvey() {
   const [pageChoice, setPageChoice] = useState(1);
+  const [surveyData, setSurveyData] = useState();
 
-  const surveyData = {
-    title: "employee satisfaction",
-    survey_fields: [
-      {
-        question:
-          "Are you satisfied with your current role and responsibilities?",
-        options: ["Yes", "No"],
-      },
-      {
-        question:
-          "How would you rate the overall work culture and environment?",
-        options: ["Excellent", "Good", "Average", "Poor"],
-      },
-      {
-        question: "Do you feel valued and recognized for your contributions?",
-        options: ["Yes", "No"],
-      },
-    ],
-    closes_at: "2024-05-31 10:45:00",
-  };
+  // const surveyData = {
+  //   title: "employee satisfaction",
+  //   survey_fields: [{"question":"Are you satisfied with your current role and responsibilities?","options":["Yes","No"]},{"question":"How would you rate the overall work culture and environment?","options":["Excellent","Good","Average","Poor"]},{"question":"Do you feel valued and recognized for your contributions?","options":["Yes","No"]}],
+  //   closes_at: "2024-05-31 10:45:00",
+  // };
 
-  const addSurvey = async () => {
-    try {
-      await fetch(url_create_survey, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(surveyData),
-      })
-        .then((response) => response.json())
-        .then((result) => console.log(result))
-        .catch((err) => console.log(err));
-    } catch (error) {
-      console.log("error while fetching:", error);
-    }
-  };
+  
 
-  const viewSurveyResponse = async (id: number) => {
-    try {
-      const url = `${url_get_survey_responses}${id}`;
-      await fetch(url, {
-        method: "GET",
-      })
-        .then((response) => response.json())
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
-    } catch (error) {
-      console.log("error while fetching:", error);
-    }
-  };
+  
 
   function handleSubmit() {
     // let token = document.cookie.match("Authorize").input;
@@ -74,30 +33,47 @@ export default function MAINSurvey() {
     // );
   }
 
+  const getAllSurveys = async () => {
+    try {
+      return await fetch(url_get_active_surveys, {
+        method: "GET",
+      })
+      .then(response => response.json())
+      .then(result => {console.log(result, 'This is inside the get all survey fnx****'); return result})
+      .catch(err => console.log(err));
+    } catch(error) {
+      console.log("error while fetching:", error);
+    }
+  }
+
+  async function viewSurveyDataGetter(){
+     getAllSurveys().then((data)=>{
+      console.log(data.Response.result, 'this the the survey data')
+      setSurveyData(data.Response.result)
+      settingPageChoice();
+    });
+    
+  }
+
+  const settingPageChoice = () => {
+      if (surveyData) {
+        setPageChoice(2);
+      }
+    }
+
   return (
     <div className="bg-selago-100 flex flex-col items-center justify-center">
       <>
-        <button onClick={() => setPageChoice(2)}>View Responses</button>
-        <button onClick={() => setPageChoice(1)}>Create Survey</button>
+      <button onClick={()=>viewSurveyDataGetter()}>View Surveys</button>
+      <button onClick={()=>setPageChoice(1)}>Create Survey</button>
       </>
-
-      {pageChoice == 1 && (
-        <>
-          <SurveysCreation />
-          <button
-            type="button"
-            className="mb-2 me-2 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
-            onClick={handleSubmit}
-          >
-            Create Survey
-          </button>
-        </>
-      )}
-      {pageChoice == 2 && (
-        <>
-          <SurveyResponses />
-        </>
-      )}
+      
+      {pageChoice==1 && <>
+      <SurveysCreation />
+      </>}
+      {pageChoice==2 && <>
+      <SurveyList surveyData={surveyData}/>
+      </>}
     </div>
   );
 }

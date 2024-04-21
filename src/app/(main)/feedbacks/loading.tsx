@@ -2,7 +2,7 @@
 export default function Loading({size}) {
     return (
         <div className="absolute left-1/2 top-1/2 -ml-0.5 -mt-0.5">
-            <div className="w-[50%]  flex-center h-10">
+            <div className="w-[50%]  flex-center h-10 bg-opacity-0">
             <div
             style={{ width: `${size}px`, height: `${size}px` }}
             className="animate-spin">
