@@ -13,7 +13,7 @@ const Navbar: React.FC = () => {
   const [inuser, setAsUser] = useState(true);
   useEffect(() => {
     async function checkadmin() {
-      const response = await fetch("http://localhost:3000/api/checkcookie", {
+      const response = await fetch("/api/checkcookie", {
         method: "GET",
       });
 

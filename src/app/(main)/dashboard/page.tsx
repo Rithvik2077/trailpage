@@ -29,15 +29,9 @@ const DashBoard = () => {
 
   const fetchcardData = async () => {
     try {
-      const carddataresponse1 = await fetch(
-        "http://localhost:3000/api/cardticketsdata",
-      );
-      const carddataresponse2 = await fetch(
-        "http://localhost:3000/api/cardsurveysdata",
-      );
-      const carddataresponse3 = await fetch(
-        "http://localhost:3000/api/cardfeedbackdata",
-      );
+      const carddataresponse1 = await fetch("/api/cardticketsdata");
+      const carddataresponse2 = await fetch("/api/cardsurveysdata");
+      const carddataresponse3 = await fetch("/api/cardfeedbackdata");
 
       const jsoncarddata1 = await carddataresponse1.json();
       const jsoncarddata2 = await carddataresponse2.json();
@@ -57,15 +51,9 @@ const DashBoard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const ticketresponse = await fetch(
-          "http://localhost:3000/api/getrecenttickets",
-        );
-        const feedbackresponse = await fetch(
-          "http://localhost:3000/api/getrecentfeedbacks",
-        );
-        const surveyresponse = await fetch(
-          "http://localhost:3000/api/getrecentsurveys",
-        );
+        const ticketresponse = await fetch("/api/getrecenttickets");
+        const feedbackresponse = await fetch("/api/getrecentfeedbacks");
+        const surveyresponse = await fetch("/api/getrecentsurveys");
 
         const jsonticketData = await ticketresponse.json();
         const jsonfeedbackData = await feedbackresponse.json();
