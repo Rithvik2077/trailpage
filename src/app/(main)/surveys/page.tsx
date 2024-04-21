@@ -6,7 +6,7 @@ import React, { useState } from "react";
 // import SurveyResponses from "./responses/page";
 import SurveyList from "./SurveyList";
 import { verifyJwt } from "@/app/lib/jwt";
-import {url_create_survey, url_get_survey_responses} from "@/app/lib/apiEndPoints";
+
 import { url_add_response,url_get_active_surveys, url_get_response_by_id } from "@/app/lib/apiEndPoints";
 
 export default function MAINSurvey() {
@@ -21,19 +21,7 @@ export default function MAINSurvey() {
 
   
 
-  const viewSurveyResponse = async (id: number) => {
-    try {
-      const url = `${url_get_survey_responses}${id}`;
-      await fetch(url, {
-        method: "GET",
-      })
-        .then((response) => response.json())
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
-    } catch (error) {
-      console.log("error while fetching:", error);
-    }
-  };
+  
 
   function handleSubmit() {
     // let token = document.cookie.match("Authorize").input;

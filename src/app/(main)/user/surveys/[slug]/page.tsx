@@ -1,3 +1,18 @@
+
+import React from 'react'
+
+export default function FillSurveyPage({params}) {
+    const surveyID = params.slug
+    
+  return (
+    <div>
+      FillSurvey
+    </div>
+  )
+}
+
+
+
 // "use client";
 
 // import React, { useEffect, useState } from "react";

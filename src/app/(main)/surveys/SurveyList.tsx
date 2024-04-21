@@ -220,7 +220,7 @@ return (
 
                 <div>{survey.createdat}</div>
                 <Link
-                  href={{ pathname: `./surveys/${survey.id}`, query: survey }}
+                  href={{ pathname: `./surveys/${survey.id}` }}
                   className="cursor-pointer text-sm "
                 >
                   <button
