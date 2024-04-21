@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { url_add_response,url_get_active_surveys, url_get_response_by_id } from "@/app/lib/apiEndPoints";
+import { url_add_response, url_get_survey_by_id } from "@/app/lib/apiEndPoints";
 
 export default function FillSurveyPage({params}) {
     const surveyID = params.slug
@@ -22,6 +22,17 @@ export default function FillSurveyPage({params}) {
           .then(response => response.json())
           .then(result => console.log(result))
           .catch(err => console.log(err));
+        } catch(error) {
+          console.log("error while fetching:", error);
+        }
+      }
+
+      const GetSurveyById = async (id) => {
+        try {
+          await fetch(url_get_survey_by_id)
+          .then(response => response.json())
+          .then(result => console.log(result))
+          .catch(err => console.log(err))
         } catch(error) {
           console.log("error while fetching:", error);
         }
