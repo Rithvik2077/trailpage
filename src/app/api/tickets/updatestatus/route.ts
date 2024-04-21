@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     const isValid = validateAndAuthorizeToken(token, "any")
     if(isValid) {
         const body = await req.json();
-        console.log(body);
+        // console.log(body);
         if(!body.ticket_id || !body.status) {
             return NextResponse.json({Response: { status: 400, statusText: "Invalid body. required ticket_id and status but not found in body", data: null }}, {status: 400});
         }

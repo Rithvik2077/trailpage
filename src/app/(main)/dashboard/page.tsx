@@ -9,9 +9,11 @@ import DashboardSurvey from "@/components/repo2/dashboard/DashboardSurvey/Dashbo
 import LineChart2 from "@/components/repo2/dashboard/Graphs/Surveygraph";
 import DashboardFeedback from "@/components/repo2/dashboard/DashboardFeedbacks/DashboardFeedback";
 import FeedbackBarGraph from "@/components/repo2/dashboard/Graphs/Feedbackgraph";
-import YourComponent from "@/components/repo2/dashboard/DataPage/page";
+import TicketComponent from "@/components/repo2/dashboard/DataPage/page";
 import SurveySystemTable from "@/components/repo2/dashboard/DashboardDataComponent/SurveyData/SurveyData";
-import MonthlySurveyTable from "@/components/repo2/dashboard/DashboardDataComponent/SurveyData2";
+import MonthlySurveyTable from "@/components/repo2/dashboard/DashboardDataComponent/SurveyData/SurveyData2";
+import FeedbackSystemTable from "@/components/repo2/dashboard/DashboardDataComponent/FeedbackData/FeedbackData";
+import MonthlyFeedbackTable from "@/components/repo2/dashboard/DashboardDataComponent/FeedbackData/FeedbackData2";
 import LoaderComponent from "../../../../public/data/Loader/load";
 import cards from "../../../../public/data/cards.json";
 import "../../../../public/css/style.css";
@@ -25,6 +27,7 @@ const DashBoard = () => {
   const [isSurvey, setIsSurvey] = useState<boolean>(false);
   const [isFeedback, setIsFeedback] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [ticketData, setTicketData] = useState([]);
   const [ticketdata, setticketData] = useState([]);
   const [feedbackdata, setfeedbackData] = useState([]);
   const [surveydata, setsurveyData] = useState([]);
@@ -69,11 +72,15 @@ const DashBoard = () => {
         const surveyresponse = await fetch(
           "http://localhost:3000/api/getrecentsurveys",
         );
-
+        const ticketDataresponse = await fetch(
+          "http://localhost:3000/api/datatickets",
+        );
+        const jsonticketDataresponse = await ticketDataresponse.json();
         const jsonticketData = await ticketresponse.json();
         const jsonfeedbackData = await feedbackresponse.json();
         const jsonsurvey = await surveyresponse.json();
 
+        setTicketData(jsonticketDataresponse["data"]);
         setticketData(jsonticketData["data"]);
         setfeedbackData(jsonfeedbackData["data"]);
         setsurveyData(jsonsurvey["data"]);
@@ -83,13 +90,11 @@ const DashBoard = () => {
       }
     };
 
-    // Fetch data initially
     fetchData();
     fetchcardData();
 
-    // Set up interval to fetch data every 5 seconds
-    const intervalId = setInterval(fetchData, 5000);
-    const cardintervalId = setInterval(fetchcardData, 5000);
+    const intervalId = setInterval(fetchData, 10000);
+    const cardintervalId = setInterval(fetchcardData, 10000);
 
     return () => {
       clearInterval(intervalId), clearInterval(cardintervalId);
@@ -392,8 +397,18 @@ const DashBoard = () => {
                 </div>
               </div>
             )}
-            {isTicket && isData && <YourComponent />}
-            {isFeedback && isData && <YourComponent />}
+            {isTicket && isData && (
+              <TicketComponent
+                ticketData={ticketData}
+                Ticketsdata={Ticketsdata}
+              />
+            )}
+            {isFeedback && isData && (
+              <>
+                <FeedbackSystemTable FeedbackData={Feedbackdata} />
+                <MonthlyFeedbackTable feedbackData={Feedbackdata} />
+              </>
+            )}
             {isSurvey && isData && (
               <>
                 <SurveySystemTable surveyData={Surveysdata.slice(0, 40)} />

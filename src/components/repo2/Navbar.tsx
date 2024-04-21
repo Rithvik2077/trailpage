@@ -13,7 +13,7 @@ const Navbar: React.FC = () => {
   const [inuser, setAsUser] = useState(true);
   useEffect(() => {
     async function checkadmin() {
-      const response = await fetch("http://localhost:3000/api/checkcookie", {
+      const response = await fetch("/api/checkcookie", {
         method: "GET",
       });
 
@@ -30,6 +30,9 @@ const Navbar: React.FC = () => {
   async function handleSubmit() {
     setAsUser(!inuser);
   }
+
+  console.log(isAdmin, inuser);
+
   // console.log("out admin", isAdmin, "in user", inuser);
 
   return (
@@ -90,24 +93,51 @@ const Navbar: React.FC = () => {
                   <></>
                 )}
 
-                <Link
-                  href="/tickets"
-                  className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                >
-                  Tickets
-                </Link>
-                <Link
-                  href="/feedbacks"
-                  className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                >
-                  Feedbacks
-                </Link>
-                <Link
-                  href="/surveys"
-                  className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                >
-                  Surveys
-                </Link>
+                {inuser ? (
+                  <>
+                    <Link
+                      href="/user/tickets"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                    >
+                      Tickets
+                    </Link>
+                    <Link
+                      href="/user/feedbacks"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                    >
+                      Feedbacks
+                    </Link>
+
+                    <Link
+                      href="/user/surveys"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                    >
+                      Surveys
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/tickets"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                    >
+                      Tickets
+                    </Link>
+                    <Link
+                      href="/feedbacks"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                    >
+                      Feedbacks
+                    </Link>
+
+                    <Link
+                      href="/surveys"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                    >
+                      Surveys
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
