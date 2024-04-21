@@ -1,9 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState, useEffect } from "react";
-import LoaderComponent from "../../../../public/data/Loader/load";
 
-import cards from "../../../../public/data/cards.json";
 import Cards from "@/components/repo2/dashboard/Cards/Cards";
 import DashboardTickets from "@/components/repo2/dashboard/DashboardTickets/DashboardTickets";
 import LineChart from "@/components/repo2/dashboard/Graphs/Ticketgraph";
@@ -12,6 +10,11 @@ import LineChart2 from "@/components/repo2/dashboard/Graphs/Surveygraph";
 import DashboardFeedback from "@/components/repo2/dashboard/DashboardFeedbacks/DashboardFeedback";
 import FeedbackBarGraph from "@/components/repo2/dashboard/Graphs/Feedbackgraph";
 import YourComponent from "@/components/repo2/dashboard/DataPage/page";
+import SurveySystemTable from "@/components/repo2/dashboard/DashboardDataComponent/SurveyData/SurveyData";
+import MonthlySurveyTable from "@/components/repo2/dashboard/DashboardDataComponent/SurveyData2";
+import LoaderComponent from "../../../../public/data/Loader/load";
+import cards from "../../../../public/data/cards.json";
+import "../../../../public/css/style.css";
 
 const DashBoard = () => {
   const [id, setId] = useState<string>("Tickets");
@@ -252,26 +255,27 @@ const DashBoard = () => {
                     </thead>
                     <tbody className="center bg-white">
                       {Ticketsdata.length > 0 ? (
-                        Ticketsdata.map((item) => (
+                        Ticketsdata.slice(0, 10).map((item) => (
                           <DashboardTickets item={item} key={item.id} />
                         ))
                       ) : (
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          {isLoading ? (
-                            <td className="pt-5">
+                        <tr className="w-1/1">
+                          <td colSpan={6} className=" pt-5 text-center">
+                            {isLoading ? (
                               <LoaderComponent />
-                            </td>
-                          ) : (
-                            <td>
-                              <img
-                                src="https://icons.veryicon.com/png/o/business/financial-category/no-data-6.png"
-                                alt="no-data"
-                              />
-                            </td>
-                          )}
+                            ) : (
+                              <>
+                                <img
+                                  src="https://icons.veryicon.com/png/o/business/financial-category/no-data-6.png"
+                                  alt="no-data"
+                                  className="mx-auto h-24 w-24"
+                                />
+                                <p className="-ml-1 font-semibold text-gray-400">
+                                  No Data
+                                </p>
+                              </>
+                            )}
+                          </td>
                         </tr>
                       )}
                     </tbody>
@@ -302,25 +306,27 @@ const DashBoard = () => {
                     </thead>
                     <tbody className="bg-white">
                       {Surveysdata.length > 0 ? (
-                        Surveysdata.map((item) => (
+                        Surveysdata.slice(0, 10).map((item) => (
                           <DashboardSurvey item={item} key={item.survey_id} />
                         ))
                       ) : (
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          {isLoading ? (
-                            <td className="pt-5">
+                        <tr className="w-1/1">
+                          <td colSpan={6} className=" pt-5 text-center">
+                            {isLoading ? (
                               <LoaderComponent />
-                            </td>
-                          ) : (
-                            <td>
-                              <img
-                                src="https://icons.veryicon.com/png/o/business/financial-category/no-data-6.png"
-                                alt="no-data"
-                              />
-                            </td>
-                          )}
+                            ) : (
+                              <>
+                                <img
+                                  src="https://icons.veryicon.com/png/o/business/financial-category/no-data-6.png"
+                                  alt="no-data"
+                                  className="mx-auto h-24 w-24"
+                                />
+                                <p className="-ml-1 font-semibold text-gray-400">
+                                  No Data
+                                </p>
+                              </>
+                            )}
+                          </td>
                         </tr>
                       )}
                     </tbody>
@@ -330,7 +336,7 @@ const DashBoard = () => {
                   className="col-start-4 col-end-6 self-start rounded-lg border-2 border-gray-200 p-2 shadow-lg"
                   style={{ maxHeight: "40vh", minHeight: "28vh" }}
                 >
-                  <LineChart2 surveys={Surveysdata} />
+                  <LineChart2 surveys={Surveysdata.slice(0, 10)} />
                 </div>
               </div>
             )}
@@ -352,25 +358,27 @@ const DashBoard = () => {
                     </thead>
                     <tbody>
                       {Feedbackdata.length > 0 ? (
-                        Feedbackdata.map((item) => (
+                        Feedbackdata.slice(0, 10).map((item) => (
                           <DashboardFeedback data={item} key={item.id} />
                         ))
                       ) : (
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          {isLoading ? (
-                            <td className="pt-5">
+                        <tr className="w-1/1">
+                          <td colSpan={6} className=" pt-5 text-center">
+                            {isLoading ? (
                               <LoaderComponent />
-                            </td>
-                          ) : (
-                            <td>
-                              <img
-                                src="https://icons.veryicon.com/png/o/business/financial-category/no-data-6.png"
-                                alt="no-data"
-                              />
-                            </td>
-                          )}
+                            ) : (
+                              <>
+                                <img
+                                  src="https://icons.veryicon.com/png/o/business/financial-category/no-data-6.png"
+                                  alt="no-data"
+                                  className="mx-auto h-24 w-24"
+                                />
+                                <p className="-ml-1 font-semibold text-gray-400">
+                                  No Data
+                                </p>
+                              </>
+                            )}
+                          </td>
                         </tr>
                       )}
                     </tbody>
@@ -380,13 +388,18 @@ const DashBoard = () => {
                   className="col-start-4 col-end-6 self-start rounded-lg border-2 border-gray-200 p-2 shadow-lg"
                   style={{ maxHeight: "40vh", minHeight: "28vh" }}
                 >
-                  <FeedbackBarGraph feedback={feedbackdata} />
+                  <FeedbackBarGraph feedback={Feedbackdata} />
                 </div>
               </div>
             )}
             {isTicket && isData && <YourComponent />}
             {isFeedback && isData && <YourComponent />}
-            {isSurvey && isData && <YourComponent />}
+            {isSurvey && isData && (
+              <>
+                <SurveySystemTable surveyData={Surveysdata.slice(0, 40)} />
+                <MonthlySurveyTable surveyData={Surveysdata} />
+              </>
+            )}
           </div>
         </div>
       </main>

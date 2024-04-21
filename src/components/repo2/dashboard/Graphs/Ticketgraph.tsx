@@ -11,7 +11,6 @@ interface LineChartProps {
 }
 
 const LineChart: React.FC<LineChartProps> = ({ ticketData }) => {
-  // Extracting status values from ticketData
   const statuses = ticketData.map((ticket) => ticket.status);
   const statusCounts: { [key: string]: number } = {};
 

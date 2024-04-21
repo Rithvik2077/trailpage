@@ -1,40 +1,19 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
+import type { ChartOptions } from "chart.js/auto";
 
 interface FeedbackBarGraphProps {
   feedback: {
     createdat: string;
-    month: string;
-    total_feedback: number;
   }[];
 }
 
-const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
 const FeedbackBarGraph: React.FC<FeedbackBarGraphProps> = ({ feedback }) => {
-  const getTooltipLabel = (tooltipItem: any, data: any) => {
-    const label = data.labels[tooltipItem.index];
-    return `Month: ${label}`;
-  };
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
 
-  const data = {
-    labels: feedback.map(
-      (item) =>
-        `${monthNames[parseInt(item.month) - 1]} ${new Date(item.createdat).getFullYear()}`,
-    ),
+  const data: { labels: number[]; datasets: any[] } = {
+    labels: Array.from({ length: 12 }, (_, i) => i + 1),
     datasets: [
       {
         label: "Total Feedbacks",
@@ -43,12 +22,24 @@ const FeedbackBarGraph: React.FC<FeedbackBarGraphProps> = ({ feedback }) => {
         borderWidth: 1,
         hoverBackgroundColor: "rgba(75,192,192,0.6)",
         hoverBorderColor: "rgba(75,192,192,1)",
-        data: feedback.map((item) => item.total_feedback),
+        data: [],
       },
     ],
   };
 
-  const options = {
+  const totalResponsesByMonth = Array(12).fill(0);
+
+  feedback.forEach((item) => {
+    const feedbackDate = new Date(item.createdat);
+    const monthIndex = feedbackDate.getMonth();
+    if (!isNaN(monthIndex) && monthIndex >= 0 && monthIndex < 12) {
+      totalResponsesByMonth[monthIndex]++;
+    }
+  });
+
+  data.datasets[0].data = totalResponsesByMonth;
+
+  const options: ChartOptions<"bar"> = {
     scales: {
       x: {
         title: {
@@ -56,20 +47,41 @@ const FeedbackBarGraph: React.FC<FeedbackBarGraphProps> = ({ feedback }) => {
           text: "Months",
         },
         ticks: {
-          callback: (value: any) => value + 1,
+          stepSize: 1,
         },
       },
       y: {
         beginAtZero: true,
         title: {
           display: true,
-          text: "Feedbacks",
+          text: "Total Feedbacks",
         },
       },
     },
-    tooltips: {
-      callbacks: {
-        label: getTooltipLabel,
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: (tooltipItem) => {
+            const monthIndex = tooltipItem.dataIndex;
+            const monthNames = [
+              "January",
+              "February",
+              "March",
+              "April",
+              "May",
+              "June",
+              "July",
+              "August",
+              "September",
+              "October",
+              "November",
+              "December",
+            ];
+            const monthName = monthNames[monthIndex];
+            const totalResponses = totalResponsesByMonth[monthIndex];
+            return `${monthName} ${currentYear}: ${totalResponses} Feedbacks`;
+          },
+        },
       },
     },
   };
