@@ -12,7 +12,7 @@ function Feedback({feedback}) {
         if(marking) return
         try {
             setMarking(true)
-            const url = "http://localhost:3000/api/feedbacks/admin/markviewed?id="+id;
+            const url = "/api/feedbacks/admin/markviewed?id="+id;
             await fetch(url, {
                 method: "PUT"
             })

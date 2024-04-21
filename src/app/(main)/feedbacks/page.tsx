@@ -13,7 +13,7 @@ function Feedbacks() {
   }, [])
 
   async function GetFeedbacks() {
-    const url = "http://localhost:3000/api/feedbacks/admin/getfeedbacks";
+    const url = "/api/feedbacks/admin/getfeedbacks";
     try {
       await fetch(url, {
         method: 'GET'

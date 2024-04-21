@@ -33,7 +33,7 @@ function Feedbacks() {
       anonymous: isAnonymous
     }
     setSending(true);
-    const url = "http://localhost:3000/api/feedbacks/addfeedback";
+    const url = "/api/feedbacks/addfeedback";
     try {
       await fetch(url, {
         method: 'POST',
