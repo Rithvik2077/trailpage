@@ -10,7 +10,6 @@ import {url_create_survey, url_get_survey_responses} from "@/app/lib/apiEndPoint
 import { url_add_response,url_get_active_surveys, url_get_response_by_id } from "@/app/lib/apiEndPoints";
 
 export default function MAINSurvey() {
-
   const [pageChoice, setPageChoice] = useState(1);
   const [surveyData, setSurveyData] = useState();
 
@@ -26,22 +25,20 @@ export default function MAINSurvey() {
     try {
       const url = `${url_get_survey_responses}${id}`;
       await fetch(url, {
-        method: 'GET',
+        method: "GET",
       })
-      .then(response => response.json())
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
-    } catch(error) {
+        .then((response) => response.json())
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
+    } catch (error) {
       console.log("error while fetching:", error);
     }
-  }
+  };
 
   function handleSubmit() {
     // let token = document.cookie.match("Authorize").input;
     // const tokens = token.split("=");
-
     // console.log(token);
-
     // createSurvey(
     //   "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsIm5hbWUiOiJIb21lbmljayIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNzEzMTYxMTcwLCJleHAiOjE3MTM3NjU5NzB9.NwgONpWzqZi9r1eL_8JfcCa12m_93J25K3GHp_E8jD8",
     //   data as any,

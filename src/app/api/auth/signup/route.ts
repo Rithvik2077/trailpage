@@ -26,7 +26,7 @@ export async function POST(req: Request) {
           values: [name, email, hashedPassword]
         }
         const user_response = await client.query(query_user);
-        console.log(user_response);
+        // console.log(user_response);
         const user_id = user_response.rows[0].id;
 
         // ******************************************************************************************

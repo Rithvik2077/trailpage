@@ -126,3 +126,54 @@ select sr.id, u.username, sr.response_data, sr.createdat
 from surveyresponses sr
 join users u on u.id = sr.user_id
 where sr.survey_id = 1;
+
+
+//////////////////////////////////////////////////////////////
+DASHBOARD ticket get
+
+SELECT tk.title, tk.description, c.categoryname, tp.name AS priority, ts.name AS status, tk.createdat
+FROM tickets AS tk
+JOIN category AS c ON tk.subcategory_id = c.id
+JOIN ticketpriority AS tp ON tk.priority = tp.id
+JOIN ticketstatus AS ts ON tk.status = ts.id
+ORDER BY tk.createdat
+LIMIT 10;
+
+
+-----------------
+recent surveys
+
+SELECT s.title AS survey_title,
+       s.createdat AS created_at,
+       u.username AS creator_name,
+       COUNT(sr.id) AS total_responses
+FROM surveys s
+LEFT JOIN surveyresponses sr ON s.id = sr.survey_id
+LEFT JOIN users u ON s.createdby = u.id
+GROUP BY s.id, s.title, s.createdat, u.username;
+
+-----------------
+
+recent feedbacks
+
+SELECT f.id,f.title,f.description, f.createdat, u.username
+FROM public.feedbacks AS f
+JOIN users AS u ON f.createdby = u.id
+ORDER BY f.createdat DESC
+LIMIT 10;
+
+-----------------
+feedbacks data
+
+SELECT 
+    TO_CHAR(createdat, 'Month YYYY') AS month,
+    COUNT(*) AS total_feedbacks
+FROM 
+    feedbacks
+GROUP BY 
+    TO_CHAR(createdat, 'Month YYYY')
+ORDER BY 
+    MIN(createdat);
+
+
+

@@ -25,7 +25,6 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({Error: "Body is empty"});
         }
         if (typeof ticket.sub_category_id !== 'number' || ticket.sub_category_id < 0 || typeof ticket.sub_category_id === 'undefined') {
-            console.log("jjhhh");
             return NextResponse.json({Response: { status: 400, statusText: "Invalid sub_category_id", data: null }}, {status: 400});
         }
     

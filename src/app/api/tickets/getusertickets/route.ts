@@ -6,12 +6,23 @@ import { Cookie } from "next/font/google";
 import { cookies } from "next/headers";
 
 type Dto = Requests["UserTicket"];
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
     const auth = cookies().get('Authorize')
     const token = auth.value;
     const isValid = validateAndAuthorizeToken(token, "any")
     if(isValid) {
-        const dto: Dto = await req.json();
+        const url = new URL(req.url)
+       const options = {
+            status: url.searchParams.get('status')?parseInt(url.searchParams.get('status')):0,
+            sub_category: url.searchParams.get('sub_category')?parseInt(url.searchParams.get('sub_category')):0,
+            group: url.searchParams.get('group')?parseInt(url.searchParams.get('group')):0,
+            priority: url.searchParams.get('priority')?parseInt(url.searchParams.get('priorty')):0,
+            closed_by: url.searchParams.get('closed_by')?parseInt(url.searchParams.get('closed_by')):0,
+        };
+        const dto: Dto = {
+            user_id: 0,
+            options: options,
+        }
         if(!dto) {
             return NextResponse.json({Response: {stats: 400,statusText: "Body is empty", data: null}}, {status: 400});
         }
@@ -41,6 +52,7 @@ function validateDto(obj: any): obj is Dto {
     if (!obj.options || typeof obj.options !== 'object') return false;
 
     const { status, sub_category, group, priority, closed_by } = obj.options;
+    console.log(status, sub_category, group, priority, closed_by)
     if (
         typeof status !== 'number' ||
         typeof sub_category !== 'number' ||

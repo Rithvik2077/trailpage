@@ -31,6 +31,7 @@ export async function POST(req: Request) {
         }
         const user_id = GetPayloadDetails(token, "id");
         request.created_by = user_id;
+        // console.log(request);
     
         const result = await CreateNewSurvey(request);
         return NextResponse.json({ Response: result }, {status: result.status});

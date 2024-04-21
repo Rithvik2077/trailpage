@@ -17,8 +17,9 @@ export async function CreateNewSurvey(surveyDto: SurveyDTO) {
                 closes_at: surveyDto.closes_at
             }
             const canCreateSurvey = await GetRowByuserId(survey.created_by!);
-            if(canCreateSurvey.data){
-                if(canCreateSurvey.data[0].can_create_survey) {
+            console.log(canCreateSurvey);
+            if(!canCreateSurvey.error){
+                if(canCreateSurvey.result[0].can_create_survey) {
                     const result = await AddSurvey(survey);
                     return result;
                 }
