@@ -118,7 +118,7 @@ export async function GetSurveyById(id: number, filter?: string) {
             query_text = `select ${filter} from surveys where id = $1`;
         }
         const result = await client.query(query_text, params);
-        console.log(result);
+        // console.log(result);
         client.end();
         return {
             status: 200,

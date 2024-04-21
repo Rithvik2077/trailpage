@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { SurveyInput } from "@/components/repo2/survey-input-popover";
 import { FieldTypes } from "@/components/enums/survey-field-types";
 import { Button } from "@/components/repo2/ui/button";
+import {url_create_survey, url_get_survey_responses} from "@/app/lib/apiEndPoints";
 import { useRouter } from "next/navigation";
 
 export interface FormFields {
@@ -14,8 +15,42 @@ export interface FormFields {
   matrixColumn?: string[];
 }
 
+
+
+
 function SurveysCreation() {
   const [formFields, setFormFields] = useState<FormFields[]>([]);
+  const [surveyTitle, setSurveyTitle] = useState<String>('Test-Survey');
+  const [surveyDescription, setSurveyDescription] = useState<String>('Test-Description');
+  const [closesAt, setClosesAt ] = useState<String>();
+
+
+  const addSurvey = async () => {
+    let currentDate = new Date();
+    // Add one month to the current date
+    let futureDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate());
+    // Create an ISO string for the future date
+    let futureISOString = futureDate.toISOString();
+    const body = {
+      'title': surveyTitle,
+      'survey_fields': formFields,
+      'closes_at': futureISOString
+    }
+    try {
+      await fetch(url_create_survey, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      })
+      .then(response => response.json())
+      .then(result => console.log(result))
+      .catch(err => console.log(err));
+    }catch (error) {
+      console.log("error while fetching:", error)
+    }
+  }
   // const router = useRouter();
   // const routeToUserResponses = () => {
   //   router.push("/user/surveys");
@@ -72,9 +107,8 @@ function SurveysCreation() {
         >
           Add Matrix Input
         </SurveyInput>
-        {/* <Button className="" onClick={routeToUserResponses}>
-          View user responses
-        </Button> */}
+        
+
         <form action="">
           <div className="mt-6 flex flex-col items-center justify-center gap-4 bg-slate-300 p-10 ">
             <div className="w-[55%] rounded-lg border-t-4 border-blue-500 bg-white p-3">
@@ -82,14 +116,23 @@ function SurveysCreation() {
                 <input
                   className="my-8 w-[100%] text-2xl outline-none"
                   placeholder="Survey Title"
+                  onChange={(e)=>setSurveyTitle(e.target.value)}
                 />
               </div>
               <div>
                 <textarea
                   className="w-[100%] outline-none"
                   placeholder="Survey Description"
+                  onChange={(e)=>setSurveyDescription(e.target.value)}
                 />
               </div>
+              {/* <div className="text-2xl">
+                <input
+                  className="my-8 w-[100%] text-2xl outline-none"
+                  placeholder="Closes At"
+                  // onChange={(e)=>setClosesAt(e.target.value)}
+                />
+              </div> */}
             </div>
             {formFields?.map((item: FormFields) => (
               <div className="w-[55%] rounded-lg border-l-4 border-blue-500 bg-white p-3">
@@ -232,6 +275,14 @@ function SurveysCreation() {
               </div>
             ))}
           </div>
+
+          <button
+          type="button"
+          className="mb-2 me-2 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+          onClick={()=>addSurvey()}
+          >
+            Create Survey
+          </button>
         </form>
       </div>
     </>

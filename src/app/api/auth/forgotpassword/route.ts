@@ -7,18 +7,26 @@ export async function POST(req:Request) {
 
   try {
     const {email} = await req.json();
-    const client = db.connect();
+
+    // console.log(email)
+    const client = await db.connect();
 
     
     const query = {
       text: "SELECT email from users where email = ($1)",
       values: [email]
     }
-    const response = client.query(query);
-    const data = response.rows[0];
+
+    // console.log(query);
+
+    const data = await client.query(query);
+    client.end();
+    
+    // console.log(data.rows)
 
     if(data){
-      const token = signJwtAccessToken(data.email, {expiresIn:'2h'});
+      const token = signJwtAccessToken({email:email}, {expiresIn:'2hr'});
+
       let url = 'http://localhost:3000/resetpassword/'
       url = url+token
       const text = template(url)
