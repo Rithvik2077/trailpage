@@ -2,6 +2,7 @@
 import React, {useState, useEffect} from "react";
 import Feedback from "./feedback";
 import Loading from "./loading";
+import { url_get_feedbacks } from "@/app/lib/apiEndPoints";
 
 function Feedbacks() {
 
@@ -13,9 +14,9 @@ function Feedbacks() {
   }, [])
 
   async function GetFeedbacks() {
-    const url = "/api/feedbacks/admin/getfeedbacks";
+    // const url = "/api/feedbacks/admin/getfeedbacks";
     try {
-      await fetch(url, {
+      await fetch(url_get_feedbacks, {
         method: 'GET'
       })
       .then(res => res.json())

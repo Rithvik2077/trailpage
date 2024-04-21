@@ -1,5 +1,6 @@
 "use client"
 import React, {use, useState} from "react";
+import { url_add_feedback } from "@/app/lib/apiEndPoints";
 
 function Feedbacks() {
   const [title, setTitle] = useState("");
@@ -33,9 +34,9 @@ function Feedbacks() {
       anonymous: isAnonymous
     }
     setSending(true);
-    const url = "/api/feedbacks/addfeedback";
+    // const url = "/api/feedbacks/addfeedback";
     try {
-      await fetch(url, {
+      await fetch(url_add_feedback, {
         method: 'POST',
         body: JSON.stringify(feedbackDTO),
         headers: {
