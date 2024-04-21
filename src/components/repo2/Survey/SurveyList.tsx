@@ -96,7 +96,7 @@ export default function Surveys({ surveyData }: { surveyData: any }) {
 
                 <div>{survey.CreatedAt}</div>
                 <Link
-                  href={{ pathname: `./surveys/${survey.ID}`, query: survey }}
+                  href={{ pathname: `./surveys/${survey.ID}` }}
                   className="cursor-pointer text-sm "
                 >
                   <button

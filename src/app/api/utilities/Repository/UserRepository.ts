@@ -48,3 +48,29 @@ export async function GetUserById(id: number) {
         }
     }
 }
+
+export async function GetAllUsers() {
+    const client = await db.connect();
+    try {
+        const query = {
+            text: "select id, username, email from users",
+            values: []
+        }
+        const result = await client.query(query);
+        client.end();
+        return {
+            status: 200,
+            statusText: `${result.command} completed successfully`,
+            result: result.rows
+        }
+    } catch(error) {
+        client.end();
+        return {
+            error: error,
+            status: 500,
+            statusText: "Internal server error",
+            message: error.message,
+            data: null,
+        }
+    }
+}

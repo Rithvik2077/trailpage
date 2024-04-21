@@ -1,9 +1,11 @@
-
-import React from 'react'
-import { url_add_response,url_get_active_surveys, url_get_response_by_id } from "@/app/lib/apiEndPoints";
+'use client'
+import React, { useState } from 'react'
+import { url_add_response, url_get_survey_by_id } from "@/app/lib/apiEndPoints";
 
 export default function FillSurveyPage({params}) {
-    const surveyID = params.slug
+    const surveyID = params.slug;
+
+    const [dataFetched,setDataFetched] = useState();
 
     // const dummyResponse = {
     //     survey_id: 1,
@@ -27,6 +29,21 @@ export default function FillSurveyPage({params}) {
         }
       }
 
+      const GetSurveyById = async (surveyID) => {
+        try {
+          return await fetch(url_get_survey_by_id+surveyID)
+          .then(response => response.json())
+          .then(result => {console.log(result); return result})
+          .catch(err => console.log(err))
+        } catch(error) {
+          console.log("error while fetching:", error);
+        }
+      }
+
+      GetSurveyById(surveyID).then((res)=>{
+        console.log(res);
+      })
+
       const handleResponse = (formData)=>{
         const survey_id = params.slug;
         const response_data = formData;
@@ -36,10 +53,13 @@ export default function FillSurveyPage({params}) {
     
   return (
     <div>
-      <form action={handleResponse}>
+      {dataFetched===false && <div>Fetching Data</div>}
+      {dataFetched===true && <>
+        <form action={handleResponse}>
         {/* {formFields.map()} */}
         <button type={'submit'}>Submit Response</button>
-      </form>
+        </form>
+      </>}
     </div>
   )
 }
