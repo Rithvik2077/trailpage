@@ -126,3 +126,18 @@ export async function GetResponse(id: number) {
         }
     }
 }
+
+export async function GetSurvey(id: number) {
+    try {
+        const response = await GetSurveyById(id);
+        return response;
+    }catch (error) {
+        return {
+            error: error,
+            status: 500,
+            statusText: "Internal server error",
+            message: error.message,
+            data: null,
+        }
+    }
+}
