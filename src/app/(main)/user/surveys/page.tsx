@@ -205,18 +205,7 @@ function UserSurvey() {
     }
   }
 
-  const getResponseById = async (id: number) => {
-    try {
-      const url = `${url_get_response_by_id}${id}`;
-      await fetch(url, {
-        method: "GET",
-      }).then(response => response.json())
-      .then(result => console.log(result))
-      .catch(err => console.log(err));
-    } catch(error) {
-      console.log("error while fetching:", error);
-    }
-  }
+  
   // const surveyData = getSurveys();
   return (
     <div>
@@ -226,9 +215,9 @@ function UserSurvey() {
       <button onClick={getAllSurveys}>
         Get All Surveys
       </button>
-      <button onClick={() => getResponseById(1)}>
+      {/* <button onClick={() => getResponseById(1)}>
         Get response by id
-      </button>
+      </button> */}
       <Surveys surveyData={surveyData} />
     </div>
   );
