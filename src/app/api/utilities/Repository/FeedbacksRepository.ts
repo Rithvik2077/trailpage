@@ -61,7 +61,7 @@ export async function GetFeedbacks(notViewed?: boolean) {
             left join users
             on feedbacks.createdby = users.id`;   
         }
-        console.log(query_text+" LLLLLLLLLLLL")
+        // console.log(query_text+" LLLLLLLLLLLL")
         query_text = `${query_text} ORDER BY createdat DESC`
         const result = await client.query(query_text);
         client.end();
