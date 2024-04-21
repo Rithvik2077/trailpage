@@ -2,6 +2,22 @@ import { db } from "../../utilities/Data/RenderConnect";
 
 export async function GET(req: Request) {
   const client = await db.connect();
+<<<<<<< HEAD
+=======
+  
+  const query = {
+    text:`
+    SELECT s.title AS survey_title,
+    s.createdat AS created_at,
+    u.username AS creator_name,
+    COUNT(sr.id) AS total_responses
+FROM surveys s
+LEFT JOIN surveyresponses sr ON s.id = sr.survey_id
+LEFT JOIN users u ON s.createdby = u.id
+GROUP BY s.id, s.title, s.createdat, u.username;
+    `
+  }
+>>>>>>> d2ff825e0454918904d09376a2460c6cf6a4343c
 
   const query = {
     text: `
