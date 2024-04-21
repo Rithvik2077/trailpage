@@ -9,6 +9,7 @@ import Link from "next/link";
 import Navbar from "@/components/repo2/Navbar";
 import TicketGeneratorButton from "@/components/repo2/TicketGeneratorButton";
 import Pagination from "@/components/repo2/Pagination";
+import Modal from "@/components/repo2/Modal";
 
 const paginate = (items: any, pageNumber: any, pageSize: any) => {
   const startIndex = (pageNumber - 1) * pageSize;
@@ -24,6 +25,30 @@ function Tickets() {
   const [myTickets, setMyTickets] = useState([]);
   const [currentData, setCurrentData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {};
+
+    fetchData();
+  }, []);
+
+  function AssignTicket(id) {
+    const modal = document.getElementById("modal");
+    modal.classList.remove("hidden");
+  }
+
+  function AssignButton(id) {
+    // return <div>Assign</div>;
+    return (
+      <div
+        className="cursor-pointer rounded-lg bg-slate-500 px-2 py-1 text-white"
+        onClick={() => AssignTicket(id)}
+      >
+        Assign
+      </div>
+    );
+  }
 
   let data = paginate(myTickets, currentPage, pageSize);
   useEffect(() => {
@@ -39,7 +64,7 @@ function Tickets() {
       };
       try {
         setLoading(true);
-        const response = await fetch("/api/tickets/getassignedtickets", {
+        const response = await fetch("/api/tickets/admin/getalltickets", {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -100,6 +125,7 @@ function Tickets() {
 
   return (
     <div>
+      {/* <Modal isOpen={true} onClose={setIsModalOpen(false)} id={1} />; */}
       <div className="flex items-stretch">
         <div className="h-screen w-[22%] items-stretch bg-slate-100">
           <div className="mx-2 my-1 mt-2 text-xl">Filters</div>
@@ -125,6 +151,15 @@ function Tickets() {
           </div>
         </div>
 
+        <div
+          className="absolute  left-[50%] top-[50%] hidden bg-slate-200"
+          id="modal"
+        >
+          <div>Assign</div>
+          <div>Search</div>
+          <div className="all-users"></div>
+        </div>
+
         <div className="w-[78%]">
           {/* <div className="px-2 py-6">
             <TicketGeneratorButton />
@@ -136,7 +171,9 @@ function Tickets() {
                 key={ticket.id}
                 className="flex items-center justify-around border-b border-sky-500  bg-slate-50 py-4"
               >
-                <div>{ticket.assignedto}</div>
+                <div>
+                  {ticket.assignedto || <AssignButton id={ticket.id} />}
+                </div>
                 <div>{ticket.title}</div>
                 <div
                   className={`${
