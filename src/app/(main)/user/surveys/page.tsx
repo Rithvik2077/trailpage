@@ -170,28 +170,6 @@ const surveyData = [
 
 function UserSurvey() {
 
-  const dummyResponse = {
-    survey_id: 1,
-    response_data: [{"question":"How would you rate the overall organization of the event?","response":"Good"},{"question":"Did you find the event content relevant and engaging?","response":"Yes"},{"question":"Would you recommend this event to others?","response":"Maybe"}]
-  }
-  const submitResponse = async () => {
-    // console.log("sending");
-    try {
-      await fetch(url_add_response, {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dummyResponse),
-      })
-      .then(response => response.json())
-      .then(result => console.log(result))
-      .catch(err => console.log(err));
-    } catch(error) {
-      console.log("error while fetching:", error);
-    }
-  }
-
   const getAllSurveys = async () => {
     try {
       await fetch(url_get_active_surveys, {
@@ -209,9 +187,9 @@ function UserSurvey() {
   // const surveyData = getSurveys();
   return (
     <div>
-      <button onClick={submitResponse}>
+      {/* <button onClick={submitResponse}>
         submit response
-      </button>
+      </button> */}
       <button onClick={getAllSurveys}>
         Get All Surveys
       </button>

@@ -1,12 +1,45 @@
 
 import React from 'react'
+import { url_add_response,url_get_active_surveys, url_get_response_by_id } from "@/app/lib/apiEndPoints";
 
 export default function FillSurveyPage({params}) {
     const surveyID = params.slug
+
+    // const dummyResponse = {
+    //     survey_id: 1,
+    //     response_data: [{"question":"How would you rate the overall organization of the event?","response":"Good"},{"question":"Did you find the event content relevant and engaging?","response":"Yes"},{"question":"Would you recommend this event to others?","response":"Maybe"}]
+    //   }
+      const submitResponse = async (responseData) => {
+        // console.log("sending");
+        try {
+          await fetch(url_add_response, {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(responseData),
+          })
+          .then(response => response.json())
+          .then(result => console.log(result))
+          .catch(err => console.log(err));
+        } catch(error) {
+          console.log("error while fetching:", error);
+        }
+      }
+
+      const handleResponse = (formData)=>{
+        const survey_id = params.slug;
+        const response_data = formData;
+        submitResponse(formData)
+
+      }
     
   return (
     <div>
-      FillSurvey
+      <form action={handleResponse}>
+        {/* {formFields.map()} */}
+        <button type={'submit'}>Submit Response</button>
+      </form>
     </div>
   )
 }
