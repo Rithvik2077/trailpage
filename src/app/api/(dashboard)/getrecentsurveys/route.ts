@@ -14,8 +14,7 @@ export async function GET(req: Request) {
     LEFT JOIN surveyresponses sr ON s.id = sr.survey_id
     LEFT JOIN users u ON s.createdby = u.id
     GROUP BY s.id, s.title, s.createdat, u.username
-    ORDER BY s.id DESC
-    LIMIT 10;
+    ORDER BY s.id DESC;
     `,
   };
 

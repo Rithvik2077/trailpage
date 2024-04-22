@@ -10,17 +10,13 @@ export async function GET(req: Request) {
     f.title,
     f.description,
     f.createdat,
-    u.username ,
-    EXTRACT(MONTH FROM f.createdat) AS month,
-    COUNT(*) OVER (PARTITION BY EXTRACT(MONTH FROM f.createdat)) AS total_feedback
-    FROM 
-        feedbacks AS f
-    JOIN 
-        users AS u ON f.createdby = u.id
-    ORDER BY 
-        f.createdat DESC
-    LIMIT 10;
-
+    COALESCE(u.username, 'Anonymous') AS username
+FROM 
+    feedbacks AS f
+LEFT JOIN 
+    users AS u ON f.createdby = u.id
+ORDER BY 
+    f.createdat DESC;
     `,
   };
 

@@ -1,4 +1,5 @@
 import React from "react";
+import { formatDateString } from "@/../public/data/Components/function";
 
 interface DashboardFeedbackProps {
   data: {
@@ -23,7 +24,7 @@ const DashboardFeedback: React.FC<DashboardFeedbackProps> = ({ data }) => {
           ? description.slice(0, 10) + "...."
           : description}
       </td>
-      <td className="border px-4 py-2">{createdat.slice(0, 10)}</td>
+      <td className="border px-4 py-2">{formatDateString(createdat)}</td>
     </tr>
   );
 };

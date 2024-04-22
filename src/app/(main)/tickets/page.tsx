@@ -13,6 +13,7 @@ import Pagination from "@/components/repo2/Pagination";
 const paginate = (items: any, pageNumber: any, pageSize: any) => {
   const startIndex = (pageNumber - 1) * pageSize;
   return items.slice(startIndex, startIndex + pageSize);
+  // return items;
 };
 
 function Tickets() {
@@ -33,21 +34,25 @@ function Tickets() {
           sub_category: 0,
           group: 0,
           priority: 0,
-          closed_by: 0
-        }
-      }
+          closed_by: 0,
+        },
+      };
       try {
         setLoading(true);
-        const response = await fetch("/api/tickets/getusertickets", {
-          method: "POST",
+        const response = await fetch("/api/tickets/getassignedtickets", {
+          method: "GET",
           headers: {
             Accept: "application/json",
           },
-          body: JSON.stringify(body_params),
+          // body: JSON.stringify(body_params),
         });
         if (response) {
-          const ticketData = await response.json();
-          console.log(ticketData);
+          const ticketDataRes = await response.json();
+
+          console.log("ticket ->", ticketDataRes);
+          console.log(ticketDataRes.Response.result);
+
+          const ticketData = ticketDataRes.Response.result;
           setMyTickets(ticketData);
           data = paginate(ticketData, currentPage, pageSize);
           setCurrentData(data);
@@ -121,28 +126,26 @@ function Tickets() {
         </div>
 
         <div className="w-[78%]">
-          <div className="px-2 py-6">
+          {/* <div className="px-2 py-6">
             <TicketGeneratorButton />
-          </div>
+          </div> */}
 
           <div>
             {currentData.map((ticket: any) => (
               <div
-                key={ticket.ticketId}
+                key={ticket.id}
                 className="flex items-center justify-around border-b border-sky-500  bg-slate-50 py-4"
               >
-                <div>{ticket.ticketAssigned}</div>
-                <div>{ticket.ticketSubject}</div>
+                <div>{ticket.assignedto}</div>
+                <div>{ticket.title}</div>
                 <div
                   className={`${
-                    ticket.ticketStatus == "In Progress"
-                      ? "bg-red-500"
-                      : "bg-green-500 "
+                    ticket.status == "Open" ? "bg-red-500" : "bg-green-500 "
                   }  rounded-full px-2 py-1 text-sm text-white`}
                 >
-                  {ticket.ticketStatus}
+                  {ticket.status}
                 </div>
-                <div>{ticket.ticketCreatedAt}</div>
+                <div>{ticket.createdat}</div>
                 <Link
                   href={{ pathname: "./tickets/show", query: ticket }}
                   className="cursor-pointer rounded-full bg-blue-200 px-2 py-1 text-sm text-blue-500 hover:bg-blue-100"

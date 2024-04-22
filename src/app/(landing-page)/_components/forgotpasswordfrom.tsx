@@ -1,7 +1,27 @@
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FormEvent } from "react";
 
 const ForgotPassowrdForm = ({ setpassword }) => {
-  const handleSubmit = () => {};
+  const router = useRouter();
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email");
+
+    if (email) {
+      const response = await fetch(`/api/auth/forgotpassword/`, {
+        method: "POST",
+        body: JSON.stringify({
+          email: formData.get("email"),
+        }),
+      });
+      // console.log(response);
+      if (response.ok) {
+        // router.push("/signin");
+        setpassword;
+      }
+    }
+  };
   return (
     <div className="mx-auto max-w-[500px] rounded bg-white px-6 py-10 shadow-three dark:bg-dark sm:p-[60px]">
       <h3 className="mb-3 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">

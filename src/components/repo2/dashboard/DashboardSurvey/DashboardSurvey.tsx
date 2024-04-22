@@ -1,4 +1,5 @@
 import React from "react";
+import { formatDateString } from "@/../public/data/Components/function";
 
 interface DashboardSurveyProps {
   item: {
@@ -18,7 +19,7 @@ const DashboardSurvey: React.FC<DashboardSurveyProps> = ({ item }) => {
     <tr className={Styles}>
       <td className="border px-2 py-2">{survey_title}</td>
       <td className="border px-2 py-2">{creator_name}</td>
-      <td className="border px-2 py-2">{created_at}</td>
+      <td className="border px-2 py-2">{formatDateString(created_at)}</td>
       <td className="border px-2 py-2">{total_responses}</td>
     </tr>
   );

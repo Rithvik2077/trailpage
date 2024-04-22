@@ -1,6 +1,4 @@
 "use client";
-
-import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import { FormEvent } from "react";
@@ -27,7 +25,7 @@ export default function SignInForm({ setpassword }) {
       localStorage.setItem("Authorize", data.accessToken);
 
       if (data.user.role != "admin") {
-        router.push("/tickets");
+        router.push("/user/tickets");
       } else {
         router.push("/dashboard");
       }
@@ -55,6 +53,7 @@ export default function SignInForm({ setpassword }) {
             name="email"
             placeholder="Enter your Email"
             className="border-stroke w-full rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
+            required
           />
         </div>
         <div className="mb-8">
@@ -69,6 +68,7 @@ export default function SignInForm({ setpassword }) {
             name="password"
             placeholder="Enter your Password"
             className="border-stroke w-full rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
+            required
           />
         </div>
         <div className="mb-8 flex flex-col justify-between sm:flex-row sm:items-center">

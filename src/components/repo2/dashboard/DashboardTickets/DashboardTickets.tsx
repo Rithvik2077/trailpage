@@ -1,4 +1,5 @@
 import React from "react";
+import { formatDateString } from "@/../public/data/Components/function";
 
 interface DashboardTicketsProps {
   item: {
@@ -28,7 +29,7 @@ const DashboardTickets: React.FC<DashboardTicketsProps> = ({ item }) => {
       <td className="border  px-2  py-2">{categoryname}</td>
       <td className="border  px-2  py-2">{priority}</td>
       <td className="border  px-2  py-2">{status}</td>
-      <td className="border  px-2  py-2">{createdat.slice(0, 10)}</td>
+      <td className="border  px-2  py-2">{formatDateString(createdat)}</td>
     </tr>
   );
 };

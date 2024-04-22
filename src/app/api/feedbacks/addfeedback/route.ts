@@ -1,28 +1,36 @@
 import {AddNewFeedback} from "../../utilities/Services/FeedbackService";
 import { NextResponse } from "next/server";
-import {validateAndAuthorizeToken} from "@/app/api/utilities/helpers/tokenHelper"
-import { pool } from "../../utilities/Data/RenderConnect";
+import {validateAndAuthorizeToken, GetPayloadDetails} from "@/app/api/utilities/helpers/tokenHelper"
+import { cookies } from "next/headers";
 
 
 interface Feedback {
     title: string,
     feedback: string,
-    created_by: number | null,
+    anonymous: boolean,
 }
 
 export async function POST(req: Request) {
-    
-    if(!req.headers.get("authorization"))
-        return NextResponse.json({status: 401, statusText: "Unathorized", data: null}, {status: 401});
-    const token = req.headers.get("authorization")!.split(' ')[1];
-    const isValid = validateAndAuthorizeToken(token, "any");
-    if(isValid) {
-        const feedback: Feedback = await req.json();
-        if(typeof feedback.title !== 'string' || !feedback.title) {
+    const auth = cookies().get('Authorize')
+    const token = auth.value;
+    const res = validateAndAuthorizeToken(token, "any");
+    if(res) {
+        const feedbackDTO: Feedback = await req.json();
+        if(typeof feedbackDTO.title !== 'string' || !feedbackDTO.title) {
             return NextResponse.json({ status: 400, statusText: "title is not defined or is not a string" }, {status: 400});
         }
-        if(typeof feedback.feedback !== 'string' || !feedback.feedback) {
+        if(typeof feedbackDTO.feedback !== 'string' || !feedbackDTO.feedback) {
             return NextResponse.json({ status: 400, statusText: "feedback is not defined or is not a string" }, {status: 400});
+        }
+
+        const feedback = {
+            title: feedbackDTO.title, 
+            feedback: feedbackDTO.feedback, 
+            created_by: null,
+        }
+
+        if(!feedbackDTO.anonymous) {
+            feedback.created_by = GetPayloadDetails(token, "id");
         }
     
         const result = await AddNewFeedback(feedback);

@@ -6,8 +6,8 @@ import Pagination from "@/components/repo2/Pagination";
 import Link from "next/link";
 
 const paginate = (items: any, pageNumber: any, pageSize: any) => {
-  const startIndex = (pageNumber - 1) * pageSize;
-  return items.slice(startIndex, startIndex + pageSize);
+  // const startIndex = (pageNumber - 1) * pageSize;
+  // return items.slice(startIndex, startIndex + pageSize);
 };
 
 export default function Surveys({ surveyData }: { surveyData: any }) {
@@ -96,7 +96,7 @@ export default function Surveys({ surveyData }: { surveyData: any }) {
 
                 <div>{survey.CreatedAt}</div>
                 <Link
-                  href={{ pathname: `./surveys/${survey.ID}`, query: survey }}
+                  href={{ pathname: `./surveys/${survey.ID}` }}
                   className="cursor-pointer text-sm "
                 >
                   <button

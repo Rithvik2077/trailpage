@@ -10,8 +10,7 @@ FROM tickets AS tk
 JOIN category AS c ON tk.subcategory_id = c.id
 JOIN ticketpriority AS tp ON tk.priority = tp.id
 JOIN ticketstatus AS ts ON tk.status = ts.id
-ORDER BY tk.createdat
-LIMIT 10;
+ORDER BY tk.createdat DESC;
     `,
   };
 
