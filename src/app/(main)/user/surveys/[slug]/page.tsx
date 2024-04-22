@@ -1,11 +1,14 @@
 'use client'
 import React, { useState } from 'react'
 import { url_add_response, url_get_survey_by_id } from "@/app/lib/apiEndPoints";
+import SurveyForm from '@/app/(main)/surveys/[slug]/surveyForm';
+
 
 export default function FillSurveyPage({params}) {
     const surveyID = params.slug;
 
-    const [dataFetched,setDataFetched] = useState();
+    const [dataFetched,setDataFetched] = useState(false);
+    const [surveyFields,setSurveyFields] = useState();
 
     // const dummyResponse = {
     //     survey_id: 1,
@@ -31,7 +34,7 @@ export default function FillSurveyPage({params}) {
 
       const GetSurveyById = async (surveyID) => {
         try {
-          return await fetch(url_get_survey_by_id+surveyID)
+          return await fetch(`${url_get_survey_by_id}${surveyID}`)
           .then(response => response.json())
           .then(result => {console.log(result); return result})
           .catch(err => console.log(err))
@@ -40,14 +43,27 @@ export default function FillSurveyPage({params}) {
         }
       }
 
+      
+
       GetSurveyById(surveyID).then((res)=>{
-        console.log(res);
+        console.log(res.Response.result[0]);
+        const title = res.Response.result[0].title;
+        setSurveyFields(res.Response.result[0].surveyfields);
+        checkDataFetched();
+        
       })
+
+      const checkDataFetched = ()=>{
+        if(surveyFields){
+          setDataFetched(true)
+        }
+      }
 
       const handleResponse = (formData)=>{
         const survey_id = params.slug;
         const response_data = formData;
-        submitResponse(formData)
+        console.log('This is the FORM DATA***************',response_data)
+        // submitResponse(formData)
 
       }
     
@@ -56,7 +72,13 @@ export default function FillSurveyPage({params}) {
       {dataFetched===false && <div>Fetching Data</div>}
       {dataFetched===true && <>
         <form action={handleResponse}>
-        {/* {formFields.map()} */}
+        {/* {surveyFields.map((item)=>{
+          console.log(item)
+        })} */}
+        <input type="text" />
+
+        <SurveyForm responseData={surveyFields}/>
+
         <button type={'submit'}>Submit Response</button>
         </form>
       </>}
