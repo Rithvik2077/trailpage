@@ -147,7 +147,7 @@ function Tickets() {
                 </div>
                 <div>{ticket.createdat}</div>
                 <Link
-                  href={{ pathname: "./tickets/show", query: ticket }}
+                  href={{ pathname: "./show", query: ticket }}
                   className="cursor-pointer rounded-full bg-blue-200 px-2 py-1 text-sm text-blue-500 hover:bg-blue-100"
                 >
                   View Details

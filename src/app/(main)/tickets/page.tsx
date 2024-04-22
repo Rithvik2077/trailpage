@@ -26,24 +26,79 @@ function Tickets() {
   const [currentData, setCurrentData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [allUsersArr, setAllUsersArr] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {};
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/users/admin/getallusers", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+          // body: JSON.stringify(body_params),
+        });
+        const res = await response.json();
+        const allUsers = res.Response.result;
+        console.log("all", allUsers);
+        setAllUsersArr(allUsers);
+      } catch (error) {}
+    };
 
     fetchData();
   }, []);
 
-  function AssignTicket(id) {
-    const modal = document.getElementById("modal");
-    modal.classList.remove("hidden");
+  async function assignTicketToUser(ticket_id, user_id) {
+    console.log("A", ticket_id, user_id);
+    const body_params = {
+      user_id,
+      ticket_id,
+    };
+
+    try {
+      const res = await fetch("/api/tickets/admin/assignticket", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+        body: JSON.stringify(body_params),
+      });
+
+      const response = await res.json();
+      console.log("ress", response);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  function AssignButton(id) {
-    // return <div>Assign</div>;
+  function AssignTicket(id, title) {
+    console.log("tic", title);
+    const modal = document.getElementById("modal");
+    modal.classList.remove("hidden");
+
+    // const message = document.createElement("div");
+    // message.innerHTML = `Ticket ${id} : ${title} `;
+    // modal.appendChild(message);
+    const header = document.getElementsByClassName("header")[0];
+    header.innerHTML = `Ticket ${id} : ${title} `;
+
+    const container = document.getElementsByClassName("all-users")[0];
+    container.innerHTML = "";
+    allUsersArr.map((user) => {
+      const div = document.createElement("div");
+      div.id = user.id;
+      div.innerHTML = user.username;
+      div.addEventListener("click", () => assignTicketToUser(id, user.id));
+      container.appendChild(div);
+    });
+  }
+
+  function AssignButton({ ticket }) {
+    console.log("TICKET", ticket);
     return (
       <div
         className="cursor-pointer rounded-lg bg-slate-500 px-2 py-1 text-white"
-        onClick={() => AssignTicket(id)}
+        onClick={() => AssignTicket(ticket.id, ticket.title)}
       >
         Assign
       </div>
@@ -151,15 +206,6 @@ function Tickets() {
           </div>
         </div>
 
-        <div
-          className="absolute  left-[50%] top-[50%] hidden bg-slate-200"
-          id="modal"
-        >
-          <div>Assign</div>
-          <div>Search</div>
-          <div className="all-users"></div>
-        </div>
-
         <div className="w-[78%]">
           {/* <div className="px-2 py-6">
             <TicketGeneratorButton />
@@ -172,7 +218,7 @@ function Tickets() {
                 className="flex items-center justify-around border-b border-sky-500  bg-slate-50 py-4"
               >
                 <div>
-                  {ticket.assignedto || <AssignButton id={ticket.id} />}
+                  {ticket.assignedto || <AssignButton ticket={ticket} />}
                 </div>
                 <div>{ticket.title}</div>
                 <div
@@ -201,6 +247,14 @@ function Tickets() {
             pageSize={pageSize}
             onPageChange={onPageChange}
           />
+        </div>
+
+        <div className=" hidden w-[22%] bg-slate-200 p-5" id="modal">
+          <div className="header"></div>
+          <div>
+            <input type="search" />
+          </div>
+          <div className="all-users"></div>
         </div>
       </div>
     </div>
