@@ -119,7 +119,6 @@ export async function UpdateStatus(user_id: number, ticket_id: number, status: n
         }else {
             if(assigned_to.result[0].assignedto != user_id) {
                const role = await GetRoleNameByUserId(user_id);
-            //    console.log(role);
                if(role.error) {
                 return role;
                }
