@@ -8,7 +8,7 @@ import SurveyForm from '@/app/(main)/surveys/[slug]/surveyForm'
 
 export default function SurveyResponses({params}) {
 
-  const [responseData, setResponseData] = useState();
+  const [responseData, setResponseData] = useState([]);
   const [dataFetched, setDataFetched] = useState(false);
 
   const viewSurveyResponse = async (id: number) => {
@@ -26,18 +26,24 @@ export default function SurveyResponses({params}) {
   };
 
   viewSurveyResponse(params.slug).then((surveyResponse)=>{
+    console.log('raw survey response:>',surveyResponse);
     console.log('tghdchsbsds is survey response',surveyResponse.Response.result);
     setResponseData(surveyResponse.Response.result);
-    setDataFetched(true)
+    checkFetchingOfData()
+    console.log('this is response data',responseData)
   })
+
+  const checkFetchingOfData = ()=>{
+    if(responseData){
+      setDataFetched(true)
+    }
+  }
   
-
-
   return (
     <div>
       
       {dataFetched===false && <p>Fetching responses</p>}
-      {dataFetched===true  && <SurveyForm/>}
+      {dataFetched===true  && <SurveyForm responseData={responseData}/>}
       
     </div>
   )

@@ -12,7 +12,7 @@ const paginate = (items: any, pageNumber: any, pageSize: any) => {
 
 export default function Surveys({ surveyData }: { surveyData: any }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 8;
+  const pageSize = 100;
   // const [allFilteredData, setAllFilteredData] = useState([{}]);
   const [filterApplied, setFilterApplied] = useState("");
   const [myTickets, setMyTickets] = useState([]);
@@ -87,16 +87,16 @@ export default function Surveys({ surveyData }: { surveyData: any }) {
           <div className=" p-8">
             {surveyData.map((survey: any) => (
               <div
-                key={survey.ID}
+                key={survey.id}
                 className="m-5 flex items-center justify-around rounded-full border-b  border-sky-500 bg-slate-50 px-6 py-4"
               >
-                <div>{survey.Title}</div>
-                <div>{survey.Description}</div>
-                <div>{survey.CreatedBy}</div>
+                <div>{survey.title}</div>
+                {/* <div>{survey.Description}</div> */}
+                <div>{survey.createdby}</div>
 
-                <div>{survey.CreatedAt}</div>
+                <div>{survey.createdat}</div>
                 <Link
-                  href={{ pathname: `./surveys/${survey.ID}` }}
+                  href={{ pathname: `./surveys/${survey.id}` }}
                   className="cursor-pointer text-sm "
                 >
                   <button
