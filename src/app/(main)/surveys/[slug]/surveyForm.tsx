@@ -9,14 +9,14 @@ export default function SurveyForm({responseData}) {
   console.log("yeyeeyee", responseData);
   let i = 0;
   return (
-    <div>
+    <>
        {responseData.map((item: FormFields) => (
         
         <div className="w-[55%] rounded-lg border-l-4 border-blue-500 bg-white p-3" key={i}>
         {item.type === FieldTypes.TEXTINPUT && (
           <div className="flex flex-col ">
             <label className="mb-3 text-lg">{item.label} </label>
-            <input placeholder="input" />
+            <input name='input-tag' placeholder="input" />
           </div>
         )}
 
@@ -39,7 +39,7 @@ export default function SurveyForm({responseData}) {
             <div className="flex flex-col ">
               {item.options?.map((itemVal) => (
                 <div className="align-center flex gap-4" key={i+1}>
-                  <input type="checkbox" />
+                  <input name='input-tag' type="checkbox" />
                   <label>{itemVal} </label>
                 </div>
               ))}
@@ -86,7 +86,7 @@ export default function SurveyForm({responseData}) {
                     SVG, PNG, JPG or GIF (MAX. 800x400px)
                   </p>
                 </div>
-                <input
+                <input name='input-tag'
                   id="dropzone-file"
                   type="file"
                   className="hidden"
@@ -114,7 +114,7 @@ export default function SurveyForm({responseData}) {
                   <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                 </svg>
               </div>
-              <input
+              <input name='input-tag'
                 type="date"
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                 placeholder="Select date"
@@ -151,6 +151,6 @@ export default function SurveyForm({responseData}) {
         )}
       </div>
        ))}
-    </div>
+    </>
   )
 }

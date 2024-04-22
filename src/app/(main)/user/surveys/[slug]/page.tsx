@@ -59,7 +59,27 @@ export default function FillSurveyPage({params}) {
         }
       }
 
-      const handleResponse = (formData)=>{
+      const handleResponse = (event)=>{
+
+        event.preventDefault();
+        
+        const form = event.target;
+        // console.log('This is raw form event.target', form);
+
+        // Create a FormData object from the form
+        const formData = new FormData(form);
+
+        // console.log('This is formdata.values ', formData.values)
+
+        formData.forEach((value, key) => {
+          console.log(`Input Name: ${key}, Input Value: ${value}`);
+      });
+    
+        // Access the input values from the FormData object
+        // You can use the `get` method with the name attribute of each input element
+        const inputText = formData.get('hello');
+        console.log('this is data********',formData)
+
         const survey_id = params.slug;
         const response_data = formData;
         console.log('This is the FORM DATA***************',response_data)
@@ -71,11 +91,11 @@ export default function FillSurveyPage({params}) {
     <div>
       {dataFetched===false && <div>Fetching Data</div>}
       {dataFetched===true && <>
-        <form action={handleResponse}>
+        <form onSubmit={handleResponse}>
         {/* {surveyFields.map((item)=>{
           console.log(item)
         })} */}
-        <input type="text" />
+        <input name='hello' type="text" />
 
         <SurveyForm responseData={surveyFields}/>
 
