@@ -5,8 +5,10 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import TicketGeneratorButton from "./TicketGeneratorButton";
 import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 const Navbar: React.FC = () => {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [isAdmin, setIsAdmin] = useState(false);
@@ -25,6 +27,22 @@ const Navbar: React.FC = () => {
     }
 
     checkadmin();
+    const currentUrl = window.location.href;
+    const baseurl = window.location.host;
+    if (!isAdmin) {
+      if (currentUrl.includes(baseurl + "/dashboard")) {
+        router.push("/user/tickets");
+      }
+      if (currentUrl.includes(baseurl + "/tickets")) {
+        router.push("/user/tickets");
+      }
+      if (currentUrl.includes(baseurl + "/feedbacks")) {
+        router.push("/user/feedbacks");
+      }
+      if (currentUrl.includes(baseurl + "/surveys")) {
+        router.push("/user/surveys");
+      }
+    }
   }, []);
 
   async function handleSubmit() {
