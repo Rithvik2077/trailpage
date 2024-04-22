@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import TicketGeneratorButton from "./TicketGeneratorButton";
 import { Button } from "./ui/button";
@@ -13,7 +13,13 @@ const Navbar: React.FC = () => {
 
   const [isAdmin, setIsAdmin] = useState(false);
   const [inuser, setAsUser] = useState(true);
+
+  // let currentUrl = useRef(null);
+  // let baseurl = useRef(null);
+
   useEffect(() => {
+    // currentUrl.current = window.location.href;
+    // baseurl.current = window.location.host;
     async function checkadmin() {
       const response = await fetch("/api/checkcookie", {
         method: "GET",
@@ -25,24 +31,7 @@ const Navbar: React.FC = () => {
         setAsUser(false);
       }
     }
-
     checkadmin();
-    const currentUrl = window.location.href;
-    const baseurl = window.location.host;
-    if (!isAdmin) {
-      if (currentUrl.includes(baseurl + "/dashboard")) {
-        router.push("/user/tickets");
-      }
-      if (currentUrl.includes(baseurl + "/tickets")) {
-        router.push("/user/tickets");
-      }
-      if (currentUrl.includes(baseurl + "/feedbacks")) {
-        router.push("/user/feedbacks");
-      }
-      if (currentUrl.includes(baseurl + "/surveys")) {
-        router.push("/user/surveys");
-      }
-    }
   }, []);
 
   async function handleSubmit() {
@@ -50,6 +39,22 @@ const Navbar: React.FC = () => {
   }
 
   console.log(isAdmin, inuser);
+  // function routeacc() {
+  //   if (!isAdmin) {
+  //     if (currentUrl.current.includes(baseurl.current + "/dashboard")) {
+  //       router.push("/user/tickets");
+  //     }
+  //     if (currentUrl.current.includes(baseurl.current + "/tickets")) {
+  //       router.push("/user/tickets");
+  //     }
+  //     if (currentUrl.current.includes(baseurl.current + "/feedbacks")) {
+  //       router.push("/user/feedbacks");
+  //     }
+  //     if (currentUrl.current.includes(baseurl.current + "/surveys")) {
+  //       router.push("/user/surveys");
+  //     }
+  //   }
+  // }
 
   // console.log("out admin", isAdmin, "in user", inuser);
 
