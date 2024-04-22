@@ -49,12 +49,16 @@ function Show({ searchParams }: any) {
       </div>
       <div className="text-xl">{data.description}</div>
 
-      <button
-        className="rounded-md bg-black px-4 py-2 text-white"
-        onClick={() => updateStatusById(data.id)}
-      >
-        Mark as closed
-      </button>
+      {data.status == "Open" && (
+        <button
+          className="rounded-md bg-black px-4 py-2 text-white"
+          onClick={() => updateStatusById(data.id)}
+        >
+          Mark as closed
+        </button>
+      )}
+
+      {data.status == "Closed" && <div>Closed At : {data.closedat}</div>}
     </div>
   );
 }

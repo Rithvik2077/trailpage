@@ -6,8 +6,8 @@ import Link from "next/link";
 function TicketGeneratorButton() {
   return (
     <Link
-      href="/tickets/new"
-      className="inline-block bg-red-600 p-2 rounded-md cursor-pointer text-white"
+      href="/user/tickets/new"
+      className="inline-block cursor-pointer rounded-md bg-red-600 p-2 text-white"
     >
       <div>+ Add Ticket</div>
     </Link>

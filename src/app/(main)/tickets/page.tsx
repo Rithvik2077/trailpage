@@ -9,6 +9,7 @@ import Link from "next/link";
 import Navbar from "@/components/repo2/Navbar";
 import TicketGeneratorButton from "@/components/repo2/TicketGeneratorButton";
 import Pagination from "@/components/repo2/Pagination";
+import Modal from "@/components/repo2/Modal";
 
 const paginate = (items: any, pageNumber: any, pageSize: any) => {
   const startIndex = (pageNumber - 1) * pageSize;
@@ -24,6 +25,85 @@ function Tickets() {
   const [myTickets, setMyTickets] = useState([]);
   const [currentData, setCurrentData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [allUsersArr, setAllUsersArr] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/users/admin/getallusers", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+          // body: JSON.stringify(body_params),
+        });
+        const res = await response.json();
+        const allUsers = res.Response.result;
+        console.log("all", allUsers);
+        setAllUsersArr(allUsers);
+      } catch (error) {}
+    };
+
+    fetchData();
+  }, []);
+
+  async function assignTicketToUser(ticket_id, user_id) {
+    console.log("A", ticket_id, user_id);
+    const body_params = {
+      user_id,
+      ticket_id,
+    };
+
+    try {
+      const res = await fetch("/api/tickets/admin/assignticket", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+        body: JSON.stringify(body_params),
+      });
+
+      const response = await res.json();
+      console.log("ress", response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function AssignTicket(id, title) {
+    console.log("tic", title);
+    const modal = document.getElementById("modal");
+    modal.classList.remove("hidden");
+
+    // const message = document.createElement("div");
+    // message.innerHTML = `Ticket ${id} : ${title} `;
+    // modal.appendChild(message);
+    const header = document.getElementsByClassName("header")[0];
+    header.innerHTML = `Ticket ${id} : ${title} `;
+
+    const container = document.getElementsByClassName("all-users")[0];
+    container.innerHTML = "";
+    allUsersArr.map((user) => {
+      const div = document.createElement("div");
+      div.id = user.id;
+      div.innerHTML = user.username;
+      div.addEventListener("click", () => assignTicketToUser(id, user.id));
+      container.appendChild(div);
+    });
+  }
+
+  function AssignButton({ ticket }) {
+    console.log("TICKET", ticket);
+    return (
+      <div
+        className="cursor-pointer rounded-lg bg-slate-500 px-2 py-1 text-white"
+        onClick={() => AssignTicket(ticket.id, ticket.title)}
+      >
+        Assign
+      </div>
+    );
+  }
 
   let data = paginate(myTickets, currentPage, pageSize);
   useEffect(() => {
@@ -39,7 +119,7 @@ function Tickets() {
       };
       try {
         setLoading(true);
-        const response = await fetch("/api/tickets/getassignedtickets", {
+        const response = await fetch("/api/tickets/admin/getalltickets", {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -100,6 +180,7 @@ function Tickets() {
 
   return (
     <div>
+      {/* <Modal isOpen={true} onClose={setIsModalOpen(false)} id={1} />; */}
       <div className="flex items-stretch">
         <div className="h-screen w-[22%] items-stretch bg-slate-100">
           <div className="mx-2 my-1 mt-2 text-xl">Filters</div>
@@ -136,7 +217,9 @@ function Tickets() {
                 key={ticket.id}
                 className="flex items-center justify-around border-b border-sky-500  bg-slate-50 py-4"
               >
-                <div>{ticket.assignedto}</div>
+                <div>
+                  {ticket.assignedto || <AssignButton ticket={ticket} />}
+                </div>
                 <div>{ticket.title}</div>
                 <div
                   className={`${
@@ -164,6 +247,14 @@ function Tickets() {
             pageSize={pageSize}
             onPageChange={onPageChange}
           />
+        </div>
+
+        <div className=" hidden w-[22%] bg-slate-200 p-5" id="modal">
+          <div className="header"></div>
+          <div>
+            <input type="search" />
+          </div>
+          <div className="all-users"></div>
         </div>
       </div>
     </div>

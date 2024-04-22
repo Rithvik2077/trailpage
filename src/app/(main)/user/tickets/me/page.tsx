@@ -16,7 +16,7 @@ const paginate = (items: any, pageNumber: any, pageSize: any) => {
   // return items;
 };
 
-function UserTickets() {
+function Tickets() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
   const [allFilteredData, setAllFilteredData] = useState([{}]);
@@ -39,7 +39,7 @@ function UserTickets() {
       };
       try {
         setLoading(true);
-        const response = await fetch("/api/tickets/getusertickets", {
+        const response = await fetch("/api/tickets/getassignedtickets", {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -123,21 +123,12 @@ function UserTickets() {
           >
             In Progress
           </div>
-
-          <div>
-            <Link
-              href={{ pathname: "./tickets/me" }}
-              // className="cursor-pointer rounded-full bg-blue-200 px-2 py-1 text-sm text-blue-500 hover:bg-blue-100"
-            >
-              Add Button
-            </Link>
-          </div>
         </div>
 
         <div className="w-[78%]">
-          <div className="px-2 py-6">
+          {/* <div className="px-2 py-6">
             <TicketGeneratorButton />
-          </div>
+          </div> */}
 
           <div>
             {currentData.map((ticket: any) => (
@@ -156,7 +147,7 @@ function UserTickets() {
                 </div>
                 <div>{ticket.createdat}</div>
                 <Link
-                  href={{ pathname: "./tickets/show", query: ticket }}
+                  href={{ pathname: "./show", query: ticket }}
                   className="cursor-pointer rounded-full bg-blue-200 px-2 py-1 text-sm text-blue-500 hover:bg-blue-100"
                 >
                   View Details
@@ -179,4 +170,4 @@ function UserTickets() {
   );
 }
 
-export default UserTickets;
+export default Tickets;

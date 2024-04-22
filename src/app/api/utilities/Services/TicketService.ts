@@ -119,7 +119,6 @@ export async function UpdateStatus(user_id: number, ticket_id: number, status: n
         }else {
             if(assigned_to.result[0].assignedto != user_id) {
                const role = await GetRoleNameByUserId(user_id);
-            //    console.log(role);
                if(role.error) {
                 return role;
                }
@@ -132,6 +131,7 @@ export async function UpdateStatus(user_id: number, ticket_id: number, status: n
             }
         }
         const ticketstatus_response = await GetTicketStatusNameById(status);
+        console.log(ticketstatus_response)
         if(ticketstatus_response.result[0].name.toLocaleLowerCase() === "closed") {
             const result = await CloseTicket(user_id, ticket_id, status);
             return result;
