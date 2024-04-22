@@ -327,15 +327,16 @@ export async function CloseTicket(user_id, ticket_id, status) {
     try {
         const closedAt = new Date().toISOString();
         const query = {
-            text: "update tickets set status=$1, closedby=$2, closedat=$3 where id=$4",
+            text: "update tickets set status=$1, closedby=$2, closedat=$3 where id=$4 RETURNING id",
             values: [status, user_id, closedAt, ticket_id]
         };
         const result = await client.query(query);
+        const updatedTicket = await GetTicket(result.rows[0].id);
         client.end();
         return {
             status: 200,
             statusText: `${result.command} completed successfully`,
-            result: result.rows
+            result: updatedTicket.result,
         }
     } catch (error) {
         console.log(error);
