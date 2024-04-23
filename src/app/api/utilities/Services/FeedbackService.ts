@@ -26,10 +26,11 @@ export async function AddNewFeedback(FeedbackDto: {title: string, feedback: stri
     }
 }
 
-export async function GetAllFeedbacks(){
+export async function GetAllFeedbacks(id?:number, viewed?:boolean){
+    // console.log(viewed)
     try {
-        const result = await GetFeedbacks();
-        return result;
+        const result = await GetFeedbacks(id?id:null, viewed);
+        return result
     }catch (error) {
         return {
             error: error,

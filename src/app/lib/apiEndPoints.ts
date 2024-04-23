@@ -9,3 +9,4 @@ export const url_get_response_by_id = `/api/survey/admin/getresponsebyid?id=`
 export const url_add_feedback = `/api/feedbacks/addfeedback`
 export const url_get_feedbacks = `/api/feedbacks/admin/getfeedbacks`
 export const url_mark_feedback_viewed = `/api/feedbacks/admin/markviewed?id=`
+export const url_user_feedbacks = `/api/feedbacks/getfeedbacks`

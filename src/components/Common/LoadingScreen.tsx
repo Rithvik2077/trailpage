@@ -1,4 +1,3 @@
-
 export default function Loading({size}) {
     return (
         <div className="absolute left-1/2 top-1/2 -ml-0.5 -mt-0.5">

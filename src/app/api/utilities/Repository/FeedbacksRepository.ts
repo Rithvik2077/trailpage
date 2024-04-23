@@ -38,7 +38,7 @@ export async function AddFeedback(Feedback: FeedbackInsert) {
     }
 }
 
-export async function GetFeedbacks(notViewed?: boolean) {
+export async function GetFeedbacks(id?: number , notViewed?: boolean) {
     const client = await db.connect();
     try{
         let query_text; 
@@ -51,17 +51,25 @@ export async function GetFeedbacks(notViewed?: boolean) {
             from feedbacks
             left join users
             on feedbacks.createdby = users.id where viewed=false`;
+            if(id) {
+                query_text = `${query_text} and feedbacks.createdby=${id}`
+                // console.log(query_text)
+            }
         }else {
-            query_text = `select feedbacks.*,
+            query_text = `
+            select feedbacks.*,
             case
                 when feedbacks.createdby is not null then users.username
-                else NULL
+            else NULL
             END AS createdby
             from feedbacks
             left join users
             on feedbacks.createdby = users.id`;   
+            if(id) {
+                query_text = `${query_text} where feedbacks.createdby=${id}`
+            }
         }
-        // console.log(query_text+" LLLLLLLLLLLL")
+        console.log(query_text+" LLLLLLLLLLLL")
         query_text = `${query_text} ORDER BY createdat DESC`
         const result = await client.query(query_text);
         client.end();
@@ -71,6 +79,7 @@ export async function GetFeedbacks(notViewed?: boolean) {
             result: result.rows
         }
     }catch(error) {
+        console.log(error);
         client.end();
         return {
             status: 500,

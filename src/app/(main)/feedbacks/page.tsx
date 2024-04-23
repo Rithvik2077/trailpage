@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Feedback from "./feedback";
-import Loading from "./loading";
+import Feedback from "@/components/Common/feedbackCard";
+import Loading from "@/components/Common/LoadingScreen";
 import { url_get_feedbacks } from "@/app/lib/apiEndPoints";
 
 function Feedbacks() {
