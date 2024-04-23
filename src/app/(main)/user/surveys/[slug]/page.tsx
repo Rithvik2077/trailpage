@@ -92,8 +92,8 @@ export default function FillSurveyPage({params}) {
       // }
 
       function handleSubmit(event) {
-        const dom = document.getElementById('dom-form');
-        console.log(dom)
+        const domForm = document.getElementById('dom-form');
+        console.log(domForm)
         // Prevent the default form submission behavior
         event.preventDefault();
     
@@ -135,24 +135,30 @@ export default function FillSurveyPage({params}) {
     
             // Determine the answer based on the element type
             let answer = '';
+            let id = '';
             switch (type) {
                 case 'text':
                     answer = element.value;
+                    id = element.id;
                     break;
                 case 'checkbox':
                     answer = element.checked ? element.value : null;
-                    if (answer === null) continue; // Skip unchecked checkboxes
+                    if (answer === null) continue;
+                    else id = element.id; // Skip unchecked checkboxes
                     break;
                 case 'select-one':
                     answer = element.options[element.selectedIndex].value;
+                    id = element.id;
                     break;
                 case 'file':
                     // For document uploader, collect the file names
                     const files = Array.from(element.files);
                     answer = files.map(file => file.name).join(', ');
+                    id = element.id;
                     break;
                 case 'date':
                     answer = element.value;
+                    id = element.id;
                     break;
                 default:
                     break;
@@ -162,13 +168,19 @@ export default function FillSurveyPage({params}) {
             const formDataItem = {
                 label: label,
                 type: type,
-                answer: answer
+                answer: answer,
+                id:id
             };
     
             formDataArray.push(formDataItem);
         }
     
         // Convert the formDataArray to a JSON string
+
+        const htmlString = domForm.outerHTML;
+        formDataArray.push({
+          htmlString:htmlString
+        })
         const formDataJSON = JSON.stringify(formDataArray);
     
         // Print the JSON string to the console
@@ -201,7 +213,7 @@ export default function FillSurveyPage({params}) {
         {item.type == FieldTypes.DROPDOWN && (
           <div className="flex flex-col ">
             <label className="mb-3 text-lg">{item.label}</label>
-            <select name='DropDown' className="w-[40%] rounded-md bg-slate-100 px-4 py-4 outline-none">
+            <select id={itemID++} name='DropDown' className="w-[40%] rounded-md bg-slate-100 px-4 py-4 outline-none">
               <option className="p-10">Choose your pick </option>
               {item.options!.map((itemVal) => (
                 <option key={i+1}>
@@ -217,7 +229,7 @@ export default function FillSurveyPage({params}) {
             <div className="flex flex-col ">
               {item.options?.map((itemVal) => (
                 <div className="align-center flex gap-4" key={i+1}>
-                  <input value={itemVal} name='Checkbox' type="checkbox" />
+                  <input id={itemID++} value={itemVal} name='Checkbox' type="checkbox" />
                   <label>{itemVal} </label>
                 </div>
               ))}
