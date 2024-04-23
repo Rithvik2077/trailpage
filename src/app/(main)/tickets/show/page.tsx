@@ -2,9 +2,11 @@
 
 import React from "react";
 // import Navbar from "@/components/UserNavbar";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 function Show({ searchParams }: any) {
+  const { push } = useRouter();
   const data = searchParams;
   console.log(data);
 
@@ -12,7 +14,7 @@ function Show({ searchParams }: any) {
     console.log(id);
     const body_params = {
       ticket_id: id,
-      status: 1,
+      status: 4,
     };
     try {
       const response = await fetch("/api/tickets/updatestatus", {
@@ -25,16 +27,18 @@ function Show({ searchParams }: any) {
 
       const res = await response.json();
       console.log("update", res);
+
+      push("../tickets");
     } catch (error) {
       console.log(error);
     }
   }
 
   return (
-    <div>
-      <div className="flex gap-4">
+    <div className="p-4">
+      <div className="flex items-center gap-4">
         <div>#{data.id}</div>
-        <div>{data.title}</div>
+        <div className="text-2xl">{data.title}</div>
         <div
           className={`${
             data.status == "Open" ? "bg-red-500" : "bg-green-500 "
@@ -43,9 +47,14 @@ function Show({ searchParams }: any) {
           {data.status}
         </div>
       </div>
-      <div>{data.description}</div>
+      <div className="text-xl">{data.description}</div>
 
-      <button onClick={() => updateStatusById(data.id)}>Mark as closed</button>
+      <button
+        className="rounded-md bg-black px-4 py-2 text-white"
+        onClick={() => updateStatusById(data.id)}
+      >
+        Mark as closed
+      </button>
     </div>
   );
 }

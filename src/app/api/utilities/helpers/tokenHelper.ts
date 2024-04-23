@@ -23,7 +23,7 @@ export function GetPayloadDetails(
   entry: "id" | "name" | "email" | "role",
 ) {
   const res = verifyJwt(token);
-  console.log("res", res);
+  // console.log("res", res);
   if (res) {
     if (entry.toLocaleLowerCase() === "id") return res.id;
     if (entry.toLocaleLowerCase() === "name") return res.name;

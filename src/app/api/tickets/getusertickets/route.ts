@@ -11,7 +11,7 @@ import { cookies } from "next/headers";
 type Dto = Requests["UserTicket"];
 export async function GET(req: NextRequest) {
   const auth = cookies().get("Authorize");
-  console.log("AUTH", auth);
+  // console.log("AUTH", auth);
   const token = auth.value;
   const isValid = validateAndAuthorizeToken(token, "any");
   if (isValid) {
@@ -79,7 +79,7 @@ function validateDto(obj: any): obj is Dto {
   if (!obj.options || typeof obj.options !== "object") return false;
 
   const { status, sub_category, group, priority, closed_by } = obj.options;
-  console.log(status, sub_category, group, priority, closed_by);
+  // console.log(status, sub_category, group, priority, closed_by);
   if (
     typeof status !== "number" ||
     typeof sub_category !== "number" ||

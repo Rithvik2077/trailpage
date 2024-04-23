@@ -1,20 +1,17 @@
 [
   {
     "id": "Tickets",
-    "total": 100,
     "type": "Resolved",
-    "value": 75
+    "value": 0
   },
   {
     "id": "Surveys",
-    "total": 50,
-    "type": "Received",
-    "value": 500
+    "type": "Responses",
+    "value": 1
   },
   {
     "id": "Feedback",
-    "total": 30,
     "type": "Reviewed",
-    "value": 20
+    "value": 2
   }
 ]

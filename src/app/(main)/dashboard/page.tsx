@@ -1,12 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-import cardadata from "../../../../public/data/carddata.json";
-import tickets from "../../../../public/data/tickets.json";
-import surveys from "../../../../public/data/surveys.json";
-import feedback2 from "../../../../public/data/feedback.json";
-import feedback from "../../../../public/data/feedbackdata2.json";
 import Cards from "@/components/repo2/dashboard/Cards/Cards";
 import DashboardTickets from "@/components/repo2/dashboard/DashboardTickets/DashboardTickets";
 import LineChart from "@/components/repo2/dashboard/Graphs/Ticketgraph";
@@ -14,7 +9,14 @@ import DashboardSurvey from "@/components/repo2/dashboard/DashboardSurvey/Dashbo
 import LineChart2 from "@/components/repo2/dashboard/Graphs/Surveygraph";
 import DashboardFeedback from "@/components/repo2/dashboard/DashboardFeedbacks/DashboardFeedback";
 import FeedbackBarGraph from "@/components/repo2/dashboard/Graphs/Feedbackgraph";
-import YourComponent from "@/components/repo2/dashboard/DataPage/page";
+import TicketComponent from "@/components/repo2/dashboard/DataPage/page";
+import SurveySystemTable from "@/components/repo2/dashboard/DashboardDataComponent/SurveyData/SurveyData";
+import MonthlySurveyTable from "@/components/repo2/dashboard/DashboardDataComponent/SurveyData/SurveyData2";
+import FeedbackSystemTable from "@/components/repo2/dashboard/DashboardDataComponent/FeedbackData/FeedbackData";
+import MonthlyFeedbackTable from "@/components/repo2/dashboard/DashboardDataComponent/FeedbackData/FeedbackData2";
+import LoaderComponent from "../../../../public/data/Loader/load";
+import cards from "../../../../public/data/cards.json";
+import "../../../../public/css/style.css";
 
 const DashBoard = () => {
   const [id, setId] = useState<string>("Tickets");
@@ -24,15 +26,74 @@ const DashBoard = () => {
   const [isGraph, setIsGraph] = useState<boolean>(false);
   const [isSurvey, setIsSurvey] = useState<boolean>(false);
   const [isFeedback, setIsFeedback] = useState<boolean>(false);
-  const [isHovered, setIsHovered] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [ticketData, setTicketData] = useState([]);
+  const [ticketdata, setticketData] = useState([]);
+  const [feedbackdata, setfeedbackData] = useState([]);
+  const [surveydata, setsurveyData] = useState([]);
+  const [carddata, setscardaData] = useState([]);
 
-  const onHover = () => {
-    setIsHovered(true);
+  const fetchcardData = async () => {
+    try {
+      const carddataresponse1 = await fetch("/api/cardticketsdata");
+      const carddataresponse2 = await fetch("/api/cardsurveysdata");
+      const carddataresponse3 = await fetch("/api/cardfeedbackdata");
+
+      const jsoncarddata1 = await carddataresponse1.json();
+      const jsoncarddata2 = await carddataresponse2.json();
+      const jsoncarddata3 = await carddataresponse3.json();
+      const carddata = [
+        jsoncarddata1["data"][0],
+        jsoncarddata2["data"][0],
+        jsoncarddata3["data"][0],
+      ];
+
+      setscardaData(carddata);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
-  const onHoveredleave = () => {
-    setIsHovered(false);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const ticketresponse = await fetch(
+          "http://localhost:3000/api/getrecenttickets",
+        );
+        const feedbackresponse = await fetch(
+          "http://localhost:3000/api/getrecentfeedbacks",
+        );
+        const surveyresponse = await fetch(
+          "http://localhost:3000/api/getrecentsurveys",
+        );
+        const ticketDataresponse = await fetch(
+          "http://localhost:3000/api/datatickets",
+        );
+        const jsonticketDataresponse = await ticketDataresponse.json();
+        const jsonticketData = await ticketresponse.json();
+        const jsonfeedbackData = await feedbackresponse.json();
+        const jsonsurvey = await surveyresponse.json();
+
+        setTicketData(jsonticketDataresponse["data"]);
+        setticketData(jsonticketData["data"]);
+        setfeedbackData(jsonfeedbackData["data"]);
+        setsurveyData(jsonsurvey["data"]);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+    fetchcardData();
+
+    const intervalId = setInterval(fetchData, 10000);
+    const cardintervalId = setInterval(fetchcardData, 10000);
+
+    return () => {
+      clearInterval(intervalId), clearInterval(cardintervalId);
+    };
+  }, []);
 
   const onDataSelected = () => {
     setIsHome(false);
@@ -58,17 +119,17 @@ const DashBoard = () => {
     setIsFeedback(Id === "Feedback");
   };
 
-  const Ticketsdata = tickets["tickets"];
-  const Surveysdata = surveys["Survey"];
-  const Feedbackdata = feedback["edges"];
+  const Ticketsdata = ticketdata;
+  const Surveysdata = surveydata;
+  const Feedbackdata = feedbackdata;
 
-  const ClassValues = isHovered ? "visible" : "hidden";
+  // const ClassValues = isHovered ? "visible" : "hidden";
 
   return (
     <>
       <main className="mt-4 flex h-full w-screen gap-4 pl-2 pr-2">
         <aside
-          className="grid w-40 grid-rows-4  rounded-md border bg-sky-800"
+          className="grid w-40 grid-rows-4 rounded-md border bg-sky-800"
           style={{ maxHeight: "88vh", minHeight: "88vh" }}
         >
           <div className="row-start-1 row-end-2 flex flex-col items-start justify-center ">
@@ -159,20 +220,25 @@ const DashBoard = () => {
         </aside>
         <div className="w-full overflow-y-auto" style={{ maxHeight: "88vh" }}>
           <div className="mb-4 flex flex-row items-center justify-around">
-            {cardadata.map((item) => (
-              <Cards
-                item={item}
-                key={item.id}
-                onclick={onSelect}
-                isActive={item.id === id}
-              />
-            ))}
+            {carddata.length > 0
+              ? cards.map((item) => (
+                  <Cards
+                    item={carddata[item.value]}
+                    type={item.type}
+                    id={item.id}
+                    key={item.id}
+                    onclick={onSelect}
+                    isActive={item.id === id}
+                  />
+                ))
+              : ""}
           </div>
+
           <div className=" flex-grow overflow-auto p-4">
             {isTicket && isHome && (
               <div className="mt-2 grid h-full grid-cols-5 gap-6 pt-4">
-                <div className="col-start-1 col-end-4 rounded-lg border-2 border-gray-200 pt-2">
-                  <table className="table-auto border-collapse">
+                <div className="col-start-1 col-end-4 overflow-x-auto rounded-lg border-2 border-gray-200 pt-2">
+                  <table className="w-full table-auto border-collapse">
                     <caption className="caption-top p-2 font-bold text-sky-800">
                       Recent Tickets ad Status Report
                     </caption>
@@ -180,19 +246,44 @@ const DashBoard = () => {
                       <tr className=" bg-gray-200/50">
                         <th className="px-4 py-2">Title</th>
                         <th className="px-4 py-2">Description</th>
+                        <th className="px-4 py-2">Category</th>
                         <th className="px-4 py-2">Priority</th>
                         <th className="px-4 py-2">Status</th>
                         <th className="px-4 py-2">Created at</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white">
-                      {Ticketsdata.map((item) => (
-                        <DashboardTickets item={item} key={item.id} />
-                      ))}
+                    <tbody className="center bg-white">
+                      {Ticketsdata.length > 0 ? (
+                        Ticketsdata.slice(0, 10).map((item) => (
+                          <DashboardTickets item={item} key={item.id} />
+                        ))
+                      ) : (
+                        <tr className="w-1/1">
+                          <td colSpan={6} className=" pt-5 text-center">
+                            {isLoading ? (
+                              <LoaderComponent />
+                            ) : (
+                              <>
+                                <img
+                                  src="https://icons.veryicon.com/png/o/business/financial-category/no-data-6.png"
+                                  alt="no-data"
+                                  className="mx-auto h-24 w-24"
+                                />
+                                <p className="-ml-1 font-semibold text-gray-400">
+                                  No Data
+                                </p>
+                              </>
+                            )}
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
-                <div className="col-start-4 col-end-6 self-center rounded-lg border-2 border-gray-200 p-2 shadow-lg">
+                <div
+                  className="col-start-4 col-end-6 self-start rounded-lg border-2 border-gray-200 p-2 shadow-lg"
+                  style={{ maxHeight: "40vh", minHeight: "28vh" }}
+                >
                   <LineChart ticketData={Ticketsdata} />
                 </div>
               </div>
@@ -200,7 +291,7 @@ const DashBoard = () => {
             {isSurvey && isHome && (
               <div className="mt-2 grid h-full grid-cols-5 gap-6 pt-4">
                 <div className="col-start-1 col-end-4 rounded-lg border-2 border-gray-200 pt-2">
-                  <table className="w-full table-auto border-collapse ">
+                  <table className="w-full table-auto border-collapse">
                     <caption className="caption-top p-2 font-bold text-sky-800">
                       Survey and Responses
                     </caption>
@@ -213,14 +304,38 @@ const DashBoard = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white">
-                      {Surveysdata.map((item) => (
-                        <DashboardSurvey item={item} key={item.id} />
-                      ))}
+                      {Surveysdata.length > 0 ? (
+                        Surveysdata.slice(0, 10).map((item) => (
+                          <DashboardSurvey item={item} key={item.survey_id} />
+                        ))
+                      ) : (
+                        <tr className="w-1/1">
+                          <td colSpan={6} className=" pt-5 text-center">
+                            {isLoading ? (
+                              <LoaderComponent />
+                            ) : (
+                              <>
+                                <img
+                                  src="https://icons.veryicon.com/png/o/business/financial-category/no-data-6.png"
+                                  alt="no-data"
+                                  className="mx-auto h-24 w-24"
+                                />
+                                <p className="-ml-1 font-semibold text-gray-400">
+                                  No Data
+                                </p>
+                              </>
+                            )}
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
-                <div className="col-start-4 col-end-6 self-center rounded-lg border-2 border-gray-200 p-2 shadow-lg">
-                  <LineChart2 surveys={Surveysdata} />
+                <div
+                  className="col-start-4 col-end-6 self-start rounded-lg border-2 border-gray-200 p-2 shadow-lg"
+                  style={{ maxHeight: "40vh", minHeight: "28vh" }}
+                >
+                  <LineChart2 surveys={Surveysdata.slice(0, 10)} />
                 </div>
               </div>
             )}
@@ -241,20 +356,59 @@ const DashBoard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {Feedbackdata.map((item) => (
-                        <DashboardFeedback data={item} key={item.from} />
-                      ))}
+                      {Feedbackdata.length > 0 ? (
+                        Feedbackdata.slice(0, 10).map((item) => (
+                          <DashboardFeedback data={item} key={item.id} />
+                        ))
+                      ) : (
+                        <tr className="w-1/1">
+                          <td colSpan={6} className=" pt-5 text-center">
+                            {isLoading ? (
+                              <LoaderComponent />
+                            ) : (
+                              <>
+                                <img
+                                  src="https://icons.veryicon.com/png/o/business/financial-category/no-data-6.png"
+                                  alt="no-data"
+                                  className="mx-auto h-24 w-24"
+                                />
+                                <p className="-ml-1 font-semibold text-gray-400">
+                                  No Data
+                                </p>
+                              </>
+                            )}
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
-                <div className="col-start-4 col-end-6 self-center rounded-lg border-2 border-gray-200 p-2 shadow-lg">
-                  <FeedbackBarGraph feedback={feedback2["feedback_data"]} />
+                <div
+                  className="col-start-4 col-end-6 self-start rounded-lg border-2 border-gray-200 p-2 shadow-lg"
+                  style={{ maxHeight: "40vh", minHeight: "28vh" }}
+                >
+                  <FeedbackBarGraph feedback={Feedbackdata} />
                 </div>
               </div>
             )}
-            {isTicket && isData && <YourComponent />}
-            {/* {isFeedback && isData && <YourComponent />} */}
-            {isSurvey && isData && <YourComponent />}
+            {isTicket && isData && (
+              <TicketComponent
+                ticketData={ticketData}
+                Ticketsdata={Ticketsdata}
+              />
+            )}
+            {isFeedback && isData && (
+              <>
+                <FeedbackSystemTable FeedbackData={Feedbackdata} />
+                <MonthlyFeedbackTable feedbackData={Feedbackdata} />
+              </>
+            )}
+            {isSurvey && isData && (
+              <>
+                <SurveySystemTable surveyData={Surveysdata.slice(0, 40)} />
+                <MonthlySurveyTable surveyData={Surveysdata} />
+              </>
+            )}
           </div>
         </div>
       </main>
