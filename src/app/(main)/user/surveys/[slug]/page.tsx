@@ -25,7 +25,7 @@ export default function FillSurveyPage({params}) {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(responseData),
+            body: responseData,
           })
           .then(response => response.json())
           .then(result => console.log(result))
@@ -184,6 +184,7 @@ export default function FillSurveyPage({params}) {
         const formDataJSON = JSON.stringify(formDataArray);
     
         // Print the JSON string to the console
+        submitResponse(formDataJSON);
         console.log(formDataJSON);
     }
     
