@@ -18,17 +18,17 @@ export default function FillSurveyPage({params}) {
     //     response_data: [{"question":"How would you rate the overall organization of the event?","response":"Good"},{"question":"Did you find the event content relevant and engaging?","response":"Yes"},{"question":"Would you recommend this event to others?","response":"Maybe"}]
     //   }
       const submitResponse = async (responseData) => {
-        // console.log("sending");
+        console.log("sending with response data: ",responseData);
         try {
           await fetch(url_add_response, {
             method: 'POST',
             headers: {
               "Content-Type": "application/json",
             },
-            body: responseData,
+            body: JSON.stringify(responseData),
           })
           .then(response => response.json())
-          .then(result => console.log(result))
+          .then(result =>  console.log('this was reached',result))
           .catch(err => console.log(err));
         } catch(error) {
           console.log("error while fetching:", error);
@@ -182,9 +182,17 @@ export default function FillSurveyPage({params}) {
           htmlString:htmlString
         })
         const formDataJSON = JSON.stringify(formDataArray);
+
+        const surveyResponse = {
+          survey_id: params.slug,
+          response_data: formDataJSON
+        }
+
+
     
         // Print the JSON string to the console
-        submitResponse(formDataJSON);
+        console.log('are you going to submit Response', surveyResponse)
+        submitResponse(surveyResponse);
         console.log(formDataJSON);
     }
     
