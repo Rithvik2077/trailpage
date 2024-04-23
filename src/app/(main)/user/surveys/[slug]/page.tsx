@@ -184,7 +184,7 @@ export default function FillSurveyPage({params}) {
         const formDataJSON = JSON.stringify(formDataArray);
 
         const surveyResponse = {
-          survey_id: params.slug,
+          survey_id: parseInt(params.slug),
           response_data: formDataJSON
         }
 

@@ -5,6 +5,7 @@ import { SurveyInput } from "@/components/repo2/survey-input-popover";
 import { FieldTypes } from "@/components/enums/survey-field-types";
 import {FormFields} from '@/app/(main)/surveys/SurveyMain'
 import SurveyForm from '@/app/(main)/surveys/[slug]/surveyForm'
+import SurveyResponse from './surveyResponse'
 
 export default function SurveyResponses({params}) {
 
@@ -34,16 +35,30 @@ export default function SurveyResponses({params}) {
   })
 
   const checkFetchingOfData = ()=>{
-    if(responseData){
+    if(responseData && responseData.length>0){
+      console.log('this is res', responseData)
       setDataFetched(true)
+      
     }
   }
   
   return (
-    <div>
+    <div><>{responseData.forEach((response)=>{
+          <div><h3>Response From {response.id}</h3>
+          <h3>iughiuj</h3>
+          <h3>Survey id: {response.username}</h3></div>
+         })}</>
       
       {dataFetched===false && <p>Fetching responses</p>}
-      {dataFetched===true  && <SurveyForm responseData={responseData}/>}
+      {dataFetched===true  && <>this is data {responseData.map((res)=>(
+        <>
+        <h3>Submitted by: {res.username} </h3> 
+        <h3>Created At: {res.createdat} </h3>
+        <div>
+        <SurveyResponse response={res.response_data}/>
+        </div>
+        </>
+      ))}</>}
       
     </div>
   )
