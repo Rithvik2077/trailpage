@@ -42,25 +42,25 @@ export default function SurveyResponses({params}) {
   }
   
   return (
-    <div>
+    <div className="mt-6 flex flex-col items-center justify-center gap-4 bg-slate-300 pt-2">
       {/* <>{responseData.forEach((response)=>{
           <div><h3>Response From {response.id}</h3>
           <h3>iughiuj</h3>
           <h3>Survey id: {response.username}</h3></div>
          })}</> */}
-      
+      {/* <div className="w-[55%] rounded-lg border-t-4 border-blue-500 bg-white p-3"> */}
       {dataFetched===false && <p>Fetching responses</p>}
       {dataFetched===true  && <> {responseData.map((res)=>(
         <>
         <h1>Starting Element</h1>
         <h3>Submitted by: {res.username} </h3> 
         <h3>Created At: {res.createdat} </h3>
-        <div>
+        
         <SurveyResponse response={res.response_data}/>
-        </div>
         </>
       ))}</>}
+      </div>
       
-    </div>
+    // </div>
   )
 }

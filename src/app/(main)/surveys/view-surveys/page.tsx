@@ -192,7 +192,7 @@ const getAllSurveys = async () => {
 
 function SurveyList() {
 
-    const [surveyData, setSurveyData] = useState();
+    const [surveyData, setSurveyData] = useState([]);
     const [dataFetched, setDataFetched] = useState(false);
 
     const checkSurveyData =()=>{
@@ -244,7 +244,7 @@ return (
 
           <div className=" p-8">
             {dataFetched==false && <h1>Fetching Data...</h1>} 
-          {dataFetched==true && surveyData.map((survey)=>(
+          {dataFetched==true && surveyData && surveyData.map((survey)=>(
               <div
                 key={survey.ID}
                 className="m-5 flex items-center justify-around rounded-full border-b  border-sky-500 bg-slate-50 px-6 py-4"
@@ -255,7 +255,7 @@ return (
 
                 <div>{survey.createdat}</div>
                 <Link
-                  href={{ pathname: `./surveys/${survey.id}` }}
+                  href={{ pathname: `./${survey.id}` }}
                   className="cursor-pointer text-sm "
                 >
                   <button

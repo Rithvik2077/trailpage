@@ -57,14 +57,14 @@ function SurveysCreation() {
   // };
 
   return (
-    <>
-      <div>
+      <div className="bg-slate-300 min-h-screen">
         {/* <button onClick={()=>addField('label')}>Add Field Label</button>
       <button onClick={()=>addField('label')}>Add Dropdown</button>
       <button onClick={()=>addField('label')}>Add Checkbox</button>
       <button onClick={()=>addField('input')}>Add Text Input</button>
       <button onClick={()=>addField('fileUploader')}>Add Document Uploader</button> */}
 
+        <div className="flex items-center justify-center gap-2 pt-5">
         <SurveyInput
           fieldType={FieldTypes.TEXTINPUT}
           formFields={formFields}
@@ -107,6 +107,7 @@ function SurveysCreation() {
         >
           Add Matrix Input
         </SurveyInput>
+        </div>
         
 
         <form action="">
@@ -245,47 +246,52 @@ function SurveysCreation() {
                     </div>
                   </div>
                 )}
-                {item.type == FieldTypes.MATRIX && (
-                  <div>
-                    <label htmlFor="">{item.label} </label>
-                    <ul className="flex">
-                      <li>Empty </li>
+                {item.type == FieldTypes.MATRIX && (<>
+                  <label className="">{item.label} </label>
+                  <div className="flex items-center justify-center">
+                  <table className="w-[80%]">
+                    <tr className="text-center">
+                      <th> </th>
                       {item.matrixColumn?.map((col) => {
-                        return <li>{col}</li>;
+                        return <th>{col}</th>;
                       })}
-                    </ul>
+                    </tr>
 
+                      <tbody>
                     {item.matrixRow?.map((row) => {
                       return (
-                        <ul className="flex">
-                          <li>{row}</li>
+                        <tr>
+                          <td>{row}</td>
                           {item.matrixColumn?.map(() => {
                             return (
                               // eslint-disable-next-line react/jsx-key
-                              <li>
+                              <td className="text-center">
                                 <input type="radio" name={row} />
-                              </li>
+                              </td>
                             );
                           })}
-                        </ul>
+                        </tr>
                       );
                     })}
-                  </div>
+                    </tbody>
+                  </table>
+                    </div></>
                 )}
               </div>
             ))}
           </div>
 
-          <button
-          type="button"
-          className="mb-2 me-2 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
-          onClick={()=>addSurvey()}
-          >
-            Create Survey
-          </button>
+            <div className=" flex items-center justify-center">
+            <button
+            type="button"
+            className="mb-2 me-2 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+            onClick={()=>addSurvey()}
+            >
+                Create Survey
+            </button>
+            </div>
         </form>
       </div>
-    </>
   );
 }
 
