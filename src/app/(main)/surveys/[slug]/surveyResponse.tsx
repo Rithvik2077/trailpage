@@ -1,32 +1,71 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 
 export default function SurveyResponse({response}) {
 
 
+
+
     function responseDataToHTML(response){
-        console.log('hello this is your response****', response)
         const htmlString = JSON.parse(response);
-        console.log('This is htmlString', htmlString[htmlString.length - 1])
-        const formdiv = document.createElement('div')
-        formdiv.innerHTML = htmlString[htmlString.length - 1];
+        const htmlDATA = htmlString[htmlString.length - 1];
+        // console.log('This is htmlString', htmlDATA.htmlString )
+        const formdiv = document.createElement('div');
+        formdiv.innerHTML = htmlDATA.htmlString;
+
+        console.log('this is formdiv', formdiv)
+        
         // document.getElementById('form').appendChild(formdiv);
         
         const formElement = document.getElementById('form');
-            if (formElement) {
-                formElement.appendChild(formdiv);
-            } else {
-                console.error('Element with ID "form" not found in the document.');
+        if(formElement.childElementCount>0){
+            return;
+        }
+        if (formElement) {
+            formElement.appendChild(formdiv);
+        } else {
+            console.error('Element with ID "form" not found in the document.');
+        }
+    
+        for(let data of htmlString){
+            console.log('This is data: ',data.id);
+            if(data.id){
+                const ele = document.getElementById(data.id);
+                // if(ele){
+                //     ele.value = data.answer;
+                // }
+                if(ele){
+                    switch(ele.type){
+                        case 'checkbox':
+                            ele.checked = true;
+                            break;
+                        case 'radio':
+                            ele.checked = true;
+                            break;
+                        case 'file':
+                            break;
+                        default:
+                            ele.value = data.answer;
+                            break;
+                    }
+
+                }
+                // if(ele.type!='select'){
+                    
+                // }
+                 
             }
+        }
         
     }
 
-    responseDataToHTML(response)
+    useEffect(() => {responseDataToHTML(response)},[])
+
+    
     
   return (
-    <>
         <div id={'form'}>
       
         </div>
-    </>
   )
 }
