@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 export default function SurveyResponse({response}) {
 
     function responseDataToHTML(response){
+
         const htmlString = JSON.parse(response);
         const htmlDATA = htmlString[htmlString.length - 1];
         // console.log('This is htmlString', htmlDATA.htmlString )
@@ -63,10 +64,12 @@ export default function SurveyResponse({response}) {
                  
             }
         }
+
+        document.getElementById('submit-btn').style.display = 'none';
         
     }
 
-    useEffect(() => {responseDataToHTML(response)},[])
+    useEffect(() => {responseDataToHTML(response); },[])
 
     
     

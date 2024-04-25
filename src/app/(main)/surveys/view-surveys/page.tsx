@@ -4,6 +4,8 @@ import Surveys from "@/components/repo2/Survey/SurveyList";
 import { url_add_response,url_get_active_surveys, url_get_response_by_id } from "@/app/lib/apiEndPoints";
 import { get } from "http";
 import Link from "next/link";
+import SurveySystemTable from "@/components/repo2/dashboard/DashboardDataComponent/SurveyData/SurveyData";
+import { formatDateString } from "@/../public/data/Components/function";
 
 // const surveyData = [
 //   {
@@ -170,9 +172,6 @@ import Link from "next/link";
 // ];
 
 
-
-
-
 const getAllSurveys = async () => {
     try {
       return await fetch(url_get_active_surveys, {
@@ -186,6 +185,8 @@ const getAllSurveys = async () => {
     }
   }
 
+ 
+
 
 
 
@@ -195,106 +196,115 @@ function SurveyList() {
     const [surveyData, setSurveyData] = useState([]);
     const [dataFetched, setDataFetched] = useState(false);
 
+
+    async function getSurveyRecents(){
+      const surveyresponse = await fetch(
+        "http://localhost:3000/api/getrecentsurveys",
+      );
+  
+      const jsonsurvey = await surveyresponse.json();
+      setSurveyData(jsonsurvey["data"]);
+  
+      // return surveyresponse;
+    }
+
     const checkSurveyData =()=>{
         if(surveyData){setDataFetched(true);}
     }
 
-    getAllSurveys().then((data)=>{
-        console.log(data.Response.result, 'this the the survey data')
-        setSurveyData(data.Response.result)
-        checkSurveyData();
-    });
+    // getAllSurveys().then((data)=>{
+    //     console.log(data.Response.result, 'this the the survey data')
+    //     setSurveyData(data.Response.result)
+    //     checkSurveyData();
+    // });
+
+    getSurveyRecents().then((data)=>{
+      checkSurveyData();
+      setDataFetched(true);
+    })
 
     // console.log('surveyList******** ',surveyData.surveyData);
     // const arraySurvey = surveyData.surveyData;
   
   // const surveyData = getSurveys();
 
+  
+
 return (
     <div>
-      <div className="flex items-stretch justify-center">
-        {/* <div className="w-[22%] bg-slate-100 items-stretch h-screen">
-            <div className="mx-2 my-1 mt-2 text-xl">Filters</div>
-            <div
-              className={`${
-                filterApplied == "Solved"
-                  ? "border-sky-500 text-sky-500"
-                  : "border-gray-300 text-gray-400"
-              } border-2  py-2 px-4 rounded-lg inline-block cursor-pointer m-2`}
-              // onClick={() => statusFilter("Solved")}
-            >
-              Solved
-            </div>
-            <div
-              className={`${
-                filterApplied == "In Progress"
-                  ? "border-sky-500 text-sky-500"
-                  : "border-gray-300 text-gray-400"
-              } border-2  py-2 px-4 rounded-lg inline-block cursor-pointer `}
-              // onClick={() => statusFilter("In Progress")}
-            >
-              In Progress
-            </div>
-          </div> */}
-
-        <div className="w-[90%]">
-          {/* <div className="py-6 px-2">
-              <TicketGeneratorButton />
-            </div> */}
-
-          <div className=" p-8">
-            {dataFetched==false && <h1>Fetching Data...</h1>} 
-          {dataFetched==true && surveyData && surveyData.map((survey)=>(
-              <div
-                key={survey.ID}
-                className="m-5 flex items-center justify-around rounded-full border-b  border-sky-500 bg-slate-50 px-6 py-4"
-              >
-                <div>{survey.title}</div>
-                <div>Description</div>
-                <div>{survey.createdby}</div>
-
-                <div>{survey.createdat}</div>
-                <Link
-                  href={{ pathname: `./${survey.id}` }}
-                  className="cursor-pointer text-sm "
-                >
-                  <button
-                    type="button"
-                    className="mb-2 me-2 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
-                  >
-                    View Responses
-                  </button>
-                </Link>
-              </div>
-            ))}
-            {/* {surveyData.map((survey: any) => (
-              <div
-                key={survey.ID}
-                className="m-5 flex items-center justify-around rounded-full border-b  border-sky-500 bg-slate-50 px-6 py-4"
-              >
-                <div>{survey.Title}</div>
-                <div>{survey.Description}</div>
-                <div>{survey.CreatedBy}</div>
-
-                <div>{survey.CreatedAt}</div>
-                <Link
-                  href={{ pathname: `./surveys/${survey.ID}`, query: survey }}
-                  className="cursor-pointer text-sm "
-                >
-                  <button
-                    type="button"
-                    className="mb-2 me-2 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
-                  >
-                    Fill Survey
-                  </button>
-                </Link>
-              </div>
-            ))} */}
-          </div>
-
-          
+     {dataFetched==true && <div className="mb-8 mt-12 flex flex-col gap-12 ">
+      <div className="relative flex flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
+        <div className="relative mx-4 -mt-6 mb-8 rounded-xl bg-gradient-to-tr from-blue-900 to-blue-800 bg-clip-border p-6 text-white shadow-lg shadow-gray-900/20">
+          <h6 className="block font-sans text-base font-semibold leading-relaxed tracking-normal text-white antialiased">
+            Survey System Table
+          </h6>
+          <Link href={'/surveys/create-survey'}>
+          <button className="mb-2 me-2 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">
+            Create a new Survey
+          </button>
+          </Link>
+        </div>
+        <div className=" p-6 px-0 pb-2 pt-0">
+          <table className="w-full min-w-[640px] table-auto">
+            <thead className=" text-base text-sky-900">
+              <tr>
+                <th className="border-blue-gray-50 border-b px-5 py-3 text-left">
+                  <p className="text-blue-gray-400 block font-sans  font-bold uppercase antialiased">
+                    Survey Title
+                  </p>
+                </th>
+                <th className="border-blue-gray-50 border-b px-5 py-3 text-center">
+                  <p className="text-blue-gray-400 block font-sans  font-bold uppercase antialiased">
+                    Created By
+                  </p>
+                </th>
+                <th className="border-blue-gray-50 border-b px-5 py-3 text-center">
+                  <p className="text-blue-gray-400 block font-sans  font-bold uppercase antialiased">
+                    Created At
+                  </p>
+                </th>
+                {/* <th className="border-blue-gray-50 border-b px-5 py-3 text-center">
+                  <p className="text-blue-gray-400 block font-sans  font-bold uppercase antialiased">
+                    Total Responses
+                  </p>
+                </th> */}
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {surveyData.map((survey, index) => (
+                <tr key={index}>
+                  <td className="border-blue-gray-50 border-b px-5 py-3 text-left">
+                    <p className="text-blue-gray-900 block font-sans text-sm font-semibold leading-normal antialiased">
+                      {survey.survey_title}
+                    </p>
+                  </td>
+                  <td className="border-blue-gray-50 border-b px-5 py-3 text-center">
+                    <p className="text-blue-gray-900 block font-sans text-sm font-semibold leading-normal antialiased">
+                      {survey.creator_name}
+                    </p>
+                  </td>
+                  <td className="border-blue-gray-50 border-b px-5 py-3 text-center">
+                    <p className="text-blue-gray-900 block font-sans text-sm font-semibold leading-normal antialiased">
+                      {formatDateString(survey.created_at)}
+                    </p>
+                  </td>
+                  <td className="border-blue-gray-50 border-b px-5 py-3 text-center">
+                    <p className="text-blue-gray-900 block font-sans text-sm font-semibold leading-normal antialiased">
+                     <Link href={`surveys/view-surveys/${survey.survey_id}`}>
+                      <button className="mb-2 me-2 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">
+                        View Responses
+                      </button>
+                     </Link>
+                    </p>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
+    </div>}
     </div>
   );
 
@@ -311,3 +321,88 @@ return (
 }
 
 export default SurveyList;
+
+
+// <div className="flex items-stretch justify-center">
+// {/* <div className="w-[22%] bg-slate-100 items-stretch h-screen">
+//     <div className="mx-2 my-1 mt-2 text-xl">Filters</div>
+//     <div
+//       className={`${
+//         filterApplied == "Solved"
+//           ? "border-sky-500 text-sky-500"
+//           : "border-gray-300 text-gray-400"
+//       } border-2  py-2 px-4 rounded-lg inline-block cursor-pointer m-2`}
+//       // onClick={() => statusFilter("Solved")}
+//     >
+//       Solved
+//     </div>
+//     <div
+//       className={`${
+//         filterApplied == "In Progress"
+//           ? "border-sky-500 text-sky-500"
+//           : "border-gray-300 text-gray-400"
+//       } border-2  py-2 px-4 rounded-lg inline-block cursor-pointer `}
+//       // onClick={() => statusFilter("In Progress")}
+//     >
+//       In Progress
+//     </div>
+//   </div> */}
+
+// <div className="w-[90%]">
+//   {/* <div className="py-6 px-2">
+//       <TicketGeneratorButton />
+//     </div> */}
+
+//   <div className=" p-8">
+//     {dataFetched==false && <h1>Fetching Data...</h1>} 
+//   {dataFetched==true && surveyData && surveyData.map((survey)=>(
+//       <div
+//         key={survey.ID}
+//         className="m-5 flex items-center justify-around rounded-full border-b  border-sky-500 bg-slate-50 px-6 py-4"
+//       >
+//         <div>{survey.title}</div>
+//         <div>Description</div>
+//         <div>{survey.createdby}</div>
+
+//         <div>{survey.createdat}</div>
+//         <Link
+//           href={{ pathname: `./${survey.id}` }}
+//           className="cursor-pointer text-sm "
+//         >
+//           <button
+//             type="button"
+//             className="mb-2 me-2 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+//           >
+//             View Responses
+//           </button>
+//         </Link>
+//       </div>
+//     ))}
+//     {/* {surveyData.map((survey: any) => (
+//       <div
+//         key={survey.ID}
+//         className="m-5 flex items-center justify-around rounded-full border-b  border-sky-500 bg-slate-50 px-6 py-4"
+//       >
+//         <div>{survey.Title}</div>
+//         <div>{survey.Description}</div>
+//         <div>{survey.CreatedBy}</div>
+
+//         <div>{survey.CreatedAt}</div>
+//         <Link
+//           href={{ pathname: `./surveys/${survey.ID}`, query: survey }}
+//           className="cursor-pointer text-sm "
+//         >
+//           <button
+//             type="button"
+//             className="mb-2 me-2 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+//           >
+//             Fill Survey
+//           </button>
+//         </Link>
+//       </div>
+//     ))} */}
+//   </div>
+
+  
+// </div>
+// </div>
