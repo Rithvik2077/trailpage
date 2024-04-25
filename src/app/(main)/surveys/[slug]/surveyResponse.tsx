@@ -7,7 +7,7 @@ export default function SurveyResponse({response}) {
 
         const htmlString = JSON.parse(response);
         const htmlDATA = htmlString[htmlString.length - 1];
-        // console.log('This is htmlString', htmlDATA.htmlString )
+        console.log('This is htmlString', htmlDATA.htmlString )
         const formdiv = document.createElement('div');
         formdiv.innerHTML = htmlDATA.htmlString;
 
@@ -43,11 +43,13 @@ export default function SurveyResponse({response}) {
                 //     ele.value = data.answer;
                 // }
                 if(ele){
+                    console.log('****************************', ele)
                     switch(ele.type){
                         case 'checkbox':
                             ele.checked = true;
                             break;
                         case 'radio':
+                            console.log('This is a radio button', ele)
                             ele.checked = true;
                             break;
                         case 'file':
@@ -65,7 +67,8 @@ export default function SurveyResponse({response}) {
             }
         }
 
-        document.getElementById('submit-btn').style.display = 'none';
+        const subbtn = document.getElementById('submit-btn')
+        if(subbtn) subbtn.style.display = 'none';
         
     }
 

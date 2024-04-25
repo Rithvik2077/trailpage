@@ -8,6 +8,7 @@ import {FormFields} from '@/app/(main)/surveys/SurveyMain'
 
 export default function FillSurveyPage({params}) {
    let itemID = 1;
+   let matrixKey=0;
     const surveyID = params.slug;
 
     const [dataFetched,setDataFetched] = useState(false);
@@ -49,7 +50,8 @@ export default function FillSurveyPage({params}) {
       
 
       GetSurveyById(surveyID).then((res)=>{
-        console.log(res.Response.result[0]);
+        
+        // console.log(res.Response.result[0]);
         const title = res.Response.result[0].title;
         setSurveyFields(res.Response.result[0].surveyfields);
         checkDataFetched();
@@ -323,33 +325,34 @@ export default function FillSurveyPage({params}) {
             </div>
           </div>
         )}
-        {item.type == FieldTypes.MATRIX && (
-          <div>
-            <label htmlFor="">{item.label} </label>
-            <ul className="flex">
-              <li>Empty </li>
-              {item.matrixColumn?.map((col) => {
-                return <li key={i+1}>{col}</li>;
-              })}
-            </ul>
+        {item.type == FieldTypes.MATRIX && (<>
+                <label className="">{item.label} </label>
+                <div className="flex items-center justify-center">
+                <table className="w-[80%]">
+                  <tr className="text-center">
+                    <th> </th>
+                    {item.matrixColumn?.map((col) => {
+                      return <th key={matrixKey++}>{col}</th>;
+                    })}
+                  </tr>
 
-            {item.matrixRow?.map((row) => {
-              return (
-                <ul className="flex" key={i+1}>
-                  <li>{row}</li>
-                  {item.matrixColumn?.map(() => {
+                    <tbody>
+                  {item.matrixRow?.map((row) => {
                     return (
-                      // eslint-disable-next-line react/jsx-key
-                      <li>
-                        <input type="radio" name={row} />
-                      </li>
+                      <tr key={matrixKey++}>
+                        <td>{row}</td>
+                        {item.matrixColumn?.map((col) => {
+                            return <td key={matrixKey++} className="text-center" >
+                              <input type="radio" name={row+'1'} id={(itemID++).toString()} />
+                            </td>
+                      })}
+                      </tr>
                     );
                   })}
-                </ul>
-              );
-            })}
-          </div>
-        )}
+                  </tbody>
+                </table>
+                    </div></>
+                )}
       </div>
        ))}
 

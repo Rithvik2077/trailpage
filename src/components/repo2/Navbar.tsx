@@ -11,7 +11,7 @@ const Navbar: React.FC = () => {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(true);
   const [inuser, setAsUser] = useState(true);
 
   // let currentUrl = useRef(null);
