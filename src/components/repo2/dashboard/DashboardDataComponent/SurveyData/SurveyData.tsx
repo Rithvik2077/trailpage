@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import { formatDateString } from "@/../public/data/Components/function";
 
