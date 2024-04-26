@@ -7,7 +7,7 @@ function TicketGeneratorButton() {
   return (
     <Link
       href="/user/tickets/new"
-      className="inline-block cursor-pointer rounded-md bg-red-600 p-2 text-white"
+      className="inline-block cursor-pointer rounded-md bg-black p-2 text-white"
     >
       <div>+ Add Ticket</div>
     </Link>

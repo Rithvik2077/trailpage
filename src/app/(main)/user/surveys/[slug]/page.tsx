@@ -8,10 +8,11 @@ import {FormFields} from '@/app/(main)/surveys/SurveyMain'
 
 export default function FillSurveyPage({params}) {
    let itemID = 1;
+   let matrixKey=0;
     const surveyID = params.slug;
 
     const [dataFetched,setDataFetched] = useState(false);
-    const [surveyFields,setSurveyFields] = useState();
+    const [surveyFields,setSurveyFields] = useState([]);
 
     // const dummyResponse = {
     //     survey_id: 1,
@@ -49,7 +50,8 @@ export default function FillSurveyPage({params}) {
       
 
       GetSurveyById(surveyID).then((res)=>{
-        console.log(res.Response.result[0]);
+        
+        // console.log(res.Response.result[0]);
         const title = res.Response.result[0].title;
         setSurveyFields(res.Response.result[0].surveyfields);
         checkDataFetched();
@@ -115,7 +117,7 @@ export default function FillSurveyPage({params}) {
     
             // Get the label text associated with the form element
             let label = '';
-            const labelElement = form.querySelector(`label[for="${element.id}"]`);
+            const labelElement = form.querySelector(`label[htmlFor="${element.id}"]`);
             console.log('For this element, ', element,'Type is',element.type ,'\n This si the label ', labelElement)
             if (labelElement) {
                 label = labelElement.textContent.trim();
@@ -153,7 +155,7 @@ export default function FillSurveyPage({params}) {
                 case 'file':
                     // For document uploader, collect the file names
                     const files = Array.from(element.files);
-                    answer = files.map(file => file.name).join(', ');
+                    answer = files.map((file:any) => file.name).join(', ');
                     id = element.id;
                     break;
                 case 'date':
@@ -200,29 +202,29 @@ export default function FillSurveyPage({params}) {
       let i=0;
     
   return (
-    <div id='dom-form'>
+    <div id='dom-form' className='bg-slate-500 pt-4'>
       {dataFetched===false && <div>Fetching Data</div>}
       {dataFetched===true && <>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className={'flex flex-col justify-center items-center gap-4 mt-12'} >
         {/* {surveyFields.map((item)=>{
           console.log(item)
         })} */}
 
-        {surveyFields.map((item: FormFields) => (
+        {surveyFields && surveyFields.map((item: FormFields) => (
           
         <div className="w-[55%] rounded-lg border-l-4 border-blue-500 bg-white p-3" key={i}>
         {i=i+1}
         {item.type === FieldTypes.TEXTINPUT && (
           <div className="flex flex-col ">
-            <label for={itemID} name='TextFieldLabel' className="mb-3 text-lg">{item.label} </label>
-            <input id={itemID++} name='TextField' placeholder="input" />
+            <label htmlFor={(itemID).toString()} className="mb-3 text-lg" >{item.label} </label>
+            <input id={(itemID++).toString()} name='TextField' placeholder="input" />
           </div>
         )}
 
         {item.type == FieldTypes.DROPDOWN && (
           <div className="flex flex-col ">
             <label className="mb-3 text-lg">{item.label}</label>
-            <select id={itemID++} name='DropDown' className="w-[40%] rounded-md bg-slate-100 px-4 py-4 outline-none">
+            <select id={(itemID++).toString()} name='DropDown' className="w-[40%] rounded-md bg-slate-100 px-4 py-4 outline-none">
               <option className="p-10">Choose your pick </option>
               {item.options!.map((itemVal) => (
                 <option key={i+1}>
@@ -238,7 +240,7 @@ export default function FillSurveyPage({params}) {
             <div className="flex flex-col ">
               {item.options?.map((itemVal) => (
                 <div className="align-center flex gap-4" key={i+1}>
-                  <input id={itemID++} value={itemVal} name='Checkbox' type="checkbox" />
+                  <input id={(itemID++).toString()} value={itemVal} name='Checkbox' type="checkbox" />
                   <label>{itemVal} </label>
                 </div>
               ))}
@@ -247,7 +249,7 @@ export default function FillSurveyPage({params}) {
         )}
         {item.type == FieldTypes.FILEUPLOAD && (
           <div className="flex flex-col ">
-            <label for={itemID} className="mb-3 text-lg">
+            <label htmlFor={(itemID).toString()} className="mb-3 text-lg">
               {item.label}
             </label>
             {/* <input
@@ -287,7 +289,7 @@ export default function FillSurveyPage({params}) {
                 </div>
                 <input name='FileUploader'
                   // id="dropzone-file"
-                  id={itemID++}
+                  id={(itemID++).toString()}
                   type="file"
                   className="hidden"
                 />
@@ -297,7 +299,7 @@ export default function FillSurveyPage({params}) {
         )}
         {item.type == FieldTypes.DATE && (
           <div className="flex flex-col ">
-            <label for={itemID} className="mb-3 text-lg">
+            <label htmlFor={(itemID).toString()} className="mb-3 text-lg">
               {item.label}{" "}
             </label>
             {/* <input type="date" /> */}
@@ -318,42 +320,43 @@ export default function FillSurveyPage({params}) {
                 type="date"
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                 placeholder="Select date"
-                id={itemID++}
+                id={(itemID++).toString()}
               />
             </div>
           </div>
         )}
-        {item.type == FieldTypes.MATRIX && (
-          <div>
-            <label htmlFor="">{item.label} </label>
-            <ul className="flex">
-              <li>Empty </li>
-              {item.matrixColumn?.map((col) => {
-                return <li key={i+1}>{col}</li>;
-              })}
-            </ul>
+        {item.type == FieldTypes.MATRIX && (<>
+                <label className="">{item.label} </label>
+                <div className="flex items-center justify-center">
+                <table className="w-[80%]">
+                  <tr className="text-center">
+                    <th> </th>
+                    {item.matrixColumn?.map((col) => {
+                      return <th key={matrixKey++}>{col}</th>;
+                    })}
+                  </tr>
 
-            {item.matrixRow?.map((row) => {
-              return (
-                <ul className="flex" key={i+1}>
-                  <li>{row}</li>
-                  {item.matrixColumn?.map(() => {
+                    <tbody>
+                  {item.matrixRow?.map((row) => {
                     return (
-                      // eslint-disable-next-line react/jsx-key
-                      <li>
-                        <input type="radio" name={row} />
-                      </li>
+                      <tr key={matrixKey++}>
+                        <td>{row}</td>
+                        {item.matrixColumn?.map((col) => {
+                            return <td key={matrixKey++} className="text-center" >
+                              <input type="radio" name={row+'1'} id={(itemID++).toString()} />
+                            </td>
+                      })}
+                      </tr>
                     );
                   })}
-                </ul>
-              );
-            })}
-          </div>
-        )}
+                  </tbody>
+                </table>
+                    </div></>
+                )}
       </div>
        ))}
 
-        <button type={'submit'}>Submit Response</button>
+        <button id='submit-btn' className="mb-2 me-2 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800" type={'submit'}>Submit Response</button>
         </form>
       </>}
     </div>
