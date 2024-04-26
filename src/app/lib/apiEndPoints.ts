@@ -10,3 +10,6 @@ export const url_add_feedback = `/api/feedbacks/addfeedback`
 export const url_get_feedbacks = `/api/feedbacks/admin/getfeedbacks`
 export const url_mark_feedback_viewed = `/api/feedbacks/admin/markviewed?id=`
 export const url_user_feedbacks = `/api/feedbacks/getfeedbacks`
+export const url_get_users = `/api/users/admin/getallusers?withRole=`
+export const url_get_users_form_data = `api/users/admin/getformdata`
+export const url_update_userrolemapping = `api/users/admin/updateuserrole`

@@ -49,12 +49,25 @@ export async function GetUserById(id: number) {
     }
 }
 
-export async function GetAllUsers() {
+export async function GetAllUsers(withRole?: boolean) {
     const client = await db.connect();
     try {
         const query = {
-            text: "select id, username, email from users",
-            values: []
+            text: "",
+            values: [],
+        };
+        if(withRole) {
+            query.text = 
+            `select users.id, users.username, users.email, roles.rolename, groups.groupname, category.categoryname, um.can_create_survey
+            from userrole_mapping um
+            left join users on users.id = um.user_id
+            left join roles on roles.id = um.role_id
+            left join groups on groups.id = um.group_id
+            left join category on category.id = um.category_id
+            where users.isActive = true;`
+        }
+        else {
+            query.text = "select id, username, email from users";
         }
         const result = await client.query(query);
         client.end();

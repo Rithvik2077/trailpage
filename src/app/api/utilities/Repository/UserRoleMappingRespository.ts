@@ -14,14 +14,44 @@ const table = "userrole_mapping";
 //     user_id?: number;
 // }
 
+export async function UpdateUserRoleMapping(UserRole: UserRoleInsert){
+    const client = await db.connect();
+    try{
+        console.log("repo", UserRole);
+        const query = {
+            text: `update userrole_mapping
+            set role_id=$1, group_id=$2, category_id=$3,can_create_survey=$4
+            where user_id=$5`,
+            values: [UserRole.role_id, UserRole.group_id, UserRole.sub_category_id, UserRole.can_create_survey, UserRole.user_id]
+        }
+        console.log(query)
+        const result = await client.query(query);
+        client.end();
+        return {
+            status: 200,
+            statusText: `${result.command} completed successfully`,
+            result: {rowCount: result.rowCount}
+        };
+    }catch(error) {
+        client.end();
+        return {
+            status: 500,
+            statusText: "Internal server error",
+            message: error.message,
+            data: null,
+            error: error,
+        }
+    }
+}
+
 export async function AddUserRoleMapping(UserRole: UserRoleInsert){
     const client = await db.connect();
     try{
         const query = {
-            text: "insert into userrole_mapiing (user_id, role_id, group_id, category_id, can_create_survey) values ($1, $2, $3, $4, $5)",
+            text: "insert into userrole_mapping (user_id, role_id, group_id, category_id, can_create_survey) values ($1, $2, $3, $4, $5)",
             values: [UserRole.user_id, UserRole.role_id, UserRole.group_id, UserRole.sub_category_id, UserRole.can_create_survey]
         }
-        const result = client.query(query);
+        const result = await client.query(query);
         client.end();
         return {
             status: 200,
