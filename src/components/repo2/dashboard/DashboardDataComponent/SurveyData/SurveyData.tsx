@@ -27,7 +27,7 @@ const SurveySystemTable = ({ surveyData }) => {
                 </th>
                 <th className="border-blue-gray-50 border-b px-5 py-3 text-center">
                   <p className="text-blue-gray-400 block font-sans  font-bold uppercase antialiased">
-                    Created At
+                    Created On
                   </p>
                 </th>
                 <th className="border-blue-gray-50 border-b px-5 py-3 text-center">

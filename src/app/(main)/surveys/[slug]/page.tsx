@@ -1,15 +1,18 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {url_create_survey, url_get_survey_responses} from "@/app/lib/apiEndPoints";
 import { SurveyInput } from "@/components/repo2/survey-input-popover";
 import { FieldTypes } from "@/components/enums/survey-field-types";
 import {FormFields} from '@/app/(main)/surveys/SurveyMain'
 import SurveyForm from '@/app/(main)/surveys/[slug]/surveyForm'
 import SurveyResponse from './surveyResponse'
+import LoaderComponent from 'public/data/Loader/load';
+
 
 export default function SurveyResponses({params}) {
 
   const [responseData, setResponseData] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
 
   const viewSurveyResponse = async (id: number) => {
@@ -19,7 +22,7 @@ export default function SurveyResponses({params}) {
         method: "GET",
       })
         .then((response) => response.json())
-        .then((res) => { return res;})
+        .then((res) => { return res; setIsLoaded(true)})
         .catch((err) => console.log(err));
     } catch (error) {
       console.log("error while fetching:", error);
@@ -27,11 +30,12 @@ export default function SurveyResponses({params}) {
   };
 
   viewSurveyResponse(params.slug).then((surveyResponse)=>{
-    console.log('raw survey response:>',surveyResponse);
-    console.log('tghdchsbsds is survey response',surveyResponse.Response.result);
-    setResponseData(surveyResponse.Response.result);
+    {isLoaded && setResponseData(surveyResponse.Response.result);}
+    // console.log('raw survey response:>',surveyResponse);
+    // console.log('tghdchsbsds is survey response',surveyResponse.Response.result);
+    
     checkFetchingOfData()
-    console.log('this is response data',responseData)
+    // console.log('this is response data',responseData)
   })
 
   const checkFetchingOfData = ()=>{
@@ -49,12 +53,12 @@ export default function SurveyResponses({params}) {
           <h3>Survey id: {response.username}</h3></div>
          })}</> */}
       {/* <div className="w-[55%] rounded-lg border-t-4 border-blue-500 bg-white p-3"> */}
-      {dataFetched===false && <p>Fetching responses</p>}
+      {dataFetched==false && <div className="flex justify-center items-center mt-10 bg-white"><LoaderComponent/></div>}
       {dataFetched===true  && <> {responseData.map((res)=>(
         <>
         <h1>Starting Element</h1>
         <h3>Submitted by: {res.username} </h3> 
-        <h3>Created At: {res.createdat} </h3>
+        <h3>Created On: {res.createdat} </h3>
         
         <SurveyResponse response={res.response_data}/>
         </>

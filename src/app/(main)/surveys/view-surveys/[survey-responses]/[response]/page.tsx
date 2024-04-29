@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import SurveyResponse from '../../../[slug]/surveyResponse';
+import LoaderComponent from 'public/data/Loader/load';
 
 export default function SurveySingleResponsePage({params}) {
 
@@ -28,7 +29,7 @@ export default function SurveySingleResponsePage({params}) {
 
   return (
     <div>
-        {dataFetched==false && <h3>fetching response</h3>}
+        {dataFetched==false && <div className="flex justify-center items-center mt-10"><LoaderComponent/></div>}
         {dataFetched==true && <SurveyResponse response={responseFields['response_data']}/>}
     </div>
   )

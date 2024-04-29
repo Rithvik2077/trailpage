@@ -4,6 +4,8 @@ import { Json } from "@/types/database.types";
 import { validateAndAuthorizeToken, GetPayloadDetails } from "@/app/api/utilities/helpers/tokenHelper";
 import { cookies } from "next/headers";
 
+export const dynamic = 'force-dynamic';
+
 interface Survey {
     title: string;
     survey_fields: Json; 

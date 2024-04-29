@@ -7,6 +7,7 @@ import Link from "next/link";
 import SurveySystemTable from "@/components/repo2/dashboard/DashboardDataComponent/SurveyData/SurveyData";
 import { formatDateString } from "@/../public/data/Components/function";
 import {url_create_survey, url_get_survey_responses} from "@/app/lib/apiEndPoints";
+import LoaderComponent from "public/data/Loader/load";
 
 
 
@@ -49,6 +50,7 @@ function SurveyResponses({params}) {
 
 return (
     <div>
+      {dataFetched==false && <div className="flex justify-center items-center mt-10"><LoaderComponent/></div>}
      {dataFetched==true && <div className="mb-8 mt-12 flex flex-col gap-12 ">
       <div className="relative flex flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
         <div className="relative mx-4 -mt-6 mb-8 rounded-xl bg-gradient-to-tr from-blue-900 to-blue-800 bg-clip-border p-6 text-white shadow-lg shadow-gray-900/20">

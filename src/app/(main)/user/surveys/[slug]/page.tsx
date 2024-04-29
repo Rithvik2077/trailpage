@@ -4,6 +4,7 @@ import { url_add_response, url_get_survey_by_id } from "@/app/lib/apiEndPoints";
 import SurveyForm from '@/app/(main)/surveys/[slug]/surveyForm';
 import { FieldTypes } from "@/components/enums/survey-field-types";
 import {FormFields} from '@/app/(main)/surveys/SurveyMain'
+import LoaderComponent from 'public/data/Loader/load';
 
 
 export default function FillSurveyPage({params}) {
@@ -13,6 +14,7 @@ export default function FillSurveyPage({params}) {
 
     const [dataFetched,setDataFetched] = useState(false);
     const [surveyFields,setSurveyFields] = useState([]);
+    const [title, setTitle] = useState('');
 
     // const dummyResponse = {
     //     survey_id: 1,
@@ -52,7 +54,7 @@ export default function FillSurveyPage({params}) {
       GetSurveyById(surveyID).then((res)=>{
         
         // console.log(res.Response.result[0]);
-        const title = res.Response.result[0].title;
+        setTitle(res.Response.result[0].title);
         setSurveyFields(res.Response.result[0].surveyfields);
         checkDataFetched();
         
@@ -94,6 +96,9 @@ export default function FillSurveyPage({params}) {
       // }
 
       function handleSubmit(event) {
+        const submitBTN:any = document.getElementById('submit-btn');
+        submitBTN.innerHTML='Submitting';
+        submitBTN.disabled = true;
         const domForm = document.getElementById('dom-form');
         console.log(domForm)
         // Prevent the default form submission behavior
@@ -154,13 +159,18 @@ export default function FillSurveyPage({params}) {
                     break;
                 case 'file':
                     // For document uploader, collect the file names
-                    const files = Array.from(element.files);
-                    answer = files.map((file:any) => file.name).join(', ');
+                    if(!element.files[0]) continue;
+                    answer = element.files[0].name
                     id = element.id;
                     break;
                 case 'date':
                     answer = element.value;
                     id = element.id;
+                    break;
+                case 'radio':
+                    answer = element.checked ? element.value:null;
+                    if(answer===null) continue;
+                    else id = element.id;
                     break;
                 default:
                     break;
@@ -195,6 +205,7 @@ export default function FillSurveyPage({params}) {
         // Print the JSON string to the console
         console.log('are you going to submit Response', surveyResponse)
         submitResponse(surveyResponse);
+        submitBTN.innerHTML = 'Submitted';
         console.log(formDataJSON);
     }
     
@@ -202,18 +213,33 @@ export default function FillSurveyPage({params}) {
       let i=0;
     
   return (
-    <div id='dom-form' className='bg-slate-500 pt-4'>
-      {dataFetched===false && <div>Fetching Data</div>}
+    <div id='dom-form' className='bg-slate-300 pt-4'>
+      {dataFetched==false && <div className="flex justify-center items-center mt-10"><LoaderComponent/></div>}
       {dataFetched===true && <>
         <form onSubmit={handleSubmit} className={'flex flex-col justify-center items-center gap-4 mt-12'} >
         {/* {surveyFields.map((item)=>{
           console.log(item)
         })} */}
+       
+            <div className="w-[55%] rounded-lg border-t-4 border-blue-500 bg-white p-3 h-28">
+              <div className="text-2xl text-center flex justify-center items-center">
+                <label className="my-8 w-[100%] text-2xl outline-none text-center">{title}</label>
+              </div>
+              {/* <div>
+                <textarea
+                  className="w-[100%] outline-none"
+                  placeholder="Survey Description"
+                  onChange={(e)=>setSurveyDescription(e.target.value)}
+                />
+              </div> */}
+            </div>
+          
+       
 
         {surveyFields && surveyFields.map((item: FormFields) => (
           
         <div className="w-[55%] rounded-lg border-l-4 border-blue-500 bg-white p-3" key={i}>
-        {i=i+1}
+        {/* {i=i+1} */}
         {item.type === FieldTypes.TEXTINPUT && (
           <div className="flex flex-col ">
             <label htmlFor={(itemID).toString()} className="mb-3 text-lg" >{item.label} </label>
@@ -252,49 +278,10 @@ export default function FillSurveyPage({params}) {
             <label htmlFor={(itemID).toString()} className="mb-3 text-lg">
               {item.label}
             </label>
-            {/* <input
-              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-              type="file"
-            /> */}
-            <div className="flex w-full items-center justify-center">
-              <label
-                htmlFor="dropzone-file"
-                className="h-34 dark:hover:bg-bray-800 flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-              >
-                <div className="flex flex-col items-center justify-center pb-6 pt-5">
-                  <svg
-                    className="mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 16"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                    />
-                  </svg>
-                  <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
-                    <span className="font-semibold">
-                      Click to upload
-                    </span>{" "}
-                    or drag and drop
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    SVG, PNG, JPG or GIF (MAX. 800x400px)
-                  </p>
-                </div>
-                <input name='FileUploader'
-                  // id="dropzone-file"
-                  id={(itemID++).toString()}
-                  type="file"
-                  className="hidden"
-                />
-              </label>
+            <div className="flex justify-center items-center">
+              <input id={(itemID++).toString()} name='myfile' type="file" className="w-72 max-w-full p-1.5 bg-white text-gray-800 rounded-lg border border-gray-500 file:mr-5 file:border-none file:bg-blue-800 file:px-5 file:py-2 file:rounded-lg file:text-white file:cursor-pointer file:hover:bg-blue-600" />
             </div>
+            
           </div>
         )}
         {item.type == FieldTypes.DATE && (
@@ -341,9 +328,9 @@ export default function FillSurveyPage({params}) {
                     return (
                       <tr key={matrixKey++}>
                         <td>{row}</td>
-                        {item.matrixColumn?.map((col) => {
+                        {item.matrixColumn?.map((cola) => {
                             return <td key={matrixKey++} className="text-center" >
-                              <input type="radio" name={row+'1'} id={(itemID++).toString()} />
+                              <input type="radio" name={row+'1'} id={(itemID++).toString()} value={cola}/>
                             </td>
                       })}
                       </tr>

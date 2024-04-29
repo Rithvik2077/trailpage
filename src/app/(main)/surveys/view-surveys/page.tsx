@@ -1,11 +1,12 @@
 "use client"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Surveys from "@/components/repo2/Survey/SurveyList";
 import { url_add_response,url_get_active_surveys, url_get_response_by_id } from "@/app/lib/apiEndPoints";
 import { get } from "http";
 import Link from "next/link";
 import SurveySystemTable from "@/components/repo2/dashboard/DashboardDataComponent/SurveyData/SurveyData";
 import { formatDateString } from "@/../public/data/Components/function";
+import LoaderComponent from "public/data/Loader/load";
 
 // const surveyData = [
 //   {
@@ -195,22 +196,24 @@ function SurveyList() {
 
     const [surveyData, setSurveyData] = useState([]);
     const [dataFetched, setDataFetched] = useState(false);
+    const [refresh, setRefresh] = useState(1);
 
 
     async function getSurveyRecents(){
+      console.log('moon')
       const surveyresponse = await fetch(
-        "http://localhost:3000/api/getrecentsurveys",
-      );
+        "http://localhost:3000/api/getrecentsurveys");
+      // res.setHeader('Cache-Control', 'no-store, max-age=0');
   
       const jsonsurvey = await surveyresponse.json();
+      console.log('*******ew97297327********', jsonsurvey);
       setSurveyData(jsonsurvey["data"]);
+      
   
       // return surveyresponse;
     }
 
-    const checkSurveyData =()=>{
-        if(surveyData){setDataFetched(true);}
-    }
+    
 
     // getAllSurveys().then((data)=>{
     //     console.log(data.Response.result, 'this the the survey data')
@@ -218,10 +221,17 @@ function SurveyList() {
     //     checkSurveyData();
     // });
 
-    getSurveyRecents().then((data)=>{
-      checkSurveyData();
-      setDataFetched(true);
-    })
+    useEffect(()=>{
+      console.log("refresh was clicked");
+      const checkSurveyData =()=>{
+        if(surveyData){setDataFetched(true);}
+      }
+
+      getSurveyRecents().then((data)=>{
+        checkSurveyData();
+        setDataFetched(true);
+      })
+    },[refresh])
 
     // console.log('surveyList******** ',surveyData.surveyData);
     // const arraySurvey = surveyData.surveyData;
@@ -232,20 +242,27 @@ function SurveyList() {
 
 return (
     <div>
+      {dataFetched==false && <div className="flex justify-center items-center mt-10"><LoaderComponent/></div>}
      {dataFetched==true && <div className="mb-8 mt-12 flex flex-col gap-12 ">
       <div className="relative flex flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
         <div className="relative mx-4 -mt-6 mb-8 rounded-xl bg-gradient-to-tr from-blue-900 to-blue-800 bg-clip-border p-6 text-white shadow-lg shadow-gray-900/20">
-          <h6 className="block font-sans text-base font-semibold leading-relaxed tracking-normal text-white antialiased">
-            Survey System Table
+          <h6 className="block font-sans text-base font-semibold leading-relaxed tracking-normal text-white antialiased text-center">
+            Showing a List of All Surveys
           </h6>
+          <div className="flex justify-between">
           <Link href={'/surveys/create-survey'}>
           <button className="mb-2 me-2 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800">
             Create a new Survey
           </button>
           </Link>
+
+          <button className="mb-2 me-2 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800" onClick={()=>{getSurveyRecents();}}>
+            Refresh
+          </button>
+          </div>
         </div>
-        <div className=" p-6 px-0 pb-2 pt-0">
-          <table className="w-full min-w-[640px] table-auto">
+        <div className=" p-6 px-0 pb-2 pt-0 overflow-x-hidden">
+          <table className="w-full min-w-[640px] table-auto pl-2 ml-2">
             <thead className=" text-base text-sky-900">
               <tr>
                 <th className="border-blue-gray-50 border-b px-5 py-3 text-left">
@@ -260,7 +277,7 @@ return (
                 </th>
                 <th className="border-blue-gray-50 border-b px-5 py-3 text-center">
                   <p className="text-blue-gray-400 block font-sans  font-bold uppercase antialiased">
-                    Created At
+                    Created On
                   </p>
                 </th>
                 {/* <th className="border-blue-gray-50 border-b px-5 py-3 text-center">

@@ -6,6 +6,8 @@ import { FieldTypes } from "@/components/enums/survey-field-types";
 import { Button } from "@/components/repo2/ui/button";
 import {url_create_survey, url_get_survey_responses} from "@/app/lib/apiEndPoints";
 import { useRouter } from "next/navigation";
+import { revalidatePath, revalidateTag } from "next/cache";
+import {revalidateSurveyList} from '@/app/lib/revalidatefnx'
 
 export interface FormFields {
   type: FieldTypes;
@@ -19,6 +21,8 @@ export interface FormFields {
 
 
 function SurveysCreation() {
+  const router = useRouter();
+
   const [formFields, setFormFields] = useState<FormFields[]>([]);
   const [surveyTitle, setSurveyTitle] = useState<String>('Test-Survey');
   const [surveyDescription, setSurveyDescription] = useState<String>('Test-Description');
@@ -26,6 +30,7 @@ function SurveysCreation() {
 
 
   const addSurvey = async () => {
+    
     let currentDate = new Date();
     // Add one month to the current date
     let futureDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate());
@@ -45,7 +50,11 @@ function SurveysCreation() {
         body: JSON.stringify(body),
       })
       .then(response => response.json())
-      .then(result => console.log(result))
+      .then(result => {
+        console.log(result);
+        // revalidateSurveyList();
+        // router.push('/surveys/view-surveys');
+      })
       .catch(err => console.log(err));
     }catch (error) {
       console.log("error while fetching:", error)
@@ -172,52 +181,14 @@ function SurveysCreation() {
                 )}
                 {item.type == FieldTypes.FILEUPLOAD && (
                   <div className="flex flex-col ">
-                    <label className="mb-3 text-lg" htmlFor="">
-                      {item.label}{" "}
-                    </label>
-                    {/* <input
-                      className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                      type="file"
-                    /> */}
-                    <div className="flex w-full items-center justify-center">
-                      <label
-                        htmlFor="dropzone-file"
-                        className="h-34 dark:hover:bg-bray-800 flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-                      >
-                        <div className="flex flex-col items-center justify-center pb-6 pt-5">
-                          <svg
-                            className="mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 20 16"
-                          >
-                            <path
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                            />
-                          </svg>
-                          <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
-                            <span className="font-semibold">
-                              Click to upload
-                            </span>{" "}
-                            or drag and drop
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            SVG, PNG, JPG or GIF (MAX. 800x400px)
-                          </p>
-                        </div>
-                        <input
-                          id="dropzone-file"
-                          type="file"
-                          className="hidden"
-                        />
-                      </label>
-                    </div>
+                  <label className="mb-3 text-lg">
+                    {item.label}
+                  </label>
+                  <div className="flex justify-center items-center">
+                    <input name='myfile' type="file" className="w-72 max-w-full p-1.5 bg-white text-gray-800 rounded-lg border border-gray-500 file:mr-5 file:border-none file:bg-blue-800 file:px-5 file:py-2 file:rounded-lg file:text-white file:cursor-pointer file:hover:bg-blue-600" />
                   </div>
+                  
+                </div>
                 )}
                 {item.type == FieldTypes.DATE && (
                   <div className="flex flex-col ">

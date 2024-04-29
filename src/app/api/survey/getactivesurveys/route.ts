@@ -3,6 +3,8 @@ import { GetAllSurveys } from "../../utilities/Services/SurveyService";
 import { validateAndAuthorizeToken } from "../../utilities/helpers/tokenHelper";
 import { cookies } from "next/headers";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
     const auth = cookies().get('Authorize')
     const token = auth.value;

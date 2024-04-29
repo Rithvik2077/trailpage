@@ -6,6 +6,8 @@ import { get } from "http";
 import SurveySystemTable from "@/components/repo2/dashboard/DashboardDataComponent/SurveyData/SurveyData";
 import { formatDateString } from "@/../public/data/Components/function";
 import Link from "next/link";
+import LoaderComponent from "public/data/Loader/load";
+
 // const surveyData = [
 //   {
 //     ID: "1",
@@ -239,15 +241,16 @@ function UserSurvey() {
       {/* <button onClick={() => getResponseById(1)}>
         Get response by id
       </button> */}
+     {dataFetched==false && <div className="flex justify-center items-center mt-10"><LoaderComponent/></div>}
      {dataFetched==true &&  <div className="mb-8 mt-12 flex flex-col gap-12 ">
       <div className="relative flex flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md">
-        <div className="relative mx-4 -mt-6 mb-8 rounded-xl bg-gradient-to-tr from-sky-900 to-sky-800 bg-clip-border p-6 text-white shadow-lg shadow-gray-900/20">
-          <h6 className="block font-sans text-base font-semibold leading-relaxed tracking-normal text-white antialiased">
-            Survey System Table
+        <div className="relative mx-4 -mt-6 mb-8 rounded-xl bg-gradient-to-tr from-blue-900 to-blue-800 bg-clip-border p-6 text-white shadow-lg shadow-gray-900/20">
+          <h6 className="block font-sans text-base font-semibold leading-relaxed tracking-normal text-white antialiased text-center">
+            List of Active Surveys
           </h6>
         </div>
-        <div className=" p-6 px-0 pb-2 pt-0">
-          <table className="w-full min-w-[640px] table-auto">
+        <div className=" p-6 px-0 pb-2 pt-0 overflow-x-hidden">
+          <table className="w-full min-w-[580px] table-auto ml-2">
             <thead className=" text-base text-sky-900">
               <tr>
                 <th className="border-blue-gray-50 border-b px-5 py-3 text-left">
@@ -258,7 +261,7 @@ function UserSurvey() {
                 
                 <th className="border-blue-gray-50 border-b px-5 py-3 text-center">
                   <p className="text-blue-gray-400 block font-sans  font-bold uppercase antialiased">
-                    Created At
+                    Created On
                   </p>
                 </th>
                 <th></th>

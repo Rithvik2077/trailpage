@@ -6,6 +6,7 @@ export default function SurveyResponse({response}) {
     function responseDataToHTML(response){
 
         const htmlString = JSON.parse(response);
+        console.log('this is response from db ', htmlString)
         const htmlDATA = htmlString[htmlString.length - 1];
         console.log('This is htmlString', htmlDATA.htmlString )
         const formdiv = document.createElement('div');
@@ -44,6 +45,7 @@ export default function SurveyResponse({response}) {
                 // }
                 if(ele){
                     console.log('****************************', ele)
+                    ele.disabled = true;
                     switch(ele.type){
                         case 'checkbox':
                             ele.checked = true;
@@ -51,8 +53,18 @@ export default function SurveyResponse({response}) {
                         case 'radio':
                             console.log('This is a radio button', ele)
                             ele.checked = true;
+                            ele.classList.add('disabled:bg-red-200');
                             break;
                         case 'file':
+                            console.log('this is filedata: moon',data)
+                            ele.type = 'text'
+                            // ele.disabled = true;
+                            if(!data.answer){
+                                ele.value = 'No file uploaded';
+                                
+                                continue;
+                            }
+                            ele.value = data.answer;
                             break;
                         default:
                             ele.value = data.answer;

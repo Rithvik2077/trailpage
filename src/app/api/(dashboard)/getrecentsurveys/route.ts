@@ -1,5 +1,7 @@
 import { db } from "../../utilities/Data/RenderConnect";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
   const client = await db.connect();
 
